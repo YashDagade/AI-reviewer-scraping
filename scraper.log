@@ -1,0 +1,427 @@
+2024-10-22 21:30:12,413 - ERROR - Paper processing generated an exception for URL https://openreview.net/forum?id=KS8mIvetg2: A process in the process pool was terminated abruptly while the future was running or pending.
+2024-10-22 21:30:12,413 - ERROR - Paper processing generated an exception for URL https://openreview.net/forum?id=7Ttk3RzDeu: A process in the process pool was terminated abruptly while the future was running or pending.
+2024-10-22 21:30:12,413 - ERROR - Paper processing generated an exception for URL https://openreview.net/forum?id=ANvmVS2Yr0: A process in the process pool was terminated abruptly while the future was running or pending.
+2024-10-22 21:30:12,413 - ERROR - Paper processing generated an exception for URL https://openreview.net/forum?id=ekeyCgeRfC: A process in the process pool was terminated abruptly while the future was running or pending.
+2024-10-22 21:30:12,413 - INFO - All papers have been processed.
+2024-10-22 21:31:00,181 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:00,181 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:00,181 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:00,181 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:00,307 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,307 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,307 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,307 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,381 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,391 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,391 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,395 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:00,458 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:00,459 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:00,469 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:00,478 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:01,517 - INFO - Starting processing for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:01,523 - INFO - Starting processing for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:01,523 - INFO - Starting processing for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:01,537 - INFO - Starting processing for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:02,412 - INFO - Navigated to URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:02,413 - INFO - Navigated to URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:02,552 - INFO - Navigated to URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:02,558 - INFO - Navigated to URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:02,938 - INFO - Main content loaded for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:02,938 - INFO - Main content loaded for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:03,077 - INFO - Main content loaded for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:03,092 - INFO - Main content loaded for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:04,942 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:04,942 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:04,959 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=ANvmVS2Yr0: name 'parse_paper_info' is not defined
+2024-10-22 21:31:04,989 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=ekeyCgeRfC: name 'parse_paper_info' is not defined
+2024-10-22 21:31:05,030 - INFO - Successfully processed URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:05,067 - INFO - Successfully processed URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:05,081 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:05,096 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=7Ttk3RzDeu: name 'parse_paper_info' is not defined
+2024-10-22 21:31:05,101 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:05,117 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=KS8mIvetg2: name 'parse_paper_info' is not defined
+2024-10-22 21:31:05,172 - INFO - Successfully processed URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:05,193 - INFO - Successfully processed URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:05,232 - INFO - All papers have been processed.
+2024-10-22 21:31:18,781 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:18,781 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:18,781 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:18,781 - INFO - ====== WebDriver manager ======
+2024-10-22 21:31:18,863 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:18,863 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:18,863 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:18,863 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:19,002 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:19,003 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:19,003 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:19,017 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:31:19,162 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:19,162 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:19,167 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:19,169 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:31:19,869 - INFO - Starting processing for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:19,882 - INFO - Starting processing for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:19,883 - INFO - Starting processing for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:19,919 - INFO - Starting processing for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:20,163 - INFO - Navigated to URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:20,473 - INFO - Navigated to URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:20,501 - INFO - Navigated to URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:20,574 - INFO - Navigated to URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:20,994 - INFO - Main content loaded for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:21,022 - INFO - Main content loaded for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:21,095 - INFO - Main content loaded for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:21,213 - INFO - Main content loaded for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:23,002 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:23,034 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:23,104 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:23,221 - INFO - Scrolled to bottom of page for URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:23,295 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=7Ttk3RzDeu: name 'parse_paper_info' is not defined
+2024-10-22 21:31:23,312 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=KS8mIvetg2: name 'parse_paper_info' is not defined
+2024-10-22 21:31:23,555 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=ANvmVS2Yr0: name 'parse_paper_info' is not defined
+2024-10-22 21:31:23,614 - INFO - Successfully processed URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:31:23,624 - ERROR - Unexpected error processing URL https://openreview.net/forum?id=ekeyCgeRfC: name 'parse_paper_info' is not defined
+2024-10-22 21:31:23,643 - INFO - Successfully processed URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:31:23,662 - INFO - Successfully processed URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:31:23,724 - INFO - Successfully processed URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:31:23,829 - INFO - All papers have been processed.
+2024-10-22 21:36:42,570 - INFO - ====== WebDriver manager ======
+2024-10-22 21:36:42,749 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:42,826 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:42,889 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:36:43,829 - INFO - Starting processing for paper: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:36:43,830 - INFO - ====== WebDriver manager ======
+2024-10-22 21:36:43,830 - INFO - Fetching URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:36:43,942 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:44,112 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:44,258 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:36:44,787 - INFO - Starting processing for paper: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:36:44,788 - INFO - Fetching URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:36:44,787 - INFO - ====== WebDriver manager ======
+2024-10-22 21:36:45,023 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:45,096 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:45,176 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:36:45,721 - INFO - Starting processing for paper: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:36:45,722 - INFO - Fetching URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:36:45,722 - INFO - ====== WebDriver manager ======
+2024-10-22 21:36:45,861 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:45,931 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:36:46,015 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:36:46,889 - INFO - Starting processing for paper: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:36:46,891 - INFO - Fetching URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:36:47,400 - INFO - Successfully fetched URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:36:47,450 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_metadata.md
+2024-10-22 21:36:47,450 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-22 21:36:47,450 - INFO - Downloading PDF: https://openreview.net/pdf?id=KS8mIvetg2
+2024-10-22 21:36:47,841 - INFO - Successfully fetched URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:36:47,854 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_metadata.md
+2024-10-22 21:36:47,854 - INFO - Saved metadata to 7Ttk3RzDeu_metadata.md
+2024-10-22 21:36:47,854 - INFO - Downloading PDF: https://openreview.net/pdf?id=7Ttk3RzDeu
+2024-10-22 21:36:48,199 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:36:48,200 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:36:48,509 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:36:48,509 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:36:48,915 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:36:49,043 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_metadata.md
+2024-10-22 21:36:49,055 - INFO - Saved metadata to ANvmVS2Yr0_metadata.md
+2024-10-22 21:36:49,061 - INFO - Downloading PDF: https://openreview.net/pdf?id=ANvmVS2Yr0
+2024-10-22 21:36:49,325 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:36:49,363 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_sections.md
+2024-10-22 21:36:49,410 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_responses.md
+2024-10-22 21:36:49,416 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-22 21:36:49,423 - INFO - Completed processing for paper ID: KS8mIvetg2
+2024-10-22 21:36:50,195 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:36:50,282 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_metadata.md
+2024-10-22 21:36:50,320 - INFO - Saved metadata to ekeyCgeRfC_metadata.md
+2024-10-22 21:36:50,320 - INFO - Downloading PDF: https://openreview.net/pdf?id=ekeyCgeRfC
+2024-10-22 21:36:50,434 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:36:50,435 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_sections.md
+2024-10-22 21:36:50,467 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_responses.md
+2024-10-22 21:36:50,467 - INFO - Saved reviewer responses to 7Ttk3RzDeu_responses.md
+2024-10-22 21:36:50,467 - INFO - Completed processing for paper ID: 7Ttk3RzDeu
+2024-10-22 21:36:50,561 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:36:50,561 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:36:51,928 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:36:51,940 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:36:56,960 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:36:56,965 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_sections.md
+2024-10-22 21:36:57,063 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_responses.md
+2024-10-22 21:36:57,064 - INFO - Saved reviewer responses to ekeyCgeRfC_responses.md
+2024-10-22 21:36:57,064 - INFO - Completed processing for paper ID: ekeyCgeRfC
+2024-10-22 21:36:59,353 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:36:59,353 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_sections.md
+2024-10-22 21:36:59,366 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_responses.md
+2024-10-22 21:36:59,366 - INFO - Saved reviewer responses to ANvmVS2Yr0_responses.md
+2024-10-22 21:36:59,366 - INFO - Completed processing for paper ID: ANvmVS2Yr0
+2024-10-22 21:38:47,528 - INFO - ====== WebDriver manager ======
+2024-10-22 21:38:47,699 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:47,770 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:47,842 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:38:48,969 - INFO - Starting processing for paper: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:38:48,969 - INFO - ====== WebDriver manager ======
+2024-10-22 21:38:48,969 - INFO - Fetching URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:38:49,063 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:49,141 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:49,209 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:38:49,757 - INFO - ====== WebDriver manager ======
+2024-10-22 21:38:49,869 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:49,992 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:50,152 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:38:50,686 - INFO - ====== WebDriver manager ======
+2024-10-22 21:38:50,872 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:50,952 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:38:51,018 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:38:53,476 - INFO - Successfully fetched URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:38:53,494 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_metadata.md
+2024-10-22 21:38:53,494 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-22 21:38:53,494 - INFO - Downloading PDF: https://openreview.net/pdf?id=KS8mIvetg2
+2024-10-22 21:38:54,352 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:38:54,352 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:38:54,791 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:38:54,793 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_sections.md
+2024-10-22 21:38:54,810 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_responses.md
+2024-10-22 21:38:54,810 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-22 21:38:54,810 - INFO - Completed processing for paper ID: KS8mIvetg2
+2024-10-22 21:38:54,810 - INFO - Starting processing for paper: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:38:54,810 - INFO - Fetching URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:38:57,843 - INFO - Successfully fetched URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:38:57,859 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_metadata.md
+2024-10-22 21:38:57,859 - INFO - Saved metadata to 7Ttk3RzDeu_metadata.md
+2024-10-22 21:38:57,859 - INFO - Downloading PDF: https://openreview.net/pdf?id=7Ttk3RzDeu
+2024-10-22 21:38:58,480 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:38:58,481 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:38:59,250 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:38:59,251 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_sections.md
+2024-10-22 21:38:59,271 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_responses.md
+2024-10-22 21:38:59,271 - INFO - Saved reviewer responses to 7Ttk3RzDeu_responses.md
+2024-10-22 21:38:59,271 - INFO - Completed processing for paper ID: 7Ttk3RzDeu
+2024-10-22 21:38:59,271 - INFO - Starting processing for paper: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:38:59,271 - INFO - Fetching URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:39:02,310 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:39:02,321 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_metadata.md
+2024-10-22 21:39:02,321 - INFO - Saved metadata to ANvmVS2Yr0_metadata.md
+2024-10-22 21:39:02,321 - INFO - Downloading PDF: https://openreview.net/pdf?id=ANvmVS2Yr0
+2024-10-22 21:39:05,214 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:05,215 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:12,245 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:12,245 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_sections.md
+2024-10-22 21:39:12,259 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_responses.md
+2024-10-22 21:39:12,259 - INFO - Saved reviewer responses to ANvmVS2Yr0_responses.md
+2024-10-22 21:39:12,259 - INFO - Completed processing for paper ID: ANvmVS2Yr0
+2024-10-22 21:39:12,259 - INFO - Starting processing for paper: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:12,259 - INFO - Fetching URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:15,350 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:15,421 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_metadata.md
+2024-10-22 21:39:15,421 - INFO - Saved metadata to ekeyCgeRfC_metadata.md
+2024-10-22 21:39:15,421 - INFO - Downloading PDF: https://openreview.net/pdf?id=ekeyCgeRfC
+2024-10-22 21:39:16,106 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:16,106 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:17,727 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:17,727 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_sections.md
+2024-10-22 21:39:17,818 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_responses.md
+2024-10-22 21:39:17,818 - INFO - Saved reviewer responses to ekeyCgeRfC_responses.md
+2024-10-22 21:39:17,818 - INFO - Completed processing for paper ID: ekeyCgeRfC
+2024-10-22 21:39:23,246 - INFO - ====== WebDriver manager ======
+2024-10-22 21:39:23,410 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:23,483 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:23,561 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:39:24,085 - INFO - Starting processing for paper: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:39:24,085 - INFO - ====== WebDriver manager ======
+2024-10-22 21:39:24,086 - INFO - Fetching URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:39:24,215 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:24,491 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:24,635 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:39:25,166 - INFO - Starting processing for paper: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:39:25,167 - INFO - ====== WebDriver manager ======
+2024-10-22 21:39:25,167 - INFO - Fetching URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:39:25,299 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:25,370 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:25,450 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:39:26,048 - INFO - Starting processing for paper: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:39:26,049 - INFO - ====== WebDriver manager ======
+2024-10-22 21:39:26,050 - INFO - Fetching URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:39:26,283 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:26,357 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:39:26,440 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:39:27,204 - INFO - Starting processing for paper: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:27,206 - INFO - Fetching URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:27,369 - INFO - Successfully fetched URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:39:27,409 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_metadata.md
+2024-10-22 21:39:27,410 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-22 21:39:27,410 - INFO - Downloading PDF: https://openreview.net/pdf?id=KS8mIvetg2
+2024-10-22 21:39:28,138 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:39:28,139 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:39:28,239 - INFO - Successfully fetched URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:39:28,280 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_metadata.md
+2024-10-22 21:39:28,289 - INFO - Saved metadata to 7Ttk3RzDeu_metadata.md
+2024-10-22 21:39:28,298 - INFO - Downloading PDF: https://openreview.net/pdf?id=7Ttk3RzDeu
+2024-10-22 21:39:28,752 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:39:28,752 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_sections.md
+2024-10-22 21:39:28,769 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_responses.md
+2024-10-22 21:39:28,769 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-22 21:39:28,769 - INFO - Completed processing for paper ID: KS8mIvetg2
+2024-10-22 21:39:28,862 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:39:28,862 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:39:29,687 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:39:29,719 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_metadata.md
+2024-10-22 21:39:29,719 - INFO - Saved metadata to ANvmVS2Yr0_metadata.md
+2024-10-22 21:39:29,720 - INFO - Downloading PDF: https://openreview.net/pdf?id=ANvmVS2Yr0
+2024-10-22 21:39:29,757 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:39:29,757 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_sections.md
+2024-10-22 21:39:29,777 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_responses.md
+2024-10-22 21:39:29,777 - INFO - Saved reviewer responses to 7Ttk3RzDeu_responses.md
+2024-10-22 21:39:29,777 - INFO - Completed processing for paper ID: 7Ttk3RzDeu
+2024-10-22 21:39:30,360 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:39:30,393 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_metadata.md
+2024-10-22 21:39:30,394 - INFO - Saved metadata to ekeyCgeRfC_metadata.md
+2024-10-22 21:39:30,394 - INFO - Downloading PDF: https://openreview.net/pdf?id=ekeyCgeRfC
+2024-10-22 21:39:30,967 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:30,967 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:31,154 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:31,155 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:36,877 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:39:36,880 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_sections.md
+2024-10-22 21:39:36,979 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_responses.md
+2024-10-22 21:39:36,979 - INFO - Saved reviewer responses to ekeyCgeRfC_responses.md
+2024-10-22 21:39:36,979 - INFO - Completed processing for paper ID: ekeyCgeRfC
+2024-10-22 21:39:39,460 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:39:39,461 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_sections.md
+2024-10-22 21:39:39,477 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_responses.md
+2024-10-22 21:39:39,477 - INFO - Saved reviewer responses to ANvmVS2Yr0_responses.md
+2024-10-22 21:39:39,477 - INFO - Completed processing for paper ID: ANvmVS2Yr0
+2024-10-22 21:44:20,598 - INFO - ====== WebDriver manager ======
+2024-10-22 21:44:20,732 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:20,823 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:20,905 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:44:22,089 - INFO - Starting processing for paper: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:44:22,089 - INFO - ====== WebDriver manager ======
+2024-10-22 21:44:22,089 - INFO - Fetching URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:44:22,175 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:22,280 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:22,419 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:44:22,994 - INFO - Starting processing for paper: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:44:22,996 - INFO - Fetching URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:44:22,995 - INFO - ====== WebDriver manager ======
+2024-10-22 21:44:23,160 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:23,233 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:23,307 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:44:23,818 - INFO - Starting processing for paper: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:44:23,819 - INFO - Fetching URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:44:23,818 - INFO - ====== WebDriver manager ======
+2024-10-22 21:44:23,933 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:24,006 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:44:24,077 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:44:24,737 - INFO - Starting processing for paper: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:44:24,737 - INFO - Fetching URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:44:25,408 - INFO - Successfully fetched URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:44:25,423 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_metadata.md
+2024-10-22 21:44:25,423 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-22 21:44:25,423 - INFO - Downloading PDF: https://openreview.net/pdf?id=KS8mIvetg2
+2024-10-22 21:44:26,175 - INFO - Successfully fetched URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:44:26,188 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_metadata.md
+2024-10-22 21:44:26,189 - INFO - Saved metadata to 7Ttk3RzDeu_metadata.md
+2024-10-22 21:44:26,189 - INFO - Downloading PDF: https://openreview.net/pdf?id=7Ttk3RzDeu
+2024-10-22 21:44:26,216 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:44:26,216 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:44:26,664 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:44:26,665 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_sections.md
+2024-10-22 21:44:26,681 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_responses.md
+2024-10-22 21:44:26,681 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:44:26,681 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-22 21:44:26,681 - INFO - Completed processing for paper ID: KS8mIvetg2
+2024-10-22 21:44:26,681 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:44:26,938 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:44:26,971 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_metadata.md
+2024-10-22 21:44:26,978 - INFO - Saved metadata to ANvmVS2Yr0_metadata.md
+2024-10-22 21:44:26,983 - INFO - Downloading PDF: https://openreview.net/pdf?id=ANvmVS2Yr0
+2024-10-22 21:44:27,393 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:44:27,394 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_sections.md
+2024-10-22 21:44:27,413 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_responses.md
+2024-10-22 21:44:27,413 - INFO - Saved reviewer responses to 7Ttk3RzDeu_responses.md
+2024-10-22 21:44:27,413 - INFO - Completed processing for paper ID: 7Ttk3RzDeu
+2024-10-22 21:44:27,851 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:44:27,884 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_metadata.md
+2024-10-22 21:44:27,884 - INFO - Saved metadata to ekeyCgeRfC_metadata.md
+2024-10-22 21:44:27,884 - INFO - Downloading PDF: https://openreview.net/pdf?id=ekeyCgeRfC
+2024-10-22 21:44:28,325 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:44:28,325 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:44:28,755 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:44:28,768 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:44:34,088 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:44:34,098 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_sections.md
+2024-10-22 21:44:34,208 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_responses.md
+2024-10-22 21:44:34,208 - INFO - Saved reviewer responses to ekeyCgeRfC_responses.md
+2024-10-22 21:44:34,209 - INFO - Completed processing for paper ID: ekeyCgeRfC
+2024-10-22 21:44:36,876 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:44:36,877 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_sections.md
+2024-10-22 21:44:36,890 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_responses.md
+2024-10-22 21:44:36,890 - INFO - Saved reviewer responses to ANvmVS2Yr0_responses.md
+2024-10-22 21:44:36,890 - INFO - Completed processing for paper ID: ANvmVS2Yr0
+2024-10-22 21:46:11,533 - INFO - ====== WebDriver manager ======
+2024-10-22 21:46:11,697 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:11,779 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:11,857 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:46:13,064 - INFO - Starting processing for paper: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:46:13,064 - INFO - ====== WebDriver manager ======
+2024-10-22 21:46:13,065 - INFO - Fetching URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:46:13,185 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:13,253 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:13,324 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:46:13,975 - INFO - Starting processing for paper: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:46:13,976 - INFO - ====== WebDriver manager ======
+2024-10-22 21:46:13,976 - INFO - Fetching URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:46:14,094 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:14,184 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:14,255 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:46:14,905 - INFO - Starting processing for paper: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:46:14,905 - INFO - ====== WebDriver manager ======
+2024-10-22 21:46:14,907 - INFO - Fetching URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:46:15,086 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:15,166 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-22 21:46:15,279 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-22 21:46:16,039 - INFO - Starting processing for paper: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:46:16,041 - INFO - Fetching URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:46:16,157 - INFO - Successfully fetched URL: https://openreview.net/forum?id=KS8mIvetg2
+2024-10-22 21:46:16,172 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_metadata.md
+2024-10-22 21:46:16,172 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-22 21:46:16,172 - INFO - Downloading PDF: https://openreview.net/pdf?id=KS8mIvetg2
+2024-10-22 21:46:17,072 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:46:17,073 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:46:17,097 - INFO - Successfully fetched URL: https://openreview.net/forum?id=7Ttk3RzDeu
+2024-10-22 21:46:17,178 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_metadata.md
+2024-10-22 21:46:17,181 - INFO - Saved metadata to 7Ttk3RzDeu_metadata.md
+2024-10-22 21:46:17,182 - INFO - Downloading PDF: https://openreview.net/pdf?id=7Ttk3RzDeu
+2024-10-22 21:46:17,748 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:46:17,759 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:46:18,038 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ANvmVS2Yr0
+2024-10-22 21:46:18,140 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_metadata.md
+2024-10-22 21:46:18,140 - INFO - Saved metadata to ANvmVS2Yr0_metadata.md
+2024-10-22 21:46:18,140 - INFO - Downloading PDF: https://openreview.net/pdf?id=ANvmVS2Yr0
+2024-10-22 21:46:18,338 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/KS8mIvetg2.pdf
+2024-10-22 21:46:18,340 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_sections.md
+2024-10-22 21:46:18,386 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/KS8mIvetg2_responses.md
+2024-10-22 21:46:18,392 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-22 21:46:18,399 - INFO - Completed processing for paper ID: KS8mIvetg2
+2024-10-22 21:46:19,128 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/7Ttk3RzDeu.pdf
+2024-10-22 21:46:19,128 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_sections.md
+2024-10-22 21:46:19,151 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/7Ttk3RzDeu_responses.md
+2024-10-22 21:46:19,151 - INFO - Saved reviewer responses to 7Ttk3RzDeu_responses.md
+2024-10-22 21:46:19,151 - INFO - Completed processing for paper ID: 7Ttk3RzDeu
+2024-10-22 21:46:19,169 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:46:19,170 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:46:19,694 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ekeyCgeRfC
+2024-10-22 21:46:19,793 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_metadata.md
+2024-10-22 21:46:19,799 - INFO - Saved metadata to ekeyCgeRfC_metadata.md
+2024-10-22 21:46:19,805 - INFO - Downloading PDF: https://openreview.net/pdf?id=ekeyCgeRfC
+2024-10-22 21:46:21,228 - INFO - Downloaded PDF to ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:46:21,240 - INFO - Extracting sections from PDF: ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:46:25,617 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ekeyCgeRfC.pdf
+2024-10-22 21:46:25,618 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_sections.md
+2024-10-22 21:46:25,726 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ekeyCgeRfC_responses.md
+2024-10-22 21:46:25,726 - INFO - Saved reviewer responses to ekeyCgeRfC_responses.md
+2024-10-22 21:46:25,727 - INFO - Completed processing for paper ID: ekeyCgeRfC
+2024-10-22 21:46:27,790 - INFO - Extracted Abstract and Introduction from ICLR_Papers_Scrape/PDFs/ANvmVS2Yr0.pdf
+2024-10-22 21:46:27,790 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_sections.md
+2024-10-22 21:46:27,803 - INFO - Saved Markdown to ICLR_Papers_Scrape/Markdown/ANvmVS2Yr0_responses.md
+2024-10-22 21:46:27,804 - INFO - Saved reviewer responses to ANvmVS2Yr0_responses.md
+2024-10-22 21:46:27,804 - INFO - Completed processing for paper ID: ANvmVS2Yr0
