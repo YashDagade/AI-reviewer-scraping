@@ -1,0 +1,837 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>AMAGO: Scalable In-Context Reinforcement Learning for Adaptive Agents | OpenReview</title><meta name="description" content="We introduce AMAGO, an in-context Reinforcement Learning (RL) agent that uses sequence models to tackle the challenges of generalization, long-term memory, and meta-learning. Recent works have shown that off-policy learning can make in-context RL with recurrent policies viable. Nonetheless, these approaches require extensive tuning and limit scalability by creating key bottlenecks in agents' memory capacity, planning horizon, and model size. AMAGO revisits and redesigns the off-policy in-context approach to successfully train long-sequence Transformers over entire rollouts in parallel with end-to-end RL. Our agent is scalable and applicable to a wide range of problems, and we demonstrate its strong performance empirically in meta-RL and long-term memory domains. AMAGO's focus on sparse rewards and off-policy data also allows in-context learning to extend to goal-conditioned problems with challenging exploration. When combined with a multi-goal hindsight relabeling scheme, AMAGO can solve a previously difficult category of open-world domains, where agents complete many possible instructions in procedurally generated environments."><meta property="og:title" content="AMAGO: Scalable In-Context Reinforcement Learning for Adaptive Agents"><meta property="og:description" content="We introduce AMAGO, an in-context Reinforcement Learning (RL) agent that uses sequence models to tackle the challenges of generalization, long-term memory, and meta-learning. Recent works have..."><meta property="og:type" content="article"><meta name="citation_title" content="AMAGO: Scalable In-Context Reinforcement Learning for Adaptive Agents"><meta name="citation_author" content="Jake Grigsby"><meta name="citation_author" content="Linxi Fan"><meta name="citation_author" content="Yuke Zhu"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=M6XWoEdmwf"><meta name="citation_abstract" content="We introduce AMAGO, an in-context Reinforcement Learning (RL) agent that uses sequence models to tackle the challenges of generalization, long-term memory, and meta-learning. Recent works have shown that off-policy learning can make in-context RL with recurrent policies viable. Nonetheless, these approaches require extensive tuning and limit scalability by creating key bottlenecks in agents' memory capacity, planning horizon, and model size. AMAGO revisits and redesigns the off-policy in-context approach to successfully train long-sequence Transformers over entire rollouts in parallel with end-to-end RL. Our agent is scalable and applicable to a wide range of problems, and we demonstrate its strong performance empirically in meta-RL and long-term memory domains. AMAGO's focus on sparse rewards and off-policy data also allows in-context learning to extend to goal-conditioned problems with challenging exploration. When combined with a multi-goal hindsight relabeling scheme, AMAGO can solve a previously difficult category of open-world domains, where agents complete many possible instructions in procedurally generated environments."><meta name="citation_conference_title" content="The Twelfth International Conference on Learning Representations"><meta name="next-head-count" content="23"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D6FE.TEX-I::before {
+  padding: 0.441em 0.543em 0.216em 0;
+  content: "\3B3";
+}
+
+mjx-c.mjx-c2265::before {
+  padding: 0.636em 0.778em 0.138em 0;
+  content: "\2265";
+}
+
+mjx-c.mjx-c2E::before {
+  padding: 0.12em 0.278em 0 0;
+  content: ".";
+}
+
+mjx-c.mjx-c39::before {
+  padding: 0.666em 0.5em 0.022em 0;
+  content: "9";
+}
+
+mjx-c.mjx-c1D716.TEX-I::before {
+  padding: 0.431em 0.406em 0.011em 0;
+  content: "\3F5";
+}
+
+mjx-c.mjx-c1D444.TEX-I::before {
+  padding: 0.704em 0.791em 0.194em 0;
+  content: "Q";
+}
+
+mjx-c.mjx-c2212::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "\2212";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c1D460.TEX-I::before {
+  padding: 0.442em 0.469em 0.01em 0;
+  content: "s";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D70B.TEX-I::before {
+  padding: 0.431em 0.57em 0.011em 0;
+  content: "\3C0";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DM6XWoEdmwf&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display:none"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">AMAGO: Scalable In-Context Reinforcement Learning for Adaptive Agents</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=M6XWoEdmwf" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Jake_Grigsby1" data-original-title="~Jake_Grigsby1">Jake Grigsby</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Linxi_Fan2" data-original-title="~Linxi_Fan2">Linxi Fan</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Yuke_Zhu1" data-original-title="~Yuke_Zhu1">Yuke Zhu</a> <!-- --> </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>Published: 16 Jan 2024, Last Modified: 05 Mar 2024</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>ICLR 2024 spotlight</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=M6XWoEdmwf">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40inproceedings%7B%0Agrigsby2024amago%2C%0Atitle%3D%7B%7BAMAGO%7D%3A%20Scalable%20In-Context%20Reinforcement%20Learning%20for%20Adaptive%20Agents%7D%2C%0Aauthor%3D%7BJake%20Grigsby%20and%20Linxi%20Fan%20and%20Yuke%20Zhu%7D%2C%0Abooktitle%3D%7BThe%20Twelfth%20International%20Conference%20on%20Learning%20Representations%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DM6XWoEdmwf%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics<!-- -->:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords<!-- -->:</strong> <span class="note-content-value">Meta-RL, Generalization, Long-Term Memory, Transformers</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines<!-- -->:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract<!-- -->:</strong> <div class="note-content-value markdown-rendered"><p>We introduce AMAGO, an in-context Reinforcement Learning (RL) agent that uses sequence models to tackle the challenges of generalization, long-term memory, and meta-learning. Recent works have shown that off-policy learning can make in-context RL with recurrent policies viable. Nonetheless, these approaches require extensive tuning and limit scalability by creating key bottlenecks in agents' memory capacity, planning horizon, and model size. AMAGO revisits and redesigns the off-policy in-context approach to successfully train long-sequence Transformers over entire rollouts in parallel with end-to-end RL. Our agent is scalable and applicable to a wide range of problems, and we demonstrate its strong performance empirically in meta-RL and long-term memory domains. AMAGO's focus on sparse rewards and off-policy data also allows in-context learning to extend to goal-conditioned problems with challenging exploration. When combined with a multi-goal hindsight relabeling scheme, AMAGO can solve a previously difficult category of open-world domains, where agents complete many possible instructions in procedurally generated environments.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url<!-- -->:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">Supplementary Material<!-- -->:</strong> <span class="note-content-value"><a href="/attachment?id=M6XWoEdmwf&amp;name=supplementary_material" class="attachment-download-link" title="Download Supplementary Material" target="_blank"><span class="glyphicon glyphicon-download-alt " aria-hidden="true"></span> <!-- -->pdf</a></span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section<!-- -->:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area<!-- -->:</strong> <span class="note-content-value">reinforcement learning</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number<!-- -->:</strong> <span class="note-content-value">8600</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">19 / 19 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="XPYkwuFPoA"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=XPYkwuFPoA"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:53 (modified: 16 Feb 2024, 15:42)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=XPYkwuFPoA">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Accept (spotlight)</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="jBYDonSlCd"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission8600 by Area Chair AttJ</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=jBYDonSlCd"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair AttJ</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>07 Dec 2023, 06:22 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=jBYDonSlCd">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>This paper introduces AMAGO which addresses challenges associated with generalization, long-term memory, and meta-learning by employing sequence models. There are two main contributions. Firstly, it modifies the off-policy in-context approach by incorporating sequence models like Transformers instead of recurrent policies. This modification helps overcome constraints related to memory capacity, model size, and long horizon. Secondly, AMAGO extends in-context learning to goal-conditioned problems, enabling it to handle more complex exploration tasks. Empirical evaluations on several benchmarks show its superior performance over baselines.</p>
+<p>Overall, this is a solid paper and makes substantial contributions aforementioned to context-based meta-RL. All the questions and issues were resolved by the authors' responses. The reviewers reached a consensus for acceptance.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><p>The problem setting is not novel, as applying transformers to POMDPs or for in-context RL/context-based Meta RL has been extensively studied.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>This paper makes solid contributions though it is empirical.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="rxrpwVGk1q"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Summary of Revisions</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=rxrpwVGk1q"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 17:11 (modified: 20 Nov 2023, 16:49)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=rxrpwVGk1q">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We would like to thank all of the reviewers for their detailed comments and questions. We will respond to each individually below, but here we provide a summary of the changes made to our work. Edits to the pdf have been highlighted in blue. </p>
+<h3>Writing</h3>
+<ul>
+<li><p>We have updated explanations of two of our method’s technical details in Section 4 (paragraphs “Stable Long-Context Transformers in Off-Policy RL” and “Long Horizons and Multi-Gamma Learning”) which we hope make the motivation behind these ideas more clear.</p>
+</li>
+<li><p>We have added an Algorithm box and expanded the discussion of multi-goal hindsight relabeling in Appendix B (as suggested by reviewer t9aE).</p>
+</li>
+<li><p>Minor edits for clarity and space efficiency.</p>
+</li>
+</ul>
+<h3>Experiments</h3>
+<ul>
+<li><p>Our core agent can be used with any seq2seq memory model, although our paper focuses on Transformers and the technical challenges involved in training them. We add an ablation of our agent that directly replaces the Transformer with an RNN, which helps motivate the need for Transformers in this area. This RNN ablation is used in a new figure (Figure 4) that directly evaluates the impact of Transformers in memory-intensive POPGym tasks. It has also been added to two of the meta-RL benchmarks discussed in Figure 5 (Wind, and Dark Key-To-Door in the Appendix).</p>
+</li>
+<li><p>Figure 9 (the maze domain with randomized continuous action spaces) has been moved to the Appendix due to space constraints. Figure 4 (training speed profiling) has been rearranged for formatting reasons and is now Figure 6.</p>
+</li>
+<li><p>Additional Appendix A.3 figure and discussion related to the Transformer architecture as requested by reviewer KbVB.</p>
+</li>
+</ul>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="FaTdPXAvV7"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8600 by Reviewer KbVB</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=FaTdPXAvV7"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer KbVB</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 12:35 (modified: 10 Nov 2023, 12:24)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=FaTdPXAvV7">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper presents AMAGO, which is designed to tackle challenges related to generalization, long-term memory, and meta-learning. It achieves this with the use of sequence models. The paper shows that AMAGO can successfully train long-sequence Transformers, able to perform tasks over entire rollouts, while operating with end-to-end RL.</p>
+<p>The primary contributions are twofold. Firstly, it revises the off-policy in-context approach and deploys sequence models like Transformers to replace the recurrent policies. This change facilitates the tackling of constraints related to memory capacity, model size, and the planning horizon in agents. Secondly, AMAGO extends in-context learning to goal-conditioned problems, making it capable of handling more sophisticated exploration tasks. The authors validate AMAGO's performance through empirical evaluations, demonstrating capabilities in large-scale challenges requiring long-term memory and adaptation.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>By redesigning the off-policy in-context approach and using sequence models, AMAGO overcomes previous bottlenecks in memory capacity, planning horizon, and model size.</li>
+<li>The introduction of a hindsight relabeling scheme broadens the applicability and scalability of this approach to open-world environments.</li>
+<li>The evaluations illustrate capabilities of AMAGO in diverse large-scale, heavy-memory and meta-learning RL challenges.</li>
+<li>The structure and presentation of the paper are clear and well-organized.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The AMAGO architecture's complexity, particularly due to the use of transformers, can be computationally intense. This may limit its efficiency in resource-limited situations or possibly make it less suitable for complicated applications.</li>
+<li>Although AMAGO has made improvements in performance, it still has a success rate of 0 in collecting some key resources (e.g. iron), so AMAGO still faces limitations in exploration challenges.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Considering AMAGO's ability to work with multi-goals, how well does AMAGO prioritize or sequence goals when given multiple objectives? Is there a mechanism to manage potential conflicts between goals?</li>
+<li>Are there any experimental results that can support the claim that AMAGO does not require much tuning?</li>
+<li>The author mentioned replacing ReLU/GeLU with Leaky ReLU, adding LayerNorms, and modifying linear layers. It may be better to explain the necessity and rationality behind each modification through a more thorough ablation study.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="ZnrLs47f8l"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Reply to Reviewer KbVB</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=ZnrLs47f8l"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 18:19 (modified: 20 Nov 2023, 16:50)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=ZnrLs47f8l">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review! We address your questions and concerns below. Please let us know if more clarification is needed.</p>
+<blockquote>
+<p>"…the use of transformers, can be computationally intense. This may limit its efficiency in resource-limited situations…"</p>
+</blockquote>
+<p>Transformers are more expensive than common RL architectures, but this approach to generalization does require some kind of memory, so “expensive” becomes a relative term. We show in Figure 6 (previously Fig. 4)  that Transformers can be an efficient choice vs RNNs in the common RL setting of small model sizes and long sequence lengths.</p>
+<blockquote>
+<p>"Although AMAGO has made improvements in performance, it still has a success rate of 0 in collecting some key resources (e.g. iron), so AMAGO still faces limitations in exploration challenges."</p>
+</blockquote>
+<p>We do make some progress on iron collection in Appendix C.5 (Figure 23 and the paragraph titled "Following Tech-Tree Instructions and Expanded Crafter" on page 30) although this may be the experiment you are already referring to. Our work tries to focus more on the memory/generalization problem of RL with sequence models than pure exploration. We agree that more improvements in exploration are needed. However, successful adaptive agents create new ways to drive exploration by transferring knowledge between similar tasks.  The Crafter experiments also highlight helpful advantages of hindsight relabeling.</p>
+<blockquote>
+<p>"how well does AMAGO prioritize or sequence goals when given multiple objectives?"</p>
+</blockquote>
+<p>When we use multi-step goals, the goal becomes an instruction or a sequence of steps, and agents receive rewards for completing goals in the assigned order. There can be an element of planning involved here where an agent could take proactive measures to prepare for later goals before it completes earlier ones. We explore this in Appendix C.5 “Planning and Long-Horizon Tasks” and Appendix C.4.2. The main benefits of multi-step goals are that 1) the user can break down a complex task into multiple steps (like how "make stone pickaxe, collect iron" can be successful when "collect iron" alone is not ), and that 2) the experience generated by attempting multi-step goals drives exploration of new goals with intermediate steps. </p>
+<blockquote>
+<p>"Are there any experimental results that can support the claim that AMAGO does not require much tuning?"</p>
+</blockquote>
+<p>The main result here is the number of different benchmarks we apply AMAGO to in this paper with few changes in hyperparameters. We note that we do not mean AMAGO cannot benefit from tuning; hyperparameters like the learning schedule/update-to-data ratio are still important, and the use of Transformers on long sequences opens up interesting questions (Appendix D). Instead, we mean that the details of AMAGO are designed to make tuning less critical by providing a clear direction where there are many safe choices. For example, we demonstrate that AMAGO can safely learn from extra long sequences (by using all available information in environments where prior work does not) and high discount factors (by always using <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2265"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c39"></mjx-c><mjx-c class="mjx-c39"></mjx-c><mjx-c class="mjx-c39"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi><mo>≥</mo><mn>.999</mn></math></mjx-assistive-mml></mjx-container>). We avoid unintuitive hyperparameters like entropy constraints and randomize over details like the <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D716 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></mjx-assistive-mml></mjx-container>-greedy schedule.</p>
+<blockquote>
+<p>"The author mentioned replacing ReLU/GeLU with Leaky ReLU, adding LayerNorms, and modifying linear layers. It may be better to explain the necessity and rationality behind each modification through a more thorough ablation study."</p>
+</blockquote>
+<p>Our revision updates the description of these details in the method section (Page 5). These ideas are included in the POPGym ablation, where they prevent sudden collapse in performance. Our architecture decisions are motivated by observing activations in the Transformer layer before and after collapse and justified by noting that many environments require specific memory patterns that encourage instability. Following your suggestion, we have recreated an example of our early experiments that led to these decisions in a new Appendix Figure 15.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="OnCsmI47C5"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Reply to Reviewer KbVB</h5></div><div class="heading"><h4><span>Official Comment by Reviewer KbVB</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=OnCsmI47C5"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer KbVB</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 10:06</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for the author's response. Most of my concerns have been addressed, for now I will maintain my current score and continue to pay attention to other reviews and discussions.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="RPxOpZzMXb"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8600 by Reviewer t9aE</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=RPxOpZzMXb"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer t9aE</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>29 Oct 2023, 20:51 (modified: 22 Nov 2023, 23:01)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=RPxOpZzMXb">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The authors present AMAGO, a method that successfully trains long-range Transformers over entire rollouts using off-policy RL. The authors also combine AMAGO with a hindsight relabeling scheme. The authors demonstrate strong performance on a variety of meta-RL and long-horizon tasks.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>AMAGO improves over baselines on long-horizon tasks while still performing well on simpler tasks.</li>
+<li>The authors perform a series of ablations in the Appendix to isolate the effect of each design choice.</li>
+<li>The authors test AMAGO on a very thorough set of experiments and show good results.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>It is a bit hard to keep track of what exactly the different components of the proposed method are. I think it would greatly improve the paper's clarity if the authors could include a table outlining exactly what the contribution is (e.g. Transformer architecture change, multi-gamma update, relabeling, etc.). Generally, I think the main improvement the authors can make on this paper is clarity.</li>
+<li>Similarly, an algorithm box for the relabeling scheme would be nice for clarity. I know the authors say they defer details of the relabeling to the open source code release, but I think it would be good to have it in the appendix at least.</li>
+<li>The proposed method seems quite complex. Generally, simpler methods should be preferred. However, this is mitigated by the good performance and the ablation studies.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The authors write that "AMAGO can select the action corresponding to any <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container> at test time". How exactly is this done?</li>
+<li>Have the authors tried experimenting with a smaller set of multi-gamma values for the multi-gamma update rather than using all the values in Table 4? I'm curious if/how much performance would suffer.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="zqK5CPBzTB"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Reply to Reviewer t9aE</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=zqK5CPBzTB"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 17:22</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review! We address your questions and concerns below and would be happy to continue the discussion. </p>
+<blockquote>
+<p>"It is a bit hard to keep track of what exactly the different components of the proposed method are…. Generally, I think the main improvement the authors can make on this paper is clarity."</p>
+</blockquote>
+<p>We have updated the Transformer architecture change and multi-gamma update sections of the Method section, which we hope will improve their clarity. </p>
+<blockquote>
+<p>"Similarly, an algorithm box for the relabeling scheme would be nice for clarity."</p>
+</blockquote>
+<p>We have taken your suggestion and added an algorithm box in Appendix B, along with an expanded discussion of the method. The relabeling scheme extends Hindsight Experience Replay (HER)  to multiple steps where we select sub-sequences of alternative goals. The main details are 1) how hindsight goals are selected and 2) how they are merged into the original sequence of real goals. The multi-step version gives more room for customization than HER; for example, it creates a spectrum between relabeling every trajectory to be a complete success and not relabeling at all. </p>
+<blockquote>
+<p>"The authors write that "AMAGO can select the action corresponding to any <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container>  at test time". How exactly is this done?"</p>
+</blockquote>
+<p>During training, our actor and critics networks are outputting values for an array of different <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container> values in parallel. At test-time, we can select the index of the actor’s outputs that corresponds to any value of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container>. This may be simpler than it sounds because computing RL losses over long causal sequences involves lots of parallel computation (over multiple timesteps, multiple critics, etc.), and the multi-gamma method adds one more axis to this sequence format.</p>
+<blockquote>
+<p>"Have the authors tried experimenting with a smaller set of multi-gamma values for the multi-gamma update rather than using all the values in Table 4?"</p>
+</blockquote>
+<p>The multi-gamma technique is efficient, so once we identify the optimization of a single <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>γ</mi></math></mjx-assistive-mml></mjx-container> value as an issue, it is convenient to add many more values. The most important requirement for AMAGO’s technical details is that learning remains stable even when we default to somewhat extreme settings for its hyperparameters – this makes hyperparameter selection less risky and is what enables us to evaluate on a wide range of domains. It is quite possible that the Table 4 settings are well into the diminishing rate of returns of this technique for some environments. We tried running this ablation for this response, but in the interest of time, we picked an environment that was too simple to create a clear demonstration. We will continue these experiments and update the paper with more information.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="5eAfft31hz"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Reply to Reviewer t9aE</h5></div><div class="heading"><h4><span>Official Comment by Reviewer t9aE</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=5eAfft31hz"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer t9aE</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 23:03</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for the clarifications and the changes! I find that clarity, which was my main concern, has been improved, so I am raising my score.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="2AJDsHCqH9"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8600 by Reviewer LVWP</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=2AJDsHCqH9"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer LVWP</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>27 Oct 2023, 08:46 (modified: 10 Nov 2023, 12:24)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=2AJDsHCqH9">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The authors apply a transformer to in-context reinforcement learning, effectively producing a smaller-scale and open-source variant of Adaptive Agents.</p>
+<p>Observations, actions, rewards, episodic resets, goals, and the timestep are encoded into a fixed-size token for a transformer. The authors feed a long sequence consisting of multiple episodes to the transformer to produce a latent representation. Actor and critic heads process this representation into actions and values respectively.</p>
+<p>The authors propose a series of tricks to help stabilize transformers in RL:</p>
+<ul>
+<li>Multiple discount factors</li>
+<li>Shared transformer for actor/critic</li>
+<li>Hindsight relabeling</li>
+</ul>
+<p>I believe this is a generally useful paper, even if the novelty and theory is a bit lacking.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The paper is well written and easy to follow</li>
+<li>The authors set a new record on a standard benchmark, and in general provide a large number of experiments across many environments</li>
+<li>There are a large number of ablation studies</li>
+<li>This is effectively a more useful version of the AdA paper that does not rely on closed-source benchmarks and does not require policy distilation or corporation-scale resources, making it much more useful to the academic community</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The high-level concept is not novel -- applying transformers to POMDPs or for in-context RL has been heavily studied</li>
+<li>This method still requires server-grade GPUs to run, limiting this approach to well-off labs or industry</li>
+<li>For the POPGym benchmark, they are comparing their off-policy method to an on-policy method given the same number of sampled timesteps. This is not a fair comparison, but they do label the baselines as on-policy.</li>
+<li>They do not list any shortcomings</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>I would like the authors to list any shortcomings of their approach, especially because this paper is mostly empirical</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="FQwx3RF3jD"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Reply to Reviewer LVWP</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=FQwx3RF3jD"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 17:34 (modified: 17 Nov 2023, 23:35)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=FQwx3RF3jD">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review! We address your questions and concerns below. </p>
+<blockquote>
+<p>"The high-level concept is not novel -- applying transformers to POMDPs or for in-context RL has been heavily studied"</p>
+</blockquote>
+<p>Yes, while this concept is not new, our work is much more about the details necessary to get it to work over long sequences with Transformers in an off-policy setting. </p>
+<blockquote>
+<p>"This method still requires server-grade GPUs to run, limiting this approach to well-off labs or industry"</p>
+</blockquote>
+<p>AMAGO is more GPU-dependent than many single-task baselines (for example), but we will note that every experiment is performed on a single GPU. We inherit the same GPU memory bottleneck as most other work on Transformers, but there are many hyperparameter choices that can help address this problem (batch size, context length, model size, …). </p>
+<blockquote>
+<p>"For the POPGym benchmark, they are comparing their off-policy method to an on-policy method given the same number of sampled timesteps. This is not a fair comparison, but they do label the baselines as on-policy."</p>
+</blockquote>
+<p>We agree that off-policy methods have an advantage in any sample-limited benchmark, but this can be considered a strength of the method. The sample limit in POPGym is a bit arbitrary as it was established by on-policy baselines that did not solve many of the tasks. The <a href="https://openreview.net/pdf?id=chDrutUTs0K">POPGym paper</a> Figures 10-14 show that learning curves on many environments have not improved or converged long before the 15M sample limit. One positive sign of our work is that performance is still increasing on many of the harder environments (Appendix C.1.). This creates a convenient opportunity for research because now that we have a way to reach strong performance at convergence we can start experimenting with how to reach those levels faster.</p>
+<blockquote>
+<p>"I would like the authors to list any shortcomings of their approach"</p>
+</blockquote>
+<p>One shortcoming of the current method is that the goal relabeling scheme only applies to sparse/binary rewards for goal completion. However, we believe this could be expanded to arbitrary reward functions. Many of the shortcomings of (value-based) RL still apply. For example, long-term credit assignment can still be challenging when the discount factor is not the only underlying problem. We are also beginning to saturate the memory lengths of standard benchmarks, as the sequence lengths used in our experiments are often longer than successful solutions to the same/similar problems in prior work. A key motivation of AMAGO was to create an open-source in-context learner that can help create new benchmarks in this area.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="gDQIrJd33o"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Reply to Reviewer LVWP</h5></div><div class="heading"><h4><span>Official Comment by Reviewer LVWP</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=gDQIrJd33o"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer LVWP</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 05:17</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for the response.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="CYrjn3vCMa"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8600 by Reviewer WXv6</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=CYrjn3vCMa"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer WXv6</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>14 Oct 2023, 11:16 (modified: 21 Nov 2023, 12:46)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=CYrjn3vCMa">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper proposes an RL agent for POMDPs. The proposed agent uses a transformer architecture to handle long context lengths. The agent is trained using a new off-policy RL update, which combines elements of previously proposed actor-critic updates. The update is designed to require relatively little hyperparameter tuning and reduce the amount of computation in the sequence model compared to relevant baselines. The proposed agent is tested on meta-RL, goal-conditioned RL, and other POMDP benchmarks. It achieves strong performance on the recently proposed Crafter environment.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><h2>Contribution</h2>
+<ul>
+<li>Training transformers for POMDPs is a popular subject in research. Good results in this area have the potential for significant impact on RL research and hopefully beyond, as POMDPs are a very general problem class. Based on the strong results in the Crafter environment, this paper seems to push the state-of-the-art on that front, at least in the realm of open source research, for which it is to be commended.</li>
+<li>The paper includes a suite of experiments in a variety of environments, which probe the different challenges arising from in partially observable settings. Benchmarking the algorithm on a diverse set of environments is good and helps establish the robustness of the proposed method.</li>
+</ul>
+<h2>Presentation</h2>
+<ul>
+<li>The introduction, background, and related work sections are well written.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><h2>Presentation</h2>
+<ul>
+<li>This paper is perhaps trying to do too much in the limited space to the detriment of the clarity of its most important contributions. Given that it is in the method name, goal-conditioned RL seems to be an important part of the contribution. However, this paper would be much easier to understand if it focused on the meta-RL part, where it already has strong results, and upon which its success in goal-conditioned RL builds.</li>
+<li>The proposed agent uses a new combination of existing actor critic losses to construct its update function, yet the main paper does not contain almost any detail about how the objective is motivated or what the objective even is. Contrast this, for example, to the DreamerV3 paper (Mastering Diverse Domains through World Models, Hafner et al. 2023), which tackles a similar problem setting, where the majority of the paper is describing the method and motivating the design choices. Even after reading the relevant parts of the appendix, it is not clear to me how exactly is the critic trained.</li>
+<li>The architecture design is described as being based on "clear pattern of network activations across hundreds of trials" but this pattern is not described anywhere.</li>
+</ul>
+<h2>Soundness</h2>
+<ul>
+<li>The proposed method is quite complicated including both architecture and objective function innovations. Some of the ideas are not super well motivated or ablated.<ul>
+<li>Popart is proposed to help keep the different losses on the same scale across different environments, but I didn't find any attempt to validate that it is indeed doing so or helping in any other way.</li>
+<li>A complicated exploration schedule is proposed and used, but at the same time the paper says it is not essential.</li>
+</ul>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The paper explicitly claims state-of-the-art results on PoPGym but refrains from doing so for Crafter, where it also seems to be beating the previous state-of-the-art (Dreamerv3). Why?</li>
+<li>Have I understood it correctly that the "dense" Crafter is the vanilla Crafter setting?</li>
+<li>Why not include results for Dreamerv3 for Crafter?</li>
+<li>What does "relegate to an unstable baseline" in the introduction mean?</li>
+<li>What is the actor objective used by the method?</li>
+<li>What is the critic objective used by the method?</li>
+<li>What is "the clear pattern of network activations across hundreds of trials"?</li>
+<li>This is very subjective so I'm not listing this as a weakness, but I find the "in-context learning" label to make it less clear what the paper is about. On an abstract level, the method is a variant of well-known black-box meta-RL methods like RL2. Black-box meta-RL methods have variously been grouped under other names like context-based meta-RL, memory-based meta-RL, zero-shot meta-RL, etc. Given that this is a long ongoing research direction in the RL community, with an already confusing diversity of labels, it's not clear to me that emphasizing a new label makes this easier to understand. Granted that for non-RL audiences "in-context learning" may be more intuitive than "black-box meta-RL". ADA uses the term similarly, but when they get to the technical details, they switch to talking about black-box meta-RL.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Details Of Ethics Concerns:</strong> <div class="note-content-value markdown-rendered"><p>No concerns</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="sXnLjRug4M"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Reply to Reviewer WXv6 (Part 1)</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=sXnLjRug4M"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 19:20</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for your review, especially of the Crafter appendix section. Many of your questions focus on technical details that require some explanation. We will try to keep this reply brief but it will need to be split into multiple parts.</p>
+<blockquote>
+<p>"goal-conditioned RL seems to be an important part of the contribution. However, this paper would be much easier to understand if it focused on the meta-RL part"</p>
+</blockquote>
+<p>With this suggestion in mind our revision has prioritized the first experiment section (meta-RL and long-term memory) when dealing with space constraints. We have moved one of the goal-conditioned section’s figures to the Appendix. </p>
+<blockquote>
+<p>"the main paper does not contain almost any detail about how the objective is motivated or what the objective even is. Contrast this, for example, to the DreamerV3 paper …, where the majority of the paper is describing the method … "</p>
+</blockquote>
+<p>We have revised the Method section to help clarify the motivation of our learning update. More minor RL engineering details that are not discussed in the main text or Appendix A are much easier explained in code/documentation, and we assure you that our agent is fully open-source. To be fair, DreamerV3 is building upon a series of implementation-focused papers and it is quite the outlier in terms of how much low-level detail is explained in the text.</p>
+<blockquote>
+<p>"The architecture design is described as being based on "clear pattern of network activations across hundreds of trials" but this pattern is not described anywhere."</p>
+</blockquote>
+<p>Yes, this was too vague of an explanation, and it has now been updated in the main text and expanded in the Appendix alongside a new figure (Fig. 14).</p>
+<blockquote>
+<p>"Popart is proposed to help keep the different losses on the same scale across different environments, but I didn't find any attempt to validate that it is indeed doing so or helping in any other way."</p>
+</blockquote>
+<p>Appendix A.2 Equation 1 shows the weighted combination of three terms used to create AMAGO's shared loss. The actor and critic terms scale with the learned <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Q</mi></math></mjx-assistive-mml></mjx-container> value, but the filtered BC term does not. This means that the relative weight of the three terms is based on the scale of rewards in any given environment and would require constant tuning. Popart creates a simple solution by normalizing <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Q</mi></math></mjx-assistive-mml></mjx-container> during loss computation. The loss scales then converge to predictable values and we validate this by using the exact same weights in every experiment. If you think it would be helpful we can demonstrate this by directly scaling rewards in the same environment (this is how the idea was first tested). Popart saves time, compute, and frustration when evaluating many environments but does not meaningfully change the method if we only care about a specific environment. We are <em>not</em> using Popart to independently normalize the returns of multiple tasks simultaneously (like how it is used in Atari) because the size of our task distribution is assumed to be unknown and large.</p>
+<blockquote>
+<p>"A complicated exploration schedule is proposed and used, but at the same time the paper says it is not essential."</p>
+</blockquote>
+<p>The correct amount of exploration noise does not usually depend on the current timestep. However, in meta-RL, each rollout creates its own exploration-exploitation tradeoff as we try to identify the current environment. We feel the annealed schedule is a stronger default here, especially because it can be configured to be the same as regular <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D716 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></mjx-assistive-mml></mjx-container>-greedy if necessary. However, tuning this schedule on each environment goes against our goal of creating a baseline that is easy to use. We did not prioritize this and leave it as an Appendix detail. We pick a conservative default schedule randomized over parallel actors so that performance in tasks with easy exploration can be mostly unaffected. This schedule would likely be more important if our experiments were more concerned with sample efficiency than stability and final performance.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="hMqMcljX07"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Reply to Reviewer WXv6 (Part 1)</h5></div><div class="heading"><h4><strong>Reply to Reviewer WXv6 (Part 2 - Crafter)</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=hMqMcljX07"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 19:26</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p>"The paper explicitly claims state-of-the-art results on PoPGym but refrains from doing so for Crafter …. Why?"</p>
+</blockquote>
+<p>The difference is that we match the evaluation protocol of existing POPGym baselines as closely as possible but are not doing the same for Crafter. Instead, we are using the Crafter world generation and achievement system to create our own evaluation setting for goal-conditioned agents in an open-world domain. </p>
+<blockquote>
+<p>"Have I understood it correctly that the "dense" Crafter is the vanilla Crafter setting?"</p>
+</blockquote>
+<p>Yes you are right, and the term “dense” in Appendix Table 1 comes from the Crafter rewards having some shaping aside from the binary achievements. However, this is probably a poor word choice on our part, as these rewards are still sparse by most standards. The text uses the term “undirected,” and we have now updated the table to match. The most important difference is that Crafter usually rewards the agent for completing any achievement, while our version rewards completing a specific task that is provided.</p>
+<blockquote>
+<p>"Why not include results for Dreamerv3 for Crafter?"</p>
+</blockquote>
+<p>The Rainbow/DreamerV2 results in Appendix Table 1 for the regular (“undirected”) version of Crafter are mainly included to determine how our other evaluation changes adjust the upper bound of performance before adding the extra challenge of goal-conditioning. This is referenced in the paragraph above the table, but we have made it more clear with a longer caption in the revision. </p>
+<p>We have not been able to find the raw scores for DreamerV3 (the paper lists them on a log scale bar chart). Given what we are trying to accomplish, it might be more useful to only list the Rainbow scores because it is a more comparable learning update to AMAGO.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="KYN381xl34"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Reply to Reviewer WXv6 (Final Part)</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=KYN381xl34"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 19:36 (modified: 17 Nov 2023, 19:57)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=KYN381xl34">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p>"What does "relegate to an unstable baseline" in the introduction mean?"</p>
+</blockquote>
+<p>We mean that the black-box/in-context approach was an early idea but that it became a weak baseline in many of the followup meta-RL papers in the years after RL^2. </p>
+<blockquote>
+<p>"What is the actor objective used by the method?"</p>
+</blockquote>
+<p>It is a mixture of the standard <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="10" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo>−</mo><mi>Q</mi><mo stretchy="false">(</mo><mi>s</mi><mo>,</mo><mi>π</mi><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> taking the min over 2 critics from an ensemble like TD3/REDQ and filtered behavior cloning. The behavior cloning term is motivated by the same idea as multi-gamma training, where we are trying to prevent learning from becoming unstable or uninformative when the Q-surface is flat. Hopefully the method section writing changes have helped clarify this. </p>
+<blockquote>
+<p>"What is the critic objective used by the method?"</p>
+</blockquote>
+<p>It is standard one-step temporal difference error implemented with an ensemble of Q-networks to reduce overestimation like in REDQ. We use REDQ to reduce the risk of picking an update-to-data ratio that is too high, which can happen early in training because we are replaying entire rollouts in every update. It is not uncommon for the agent to perform gradient updates on the entire replay buffer several times between rollouts. There are many open questions here (Appendix D - final paragraph). </p>
+<blockquote>
+<p>"What is "the clear pattern of network activations across hundreds of trials"?"</p>
+</blockquote>
+<p>Hopefully we have addressed this question in Part 1.</p>
+<blockquote>
+<p>"I find the "in-context learning" label to make it less clear what the paper is about. On an abstract level, the method is a variant of well-known black-box meta-RL methods like RL2. Black-box meta-RL methods have variously been grouped under other names like context-based meta-RL, memory-based meta-RL, zero-shot meta-RL, etc. …, it's not clear to me that emphasizing a new label makes this easier to understand. Granted that for non-RL audiences "in-context learning" may be more intuitive than "black-box meta-RL". ADA uses the term similarly, but when they get to the technical details, they switch to talking about black-box meta-RL."</p>
+</blockquote>
+<p>We completely agree that the terminology is confusing and thought a lot about how we should handle this. There are several names for the method and even several names for the environment type and problem statement. Ultimately, a key advantage of this kind of black-box method is that it works for meta-RL <em>and</em> zero-shot generalization <em>and</em> long-term memory while other meta-RL methods may not. This term feels too restrictive for our work because our experiments emphasize that flexibility more than most meta-RL papers. We decided to call the environments CMDPs for a similar reason (that term is more common in generalization than meta-RL). So, if we are not going to use "meta-RL",  it seems reasonable to use "in-context RL" because "in-context learning" has become a common term for Transformers outside of RL as you note. And at least we are not adding to the problem by creating yet another name because AdA uses the same term. However, we do make a point of using a more technical term in the related work section for those with a meta-RL background: "Meta-RL is a crowded field with a complex taxonomy; this paper uses the informal term "in-context RL" to refer to a specific subset of implicit context-based methods that treat meta-learning, zero-shot generalization, and partial observability as a single problem" followed by many meta-RL references.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="4UKVD6b7lG"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Reply to Reviewer WXv6 (Final Part)</h5></div><div class="heading"><h4><strong>Status on Revisions to Appendix A</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=4UKVD6b7lG"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>19 Nov 2023, 18:17</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We have decided it would be best to add more of the technical details discussed in your review and our reply to Appendix A, including a new figure demonstrating the varying scale of AMAGO's loss terms and how PopArt solves this problem. A few experiments are still wrapping up, but since we are nearing the end of the discussion period we would like to give advance notice that we will be updating the revision with these changes tomorrow (Monday 11/20).</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="KP9Xep5jkL"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Status on Revisions to Appendix A</h5></div><div class="heading"><h4><strong>Changes to Appendix A.2</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=KP9Xep5jkL"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>20 Nov 2023, 16:54</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We have rewritten Appendix A.2 (the RL update section) to be significantly more detailed and the pdf has been updated. We hope that this version answers most of your questions about the learning update and related RL engineering details.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="ycRCU75KeK"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Changes to Appendix A.2</h5></div><div class="heading"><h4><span>Official Comment by Reviewer WXv6</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=M6XWoEdmwf&amp;noteId=ycRCU75KeK"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer WXv6</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 12:46</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for the detailed response. The revised appendix is clear and answers most of my questions. The rest were answered in your response. I raise my score.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8600/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> <!-- -->is a long-term project to advance science through improved peer review, with legal nonprofit status through<!-- --> <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the<!-- --> <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © <!-- -->2024<!-- --> OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" style="label:input;color:inherit;background:0;opacity:1;width:100%;grid-area:1 / 2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-activedescendant="" aria-describedby="react-select-feedback-subject-placeholder" value=""></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-f8qwo_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"AMAGO: Scalable In-Context Reinforcement Learning for Adaptive Agents"},"authors":{"value":["Jake Grigsby","Linxi Fan","Yuke Zhu"]},"authorids":{"value":["~Jake_Grigsby1","~Linxi_Fan2","~Yuke_Zhu1"]},"keywords":{"value":["Meta-RL","Generalization","Long-Term Memory","Transformers"]},"abstract":{"value":"We introduce AMAGO, an in-context Reinforcement Learning (RL) agent that uses sequence models to tackle the challenges of generalization, long-term memory, and meta-learning. Recent works have shown that off-policy learning can make in-context RL with recurrent policies viable. Nonetheless, these approaches require extensive tuning and limit scalability by creating key bottlenecks in agents' memory capacity, planning horizon, and model size. AMAGO revisits and redesigns the off-policy in-context approach to successfully train long-sequence Transformers over entire rollouts in parallel with end-to-end RL. Our agent is scalable and applicable to a wide range of problems, and we demonstrate its strong performance empirically in meta-RL and long-term memory domains. AMAGO's focus on sparse rewards and off-policy data also allows in-context learning to extend to goal-conditioned problems with challenging exploration. When combined with a multi-goal hindsight relabeling scheme, AMAGO can solve a previously difficult category of open-world domains, where agents complete many possible instructions in procedurally generated environments."},"primary_area":{"value":"reinforcement learning"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"ICLR 2024 spotlight"},"venueid":{"value":"ICLR.cc/2024/Conference"},"pdf":{"value":"/pdf/6ffd1eb5dc0bd2b144d5d0309763b3ed5e114e8b.pdf"},"supplementary_material":{"value":"/attachment/15bfe09275a056c055f122eb6f60d1aa2ef10da3.pdf"},"_bibtex":{"value":"@inproceedings{\ngrigsby2024amago,\ntitle={{AMAGO}: Scalable In-Context Reinforcement Learning for Adaptive Agents},\nauthor={Jake Grigsby and Linxi Fan and Yuke Zhu},\nbooktitle={The Twelfth International Conference on Learning Representations},\nyear={2024},\nurl={https://openreview.net/forum?id=M6XWoEdmwf}\n}"},"paperhash":{"value":"grigsby|amago_scalable_incontext_reinforcement_learning_for_adaptive_agents"}},"id":"M6XWoEdmwf","forum":"M6XWoEdmwf","signatures":["ICLR.cc/2024/Conference/Submission8600/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission8600/Authors"],"number":8600,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission8600/-/Revision","ICLR.cc/2024/Conference/Submission8600/-/Rebuttal_Revision","ICLR.cc/2024/Conference/-/Edit","ICLR.cc/2024/Conference/Submission8600/-/Camera_Ready_Revision"],"domain":"ICLR.cc/2024/Conference","tcdate":1695517213807,"cdate":1695517213807,"tmdate":1709661549591,"mdate":1709661549591,"pdate":1705411044501,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"supplementary_material","order":8},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"primary_area","order":9,"input":"select","value":"reinforcement learning","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"M6XWoEdmwf"}}},"page":"/forum","query":{"id":"M6XWoEdmwf"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

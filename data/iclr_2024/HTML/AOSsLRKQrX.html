@@ -1,0 +1,932 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>DisFormer: Disentangled Object Representations for Learning Visual Dynamics Via Transformers | OpenReview</title><meta name="description" content="We focus on the task of visual dynamics prediction. Recent work has shown that object-centric representations can greatly help improve the accuracy of learning such dynamics in an unsupervised way. Building on top of this work, we ask the question: would it help to learn disentangled object representations, possibly separating the attributes which contribute to the motion dynamics vs which don’t? Though there is some prior work which aims to achieve this, we argue in this paper either it is limiting in their setting, or does not use the learned representation explicitly for predicting visual dynamics, making them sub-optimal. In response, we propose DisFormer, an approach for learning disentangled object representation and use them for predicting visual dynamics. Our architecture extends the notion of slots Locatello et al. (2020) to taking attention over individual objectrepresentations: each slot learns the representation for a block by attending over different parts of an object, and each block is expressed as a linear combination
+over a small set of learned concepts. We perform an iterative refinement over
+these slots to extract a disentangled representation, which is then fed to a trans-
+former architecture to predict the next set of latent object representations. Since
+our loss is unsupervised, we need to align the output object masks with those ex-
+tracted from the ground truth image, and we design a novel permutation module
+to achieve this alignment by learning a canonical ordering. We perform a series
+of experiments demonstrating that our learned representations help predict future
+dynamics in the standard setting, where we test on the same environment as train-
+ing, and in the setting of transfer, where certain object combinations are never
+seen before. Our method outperforms existing baselines in terms of
+pixel prediction and deciphering the dynamics, especially in the zero-shot transfer
+setting where existing approaches fail miserably. Further analysis reveals that our
+learned representations indeed help with significantly better disentanglement of
+objects compared to existing techniques."><meta property="og:title" content="DisFormer: Disentangled Object Representations for Learning Visual..."><meta property="og:description" content="We focus on the task of visual dynamics prediction. Recent work has shown that object-centric representations can greatly help improve the accuracy of learning such dynamics in an unsupervised way...."><meta property="og:type" content="article"><meta name="citation_title" content="DisFormer: Disentangled Object Representations for Learning Visual Dynamics Via Transformers"><meta name="citation_author" content="Sanket Sanjaykumar Gandhi"><meta name="citation_author" content="Vishal Sharma"><meta name="citation_author" content="Rushil Gupta"><meta name="citation_author" content="Arnab Kumar Mondal"><meta name="citation_author" content="Samanyu Mahajan"><meta name="citation_author" content="Parag Singla"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=AOSsLRKQrX"><meta name="citation_abstract" content="We focus on the task of visual dynamics prediction. Recent work has shown that object-centric representations can greatly help improve the accuracy of learning such dynamics in an unsupervised way. Building on top of this work, we ask the question: would it help to learn disentangled object representations, possibly separating the attributes which contribute to the motion dynamics vs which don’t? Though there is some prior work which aims to achieve this, we argue in this paper either it is limiting in their setting, or does not use the learned representation explicitly for predicting visual dynamics, making them sub-optimal. In response, we propose DisFormer, an approach for learning disentangled object representation and use them for predicting visual dynamics. Our architecture extends the notion of slots Locatello et al. (2020) to taking attention over individual objectrepresentations: each slot learns the representation for a block by attending over different parts of an object, and each block is expressed as a linear combination
+over a small set of learned concepts. We perform an iterative refinement over
+these slots to extract a disentangled representation, which is then fed to a trans-
+former architecture to predict the next set of latent object representations. Since
+our loss is unsupervised, we need to align the output object masks with those ex-
+tracted from the ground truth image, and we design a novel permutation module
+to achieve this alignment by learning a canonical ordering. We perform a series
+of experiments demonstrating that our learned representations help predict future
+dynamics in the standard setting, where we test on the same environment as train-
+ing, and in the setting of transfer, where certain object combinations are never
+seen before. Our method outperforms existing baselines in terms of
+pixel prediction and deciphering the dynamics, especially in the zero-shot transfer
+setting where existing approaches fail miserably. Further analysis reveals that our
+learned representations indeed help with significantly better disentanglement of
+objects compared to existing techniques."><meta name="next-head-count" content="25"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msubsup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-script {
+  display: inline-block;
+  padding-right: .05em;
+  padding-left: .033em;
+}
+
+mjx-script > mjx-spacer {
+  display: block;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mover {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mover:not([limits="false"]) {
+  padding-top: .1em;
+}
+
+mjx-mover:not([limits="false"]) > * {
+  display: block;
+  text-align: left;
+}
+
+mjx-msup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D436.TEX-I::before {
+  padding: 0.705em 0.76em 0.022em 0;
+  content: "C";
+}
+
+mjx-c.mjx-c1D45A.TEX-I::before {
+  padding: 0.442em 0.878em 0.011em 0;
+  content: "m";
+}
+
+mjx-c.mjx-c1D44E.TEX-I::before {
+  padding: 0.441em 0.529em 0.01em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c1D461.TEX-I::before {
+  padding: 0.626em 0.361em 0.011em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c210E.TEX-I::before {
+  padding: 0.694em 0.576em 0.011em 0;
+  content: "h";
+}
+
+mjx-c.mjx-c1D450.TEX-I::before {
+  padding: 0.442em 0.433em 0.011em 0;
+  content: "c";
+}
+
+mjx-c.mjx-c1D459.TEX-I::before {
+  padding: 0.694em 0.298em 0.011em 0;
+  content: "l";
+}
+
+mjx-c.mjx-c1D458.TEX-I::before {
+  padding: 0.694em 0.521em 0.011em 0;
+  content: "k";
+}
+
+mjx-c.mjx-c1D45F.TEX-I::before {
+  padding: 0.442em 0.451em 0.011em 0;
+  content: "r";
+}
+
+mjx-c.mjx-c1D460.TEX-I::before {
+  padding: 0.442em 0.469em 0.01em 0;
+  content: "s";
+}
+
+mjx-c.mjx-c1D456.TEX-I::before {
+  padding: 0.661em 0.345em 0.011em 0;
+  content: "i";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D44F.TEX-I::before {
+  padding: 0.694em 0.429em 0.011em 0;
+  content: "b";
+}
+
+mjx-c.mjx-c1D448.TEX-I::before {
+  padding: 0.683em 0.767em 0.022em 0;
+  content: "U";
+}
+
+mjx-c.mjx-c5E::before {
+  padding: 0.694em 0.5em 0 0;
+  content: "^";
+}
+
+mjx-c.mjx-c1D464.TEX-I::before {
+  padding: 0.443em 0.716em 0.011em 0;
+  content: "w";
+}
+
+mjx-c.mjx-c1D457.TEX-I::before {
+  padding: 0.661em 0.412em 0.204em 0;
+  content: "j";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DAOSsLRKQrX&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display: none;"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">DisFormer: Disentangled Object Representations for Learning Visual Dynamics Via Transformers</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=AOSsLRKQrX" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Sanket_Sanjaykumar_Gandhi1" data-original-title="~Sanket_Sanjaykumar_Gandhi1">Sanket Sanjaykumar Gandhi</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Vishal_Sharma1" data-original-title="~Vishal_Sharma1">Vishal Sharma</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Rushil_Gupta1" data-original-title="~Rushil_Gupta1">Rushil Gupta</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Arnab_Kumar_Mondal2" data-original-title="~Arnab_Kumar_Mondal2">Arnab Kumar Mondal</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?email=mahajansamanyu%40gmail.com" data-original-title="mahajansamanyu@gmail.com">Samanyu Mahajan</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Parag_Singla1" data-original-title="~Parag_Singla1">Parag Singla</a>  </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>24 Sept 2023 (modified: 10 Feb 2024)</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>Submitted to ICLR 2024</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=AOSsLRKQrX">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40misc%7B%0Agandhi2024disformer%2C%0Atitle%3D%7BDisFormer%3A%20Disentangled%20Object%20Representations%20for%20Learning%20Visual%20Dynamics%20Via%20Transformers%7D%2C%0Aauthor%3D%7BSanket%20Sanjaykumar%20Gandhi%20and%20Vishal%20Sharma%20and%20Rushil%20Gupta%20and%20Arnab%20Kumar%20Mondal%20and%20Samanyu%20Mahajan%20and%20Parag%20Singla%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DAOSsLRKQrX%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Primary Area:</strong> <span class="note-content-value">unsupervised, self-supervised, semi-supervised, and supervised representation learning</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords:</strong> <span class="note-content-value">Unsupervised Visual dynamics prediction, object centric representation, disentangled representation</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">TL;DR:</strong> <span class="note-content-value">We propose a novel approach for learning disentangled object representations for the task of learning visual dynamics via transformers.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract:</strong> <div class="note-content-value markdown-rendered"><p>We focus on the task of visual dynamics prediction. Recent work has shown that object-centric representations can greatly help improve the accuracy of learning such dynamics in an unsupervised way. Building on top of this work, we ask the question: would it help to learn disentangled object representations, possibly separating the attributes which contribute to the motion dynamics vs which don’t? Though there is some prior work which aims to achieve this, we argue in this paper either it is limiting in their setting, or does not use the learned representation explicitly for predicting visual dynamics, making them sub-optimal. In response, we propose DisFormer, an approach for learning disentangled object representation and use them for predicting visual dynamics. Our architecture extends the notion of slots Locatello et al. (2020) to taking attention over individual objectrepresentations: each slot learns the representation for a block by attending over different parts of an object, and each block is expressed as a linear combination
+over a small set of learned concepts. We perform an iterative refinement over
+these slots to extract a disentangled representation, which is then fed to a trans-
+former architecture to predict the next set of latent object representations. Since
+our loss is unsupervised, we need to align the output object masks with those ex-
+tracted from the ground truth image, and we design a novel permutation module
+to achieve this alignment by learning a canonical ordering. We perform a series
+of experiments demonstrating that our learned representations help predict future
+dynamics in the standard setting, where we test on the same environment as train-
+ing, and in the setting of transfer, where certain object combinations are never
+seen before. Our method outperforms existing baselines in terms of
+pixel prediction and deciphering the dynamics, especially in the zero-shot transfer
+setting where existing approaches fail miserably. Further analysis reveals that our
+learned representations indeed help with significantly better disentanglement of
+objects compared to existing techniques.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number:</strong> <span class="note-content-value">9419</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">15 / 15 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="UG1fBzbSND"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=UG1fBzbSND"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:55 (modified: 16 Feb 2024, 15:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=UG1fBzbSND">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Reject</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="nppDb2Ct6C"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission9419 by Area Chair 4mpy</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=nppDb2Ct6C"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair 4mpy</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Dec 2023, 13:56 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=nppDb2Ct6C">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>This paper proposes an object-centric architecture for video prediction that disentangles information about motion dynamics from other information. This setting is quite interesting and novel, as pointed out by the reviewers, and the paper demonstrates how the proposed approach is able to improve over baselines. The method itself can be viewed as a novel combination of existing techniques.</p>
+<p>Despite these strengths, there is broad agreement among the reviewers that the current submission is not ready for publication. In particular, several reviewers point out how the manuscript and the proposed method are difficult to understand (i.e. concerns about clarity), and at least two reviewers are concerned that the datasets considered are too simplistic to provide for a meaningful comparison. There are also some concerns that the proposed model is too complex and has not been sufficiently ablated, which leaves it unclear what components contribute most to the performance. Finally, more evidence is needed that disentanglement is indeed the reason for the observed improvement (and evaluating more difficult datasets might help with that). Overall, the author response falls short at addressing the majority of these concerns.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Concerns about clarity / presentation</li>
+<li>Substantial concerns about the experimental evaluation, including ablations, (slightly) more visually complex datasets, and overall limited evidence to  support the proposed working of the method and disentangling being the key to the reported performance.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>N/A</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="Md9p3Kh1UT"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9419 by Reviewer 987R</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=Md9p3Kh1UT"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer 987R</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 20:50 (modified: 24 Nov 2023, 14:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=Md9p3Kh1UT">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper presents a new neural net architecture for decoupling objects from dynamics for the task of video prediction on simple scenes. Using several modifications to existing works, the authors encourage more decoupling of object features from other features like the position and dynamics of the inputs. The authors show improved accuracy on existing simple benchmark datasets over previous networks.</p>
+<p>Minor typos (did not influence review):
+Page 4: and is a hyperparameter of the model.
+Page 9: we swap the positions swapped the blocks corresponding to shape</p>
+<p>EDIT:
+I can't seem to comment, so I'd like to add my comments here to the author's responses
+Thank you for your updated wordings. I think the paper is clearer now, though I still think some images of the learning problems earlier in the paper during the problem definition portion would make it even stronger.</p>
+<ol>
+<li><p>I see what you are saying, but I think of all the problems the only one that convinces me it could generalize to more complex scenes is CLEVR. The other experimental setups are too simple to be called "visual." I'd like to see more evidence on CLEVR and even harder datasets (maybe something with a physics engine and more realistic objects like Ai2THOR).</p>
+</li>
+<li><p>From the appendix: "We found that even though the permutation
+module was trained on same time step object representations, it produces correct permutation matrix
+even for 10 time step apart objects." How can you say it's correct if you don't have ground truth permutations?</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The authors show an improvement on the existing state of the art on several benchmark datasets</li>
+<li>The architecture accounts for several difficulties in training models to be disentangled in new/interesting ways</li>
+<li>The paper is generally well-written</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>Clarity:</p>
+<ul>
+<li>I thought the explanation of the task and the actual problems came too late and were not depicted well enough for what the paper was trying to accomplish. 3 of the 4 datasets used I would call "toy" datasets of simple bouncing balls. The 3D dataset seems more visually driven, but even that uses CLEVR which is known to be visually simple. In the whole paper there is only a single picture depicting the actual task, and the tasks are only described in the experiment section. For a paper with "Visual Dynamics" in the title, I would have expected less toy problems, and more explanation to what the actual problems were. I think this could have been a stronger paper if it had foregone the visual component and worked directly with low level data.</li>
+<li>I found several explanations in the paper to be confusing/lacking detail. One key concept in the paper was that of a "Block". Here is the explanation from the paper: "Recently, (Locatello et al., 2020) in the paper on slot-attention proposed architecture for unsupervised discovery of objects via iterative refinement of what is referred to as a slot. Each slot binds to an object via attention over the entire image in their work. We extend their idea to the case of objects, where each slot now represents a block, which is iteratively refined by taking attention over a latent object representation" - My rephrasing of this is "rather than take attention over the entire image to get a representation, we first extract an object mask, and then take attention over that". I'm not sure that is correct, and even if it is, I don't understand why they need attention if they already have a mask.</li>
+<li>Another instance of this was the Permutation module. I did not understand the motivation behind it considering it is only used at training time. The authors say they learn a permutation to match up objects from one frame to the next, but that they supervise this permutation with ground truth knowledge. Then at test time, this component is removed. If you are already using ground truth information at train time, and at test time you don't use the module, why not just permute the features directly instead of learning a permutation matrix?</li>
+<li>There were a few other small questions I had about some other phrases. "All our object extractors are unsupervised and trained in a self- supervised manner. In our experiments, for 2D environments, we train an expert model similar to (Sharma et al., 2023b) to generate supervised data for Mask R-CNN." This seems to indicate the model is both unsupervised and self supervised, but then also trained with supervised data. That doesn't make any sense to me.</li>
+</ul>
+<p>Experiments</p>
+<ul>
+<li>I thought the experiments in this paper were lacking in showing what the authors claimed. Predicting simple rigid body circle motion and even rigid body 3D synthetic CLEVR motion is not really convincing since it is such a problem removed from the complexities of the real world.</li>
+<li>To convince me that there is a decoupling happening, it is crucial to have an experiment that directly probes this decoupling. The ablation study in 4.4 seems to do that in some way, but I don't understand the experimental setup from the explanations, and again, it is only on a toy setup so I can't say whether it would generalize to more complex scenes. It sounds like somehow the authors took the embeddings from one color setup and swapped them with another color setup to look at the output. I guess it seems trivially obvious that the output should change color, but does that prove that the dynamics module only encodes dynamics or just that masking a part of the image results in color features for that part of the image.</li>
+<li>The DisFormer seems to be another reasonable ablation on paper but not carried out as well as I'd liked. Details are sparse, but it sounds like the entirety of MaskRCNN was replaced with an MLP, which doesn't seem like a reasonable substitution "by replacing the object extractor (refer Section 3) by an MLP to create dense object representations".</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>I would like the authors to explain in more detail why the permutation model was necessary if it was only used during training. I would also like the authors to explain the DisFormer and experiment 4.4 better.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="O2fzzI6vjZ"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=O2fzzI6vjZ"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:26 (modified: 23 Nov 2023, 06:48)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=O2fzzI6vjZ">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Thanks for pointing this out. We have added a task description in the introduction. While we agree that we have experimented only with visually simple datasets, we would like to to argue that disentanglement is a hard problem, and some of the SOTA techniques (Symbinder [1]) have only worked with images, which we have extended to video in our work. Further, SlotFormer [2] (which is a very recent work) for video prediction, also works on only simple rigid-body dynamics. We are working on compiling example images and hope to post them in the discussion phase. </p>
+</li>
+<li><p>We thank the reviewer for the suggestion and we agree with reviewers rephrasing. We would like to point out that we are not taking attention to the entire image and rather take attention to the image masked out by an object mask. We are aiming for disentangled representation of an object and thus we add that prior by inferring blocks which is iteratively refined by taking attention over latent object representation.  </p>
+</li>
+<li><p>We want to highlight to the reviewer that the permutation gadget undergoes training in a self-supervised manner and we don’t have ground permutations. Its sole purpose is to align predicted object blocks with ground object blocks for dynamic loss computation. Importantly, during testing, there is no necessity for loss computation, and therefore, the permutation module is excluded from the testing process. We have added more details in the appendix. </p>
+</li>
+<li><p>We have included the specifics of object extractor training in the appendix. Additionally, it's worth noting that for the 2D environment, we employ Mask R-CNN as the object extractor. The training of Mask R-CNN necessitates supervised data, which is generated in unsupervised fashion from expert models.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="OEsOsg3WQG"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=OEsOsg3WQG"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:28 (modified: 23 Nov 2023, 06:48)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=OEsOsg3WQG">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>We are unsure of the specific claim that the reviewer is referring to. To the best of our knowledge, we have not made any claim regarding our ability to do well with deformable objects. If the reviewer can point out a specific instance, we would be happy to correct it. While we agree that we have experimented only with rigid body surfaces, we would like to to argue that disentanglement is a hard problem, and some of the SOTA techniques (Symbinder refer) have only worked with images, which we have extended to video in our work. Further, SlotFormer [] (which is a very recent work) for video prediction, also works on only simple rigid-body dynamics. Hence, we strongly believe our setting is commensurate with some of the recent works in this area.</p>
+</li>
+<li><p>In response to the reviewer's suggestion, we have incorporated additional evaluation and experiments illustrating the decoupling of blocks in the appendix section F. Importantly, we emphasize that these blocks are learned in a fully unsupervised manner. One such instance is the block that has learned to represent color, as demonstrated in section 4.4. However, the final part of the review is currently unclear to us, and we would appreciate further clarification.</p>
+</li>
+<li><p>That was a typo and it should have been "by replacing the block extractor”. We have fixed it in the paper.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="qQpGfcNfWF"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=qQpGfcNfWF"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:28 (modified: 23 Nov 2023, 06:48)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=qQpGfcNfWF">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We have addressed the need for a permutation model by including a specific example in the newly added content within the appendix section C. Furthermore, we have enhanced and clarified the details in section 4.4 based on your feedback.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="1wptEDWn4N"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9419 by Reviewer gVGK</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=1wptEDWn4N"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer gVGK</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 10:09 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=1wptEDWn4N">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>In this work, a novel model is proposed for next frame prediction for videos of interacting objects. Building on previous architectures, the authors explore
+further structuring an object-centric representation into blocks that represent
+specific object attributes such as shape or color. Object-centric representations are
+first obtained using a pretrained unsupervised segmentation model and a feature
+extractor. Slot Attention is used to decompose object representations into blocks. A
+Transformer than predicts the latent representation of the next frame which is converted into an image using an adapted Spatial Broadcast Decoder. The model consistently
+outperforms previous models on three synthetic datasets.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Learning scene representations that are structured into objects and their attributes
+is a very relevant topic. An unsupervised approach based on next frame prediction as
+followed by the authors is applicable in a broad range of settings.</li>
+<li>The proposed model consistently improves over previous methods.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>The empirical evaluation has a strong focus on measuring quantiative performance
+averaged over entire datasets. Further insights into the inner workings of the model or
+components necessary for outperforming previous approaches are hardly provided.</p>
+<ul>
+<li>This paper proposes a range of novel model components, a detailed ablation analysis is
+however missing. The only comparison is to a model that replaces the pretrained object extractor with an MLP. So it is not clear to which degree the different components
+contribute to the improved performance of the model.</li>
+<li>The paper does not discuss any particular success or failure cases of the proposed
+model. Are there specific situations which are predicted better by the proposed model? How do these related to the model components introduced in the paper?</li>
+<li>The model learns a constant concept space <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi></math></mjx-assistive-mml></mjx-container>. Do the concept vectors correspond to
+interpretable attributes? Is there a separation of object attributes into those that
+contribute to dynamics and others that do not, as asked in the abstract?</li>
+<li>The disentanglement of object attributes is a core motivation behind this work. The
+disentanglement is however not quantitatively evaluated.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>In Phase I of the model, object masks are predicted and the masked objects passed
+through a feature extractor. Why is this extra step necessary? Is it possible to use
+the internal representation of the segmentation module directly?</li>
+<li>In section 3.2: How exactly are block vectors projected onto the learnable concept
+space? A mathematical description might be helpful here. Why does this project lead to
+disentangled representations?</li>
+<li>How were hyperparameters tuned for the DisFormer? How sensitive is the model with
+regard to chosing hyperparameters?</li>
+<li>Were the hyperparameters tuned for the baselines?</li>
+<li>How are the predicted object positions obtained for all methods when evaluating the
+position error?</li>
+<li>I do not understand the transfer learning setup in section 4.3: Two variants of the
+training set are created, are the models trained on both? How is it different from the
+evaluation setting?</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="xVcP7LgHV6"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=xVcP7LgHV6"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:30 (modified: 23 Nov 2023, 06:49)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=xVcP7LgHV6">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Most of our model components are dependent on each other, so the entire system may not work if we remove any of those. At the same time, if the reviewer has specific suggestions on which ablations to try with respect to moving out certain components, we will be happy to report those. There was a typo in experiment section 4.2 where instead of object extractor we replaced block extractor with MLP. </p>
+</li>
+<li><p>This is a very important suggestion. We are working on compiling a list of failure cases of our model. We hope to upload this to these before the end of the discussion phase.</p>
+</li>
+<li><p>In our ablation experiment, we rigidly assigned concept weights for blocks to values of 0 and 1. Unfortunately, the decoding process with these blocks failed to produce any meaningful images. This experiment has conclusively shown that, under these conditions, individual concept vectors do not effectively represent interpretable attributes. About the second part of the question we are working defining these sepration. We hope to share the results before the end of the discussion phase.</p>
+</li>
+<li><p>We have added the appendix section of disentanglement evaluation.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="QhmPDCPOvF"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=QhmPDCPOvF"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:32 (modified: 23 Nov 2023, 06:49)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=QhmPDCPOvF">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Internal representation of mask does not have appearance information of object. We thank the reviewer for the suggestion. We would also like to point out that we also need the appearance information of the object and only the mask's hidden representation will not be sufficient. We are working on the reviewers suggestion and hope to share results in the discussion phase. </p>
+</li>
+<li><p>The line 10 and 11 in Algorithm 1 does the projection of blocks to concepts. As the concept vectors for a given block common across the objects these add strong prior for learning disentangled representation. </p>
+</li>
+<li><p>We performed a grid search of hyperparameters for a reasonable range. We found that DisFormer’s training is stable in the range of consideration. </p>
+</li>
+<li><p>We started with hyperparameters reported by the baselines and tuned in limited space. </p>
+</li>
+<li><p>We added a section in appendix describing this. </p>
+</li>
+<li><p>In section 4.3 single model was trained on two datasets. The first dataset have all small objects and second dataset have all big objects in video. During testing we test on a dataset where some objects are small and some are big.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="iusxEbIueU"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9419 by Reviewer HX9L</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=iusxEbIueU"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer HX9L</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 02:41 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=iusxEbIueU">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This manuscript introduces a novel approach to disentangled object-centric representation learning specifically tailored for video data. The authors present a method that distinguishes itself from prior work, particularly SysBinder, emphasizing its unique applicability to video data and asserting its capabilities in capturing essential knowledge for future prediction in a disentangled manner. Inspired by Slot-Attention, the method utilizes slot-attention on object-centric representations to delineate attributes per the object-centric representation. The model undergoes extensive evaluation across two 2D datasets and a 3D dataset, demonstrating superior performance in pixel-level reconstruction and position estimation over existing methods. Additionally, the authors subject their model to generalization tests in unseen environments, where it continues to outshine competing approaches.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The motivation behind the study is intriguing and thought-provoking.</li>
+<li>The exploration of disentangled object-centric representation for video data is innovative, unveiling new insights, particularly regarding the representation of essential attributes for future prediction from video data.</li>
+<li>The model is intuitively designed, effectively leveraging slot-attention on top of the object-centric representations to disentangle representations.</li>
+<li>Comprehensive comparative analysis, including ablation studies, robustly demonstrates the advantages of disentangled representation.</li>
+<li>The figure for their model architecture is well-drawn and easy to understand.</li>
+<li>The abstract, introduction and the proposed model section are well written except the permutation module section.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The manuscript’s clarity and organization can be improved. Specific suggestions for improvement are provided in the questions section.</li>
+<li>A comparative evaluation with another disentangled object-centric representation learning method, SysBinder, is lacking, despite its mention in the text.</li>
+<li>The visualization of disentanglement in the manuscript (Section 4.4) could be enhanced for better clarity and comprehension. Additionally, as they started this paper with the question, “would it help to learn disentangled object representations, possibly separating the attributes which contribute to the motion dynamics vs which don’t?”, if they can show the disentangled representation for the attribute which to contribute to predict the dynamic, it should be much better.</li>
+<li>The quantitative results presented could be bolstered with more illustrative examples, showcasing scenarios where the proposed model excels in comparison to its counterparts.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><h3>Clarity and Presentation</h3>
+<ul>
+<li>In the introduction, could you incorporate a high-level architectural diagram or illustration of your model? This addition would facilitate a clearer and more immediate understanding for readers.</li>
+<li>You’ve described your permutation module as novel. Can you elaborate on its novelty, especially in the context of other existing methods, such as the approach used in the OCVT paper?</li>
+<li>The Mask R-CNN in your methodology is trained using a labeled dataset. This seems to introduce a discrepancy since the other models under comparison do not utilize labeled data. Could you perhaps validate your model's performance using Slot-Attention or another slot-based model as a substitute for Mask R-CNN?</li>
+<li>In Figure 1, “Note that each block has its own set of concept vectors; thus, C = || rj=1C j where r represents the number of blocks.”. Why? Shouldn’t the input <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mi>a</mi><mi>t</mi><mi>h</mi><mi>c</mi><mi>a</mi><mi>l</mi><mrow data-mjx-texclass="ORD"><mi>C</mi></mrow></math></mjx-assistive-mml></mjx-container> be shared for every block?</li>
+<li>In section 3.2, “we project each resultant block vector onto the learnable concept space and update its representation as a linear combination of the concepts via projection weights (lines 9 - 12 in Algorithm 1). This step results in discovering the disentangled representation central to our approach.”. Could you provide a more in-depth explanation or empirical evidence to support this assertion?</li>
+<li>In Algorithm 1, what is <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi></math></mjx-assistive-mml></mjx-container>? In figure 1, C is consisted of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>r</mi></math></mjx-assistive-mml></mjx-container> concept vectors.</li>
+<li>In section 3.3, “Let the transformer encoder output be δˆ s ti,b. “ For clarity, could you specify that this is the output corresponding to <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.269em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>s</mi><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>,</mo><mi>b</mi></mrow></msubsup></math></mjx-assistive-mml></mjx-container>?</li>
+<li>Section 3.4 appears to be complex. To ensure my understanding is correct: is the process essentially projecting the concatenated block vectors through matrix <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D448 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>U</mi></math></mjx-assistive-mml></mjx-container>, calculating the Cosine Similarity, and then aligning the most similar representations as the same object? Further clarification and polishing of this section would be beneficial.</li>
+<li>How is the object position estimated within your model, as detailed in the experiment section? You've mentioned that position error is not reported for SlotFormer due to its lack of explicit object mask handling; does your model operate in a similar manner?</li>
+<li>Could you provide a deeper analysis of DenseFormer, particularly in comparison to Slotformer? Are there specific scenarios where DenseFormer is more prone to failure, and could you share sample outputs from both DisFormer and DenseFormer to illustrate these points?</li>
+<li>In Section 4.3, the term “transfer learning” is used. Based on my understanding, the experiments seem to be more about evaluating generalization to unseen environments rather than transfer learning. Would renaming this as generalization and providing a more comprehensive analysis, especially in light of the varied performance across different datasets, be more accurate and informative? For example, when comparing the results in Table 1, Slotformer performance deterioration for 2D-BC is not huge while Slotformer is worse for 2D-BS. This results can suggest that for more complicated environment, the disentangled representation is more helpful for the generalization.</li>
+<li>The examples in Section 4.4 intended to illustrate disentanglement seem to be lacking. Instead of swapping both color and shape attributes, could separate demonstrations of each be more effective in showcasing the model’s capabilities?</li>
+</ul>
+<h3>Methodology</h3>
+<ul>
+<li>Regarding Section 3.4, why is the permutation module utilized only during training and discarded during testing? Could its application during testing, potentially for aligning the input order of the Transformer module, lead to enhanced performance?</li>
+<li>For the Dynamic loss calculation in Section 3.6, why is the comparison made between the weights of the concept vectors rather than the block vectors? Additionally, could you provide a definition for <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.441em; margin-bottom: -0.531em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-c5E"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D464 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.269em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D457 TEX-I"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mrow data-mjx-texclass="ORD"><mover><mi>w</mi><mo stretchy="false">^</mo></mover></mrow><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>j</mi></mrow></msubsup></math></mjx-assistive-mml></mjx-container>?</li>
+</ul>
+<h3>Experiment</h3>
+<ul>
+<li>In Section 3.6, there is a training phase where only the block extractor, permutation module, and decoder are trained, followed by a phase focusing solely on the dynamic model. Could you elaborate on the reasons and potential benefits of this training strategy? Did it result in improved model performance?</li>
+<li>The model training in Section 3.6 incorporates multiple loss functions. Have ablation studies been conducted to understand the impact of each loss function on the overall performance?</li>
+</ul>
+<h3>Additional Comments</h3>
+<p>The study presents an interesting investigation with noteworthy contributions to the field. However, to ensure a stronger impact and facilitate better understanding, a revision focusing on improving presentation, clarity, the comparison with the relevant work, and depth of analysis are recommended.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="MF1nb03CC9"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=MF1nb03CC9"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:37 (modified: 23 Nov 2023, 06:47)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=MF1nb03CC9">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>We would like to point out to reviewer that Sysbinder discovers object representation for images and we would like to discover object representations for video. We still performed used frame by frame sysbinder and found satisfactory results on 2D BS dataset. </li>
+<li>We are working on compiling example images and hope to post them in the discussion phase. </li>
+<li>We are working on high level diagram and hope to post them in the discussion phase.</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="EDLIzWBDEI"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=EDLIzWBDEI"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:42 (modified: 23 Nov 2023, 06:55)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=EDLIzWBDEI">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>We are working on high level diagram and hope to post them in the discussion phase. </p>
+</li>
+<li><p>OCVT’s alignment algorithm is based on hungarian matching algorithm over L2 norm of latents. In our experiment it performed poorly. We hope to add some results during discussion phase. </p>
+</li>
+<li><p>We have added the details in the appendix section </p>
+</li>
+<li><p>Each block has it’s own set of concept vectors. For instance the block(s) representing color would have concept vectors as {red, green, blue} etc. whereas those representing size would have a different set of concept vectors. two different attributes cannot be a linear combination of same concept vectors. Thus concept C is not shared across all the blocks.</p>
+</li>
+<li><p>k is number of concept vectors </p>
+</li>
+<li><p>Yes it is output corresponding to <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D460 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.269em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>s</mi><mrow data-mjx-texclass="ORD"><mi>t</mi></mrow><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>,</mo><mi>b</mi></mrow></msubsup></math></mjx-assistive-mml></mjx-container></p>
+</li>
+<li><p>Yes the reviewers understanding is correct. </p>
+</li>
+<li><p>We have added position error computation section in appendix</p>
+</li>
+<li><p>In our choice of dataset the color and shape are correlated and are not represented by separate blocks.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="pcqz2fHO95"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Methodology</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=pcqz2fHO95"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:47</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>That's very interesting suggestion. We are currently working on it and hope to add results in discussion phase. </li>
+<li>We found that comparing weights of concept vectors result in faster convergence. The <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.441em; margin-bottom: -0.531em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-c5E"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D464 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.269em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D457 TEX-I"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mrow data-mjx-texclass="ORD"><mover><mi>w</mi><mo stretchy="false">^</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>t</mi></mrow><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>j</mi></mrow></msubsup></math></mjx-assistive-mml></mjx-container> is the predicted weight of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>b</mi><mrow data-mjx-texclass="ORD"><mi>t</mi><mi>h</mi></mrow></msup></math></mjx-assistive-mml></mjx-container> block and its jth concept vector. It is output of transition model.</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="tYw6kbOlZq"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9419 by Reviewer M2hR</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=tYw6kbOlZq"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer M2hR</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 00:40 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=tYw6kbOlZq">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper proposes DisFormer, which extends Slot Attention and SlotFormer with “disentangled” object representation for visual dynamics prediction. The disentangled representation is learnt by iteratively refining the slots over individual object representations (rather than the whole image representations), and regularizing the slots to be linear combinations of the concepts. To align the model output with the groundtruth, a permutation module is used to learn the ordering. Experiments are done on 2D Bouncing Shapes/Circles and OBJ3D to show the method works well in both in-domain and domain transfer settings.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The method is clearly motivated and clearly described. By learning slots representing blocks (which are iteratively updated to recover an object representation), and regularizing the slots/blocks to be a linear combination of concepts, the slots/blocks learn disentangled representations of objects.</li>
+<li>Related works, as well as their difference with this work, are well-discussed.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>My major concern is that the experiments are not very persuasive. </p>
+<ol>
+<li>The datasets are simple toy datasets. The original SlotFormer has done experiments on dataset CLEVRER, which is harder than the 2D shapes/circles used in this paper. Are there reasons why CLEVRER, or CLEVRER with more complex textures, are used for experiments?</li>
+<li>No ablations are provided. The model contains multiple components, but there are no ablation experiments to study the effect of each component. For example, the effect of recovering object representation versus image representation, the effect of learning the slots to be a linear combination of concepts, the number of slots, number of concepts, etc. should be studied.</li>
+<li>Not enough experiments are shown to prove the representations are “disentangled”. This disentanglement is the major advantage of the method. However, only several examples are shown in Fig. 2 to show the disentanglement. Quantitative results, or visualization of the learned slots (e.g. using t-SNE) would be preferred.</li>
+<li>Missing experiment details. The training details including the hyperparameters are not provided. Some critical parameters (e.g. number of slots/concepts, loss weights) should be discussed.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>See weakness. More details about experiments would be helpful.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="t254dIIVgu"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AOSsLRKQrX&amp;noteId=t254dIIVgu"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:54</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Weakness:</p>
+<ol>
+<li><p>We used OBJ3D which has similar visual complexity of CLEVRER. We are still working to compile our numbers on CLEVRER and hope to shape them during discussion phase.  </p>
+</li>
+<li><p>We are working on specific ablations and hope to shape them during discussion phase.  </p>
+</li>
+<li><p>We have provided disentanglement evaluation in appendix. </p>
+</li>
+<li><p>Added in the appendix.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9419/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> is a long-term project to advance science through improved peer review, with legal nonprofit status through <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © 2024 OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-feedback-subject-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-c9il5_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"DisFormer: Disentangled Object Representations for Learning Visual Dynamics Via Transformers"},"authors":{"value":["Sanket Sanjaykumar Gandhi","Vishal Sharma","Rushil Gupta","Arnab Kumar Mondal","Samanyu Mahajan","Parag Singla"]},"authorids":{"value":["~Sanket_Sanjaykumar_Gandhi1","~Vishal_Sharma1","~Rushil_Gupta1","~Arnab_Kumar_Mondal2","mahajansamanyu@gmail.com","~Parag_Singla1"]},"keywords":{"value":["Unsupervised Visual dynamics prediction","object centric representation","disentangled representation"]},"abstract":{"value":"We focus on the task of visual dynamics prediction. Recent work has shown that object-centric representations can greatly help improve the accuracy of learning such dynamics in an unsupervised way. Building on top of this work, we ask the question: would it help to learn disentangled object representations, possibly separating the attributes which contribute to the motion dynamics vs which don’t? Though there is some prior work which aims to achieve this, we argue in this paper either it is limiting in their setting, or does not use the learned representation explicitly for predicting visual dynamics, making them sub-optimal. In response, we propose DisFormer, an approach for learning disentangled object representation and use them for predicting visual dynamics. Our architecture extends the notion of slots Locatello et al. (2020) to taking attention over individual objectrepresentations: each slot learns the representation for a block by attending over different parts of an object, and each block is expressed as a linear combination\nover a small set of learned concepts. We perform an iterative refinement over\nthese slots to extract a disentangled representation, which is then fed to a trans-\nformer architecture to predict the next set of latent object representations. Since\nour loss is unsupervised, we need to align the output object masks with those ex-\ntracted from the ground truth image, and we design a novel permutation module\nto achieve this alignment by learning a canonical ordering. We perform a series\nof experiments demonstrating that our learned representations help predict future\ndynamics in the standard setting, where we test on the same environment as train-\ning, and in the setting of transfer, where certain object combinations are never\nseen before. Our method outperforms existing baselines in terms of\npixel prediction and deciphering the dynamics, especially in the zero-shot transfer\nsetting where existing approaches fail miserably. Further analysis reveals that our\nlearned representations indeed help with significantly better disentanglement of\nobjects compared to existing techniques."},"primary_area":{"value":"unsupervised, self-supervised, semi-supervised, and supervised representation learning"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"Submitted to ICLR 2024"},"venueid":{"value":"ICLR.cc/2024/Conference/Rejected_Submission"},"TLDR":{"value":"We propose a novel approach for learning disentangled object representations for the task of learning visual dynamics via transformers."},"pdf":{"value":"/pdf/50f9ffb09713b89b431d6cb0154269ab3c395161.pdf"},"_bibtex":{"value":"@misc{\ngandhi2024disformer,\ntitle={DisFormer: Disentangled Object Representations for Learning Visual Dynamics Via Transformers},\nauthor={Sanket Sanjaykumar Gandhi and Vishal Sharma and Rushil Gupta and Arnab Kumar Mondal and Samanyu Mahajan and Parag Singla},\nyear={2024},\nurl={https://openreview.net/forum?id=AOSsLRKQrX}\n}"},"paperhash":{"value":"gandhi|disformer_disentangled_object_representations_for_learning_visual_dynamics_via_transformers"}},"id":"AOSsLRKQrX","forum":"AOSsLRKQrX","signatures":["ICLR.cc/2024/Conference/Submission9419/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission9419/Authors"],"number":9419,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission9419/-/Revision","ICLR.cc/2024/Conference/Submission9419/-/Rebuttal_Revision","ICLR.cc/2024/Conference/-/Edit"],"domain":"ICLR.cc/2024/Conference","tcdate":1695554537148,"cdate":1695554537148,"tmdate":1707625774942,"mdate":1707625774942,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"primary_area","order":2,"input":"select","value":"unsupervised, self-supervised, semi-supervised, and supervised representation learning","description":null},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"supplementary_material","order":8},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"AOSsLRKQrX"}}},"page":"/forum","query":{"id":"AOSsLRKQrX"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

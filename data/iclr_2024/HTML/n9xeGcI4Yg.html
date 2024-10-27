@@ -1,0 +1,1340 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>The Consensus Game: Language Model Generation via Equilibrium Search | OpenReview</title><meta name="description" content="When applied to question answering and other text generation tasks, language models (LMs) may be queried generatively (by sampling answers from their output distribution) or discriminatively (by using them to score or rank a set of candidate answers). These procedures sometimes yield very different predictions. How do we reconcile mutually incompatible scoring procedures to obtain coherent LM predictions? We introduce a new, a training-free, game-theoretic procedure for language model decoding. Our approach casts language model decoding as a regularized imperfect-information sequential signaling game—which we term the concensus game—in which a generator seeks to communicate an abstract correctness parameter using natural language sentences to a discriminator. We develop computational procedures for finding approximate equilibria of this game, resulting in a decoding algorithm we call equilibrium-ranking. Applied to a large number of tasks (including reading comprehension, commonsense reasoning, mathematical problem-solving, and assistive dialog), equilibrium-ranking consistently improves performance over existing LM decoding procedures. These improvements are sometimes substantial—on multiple benchmarks, we observe that applying equilibrium-ranking to LLaMA-7B outperforms the much larger LLaMA-65B and PaLM-540B models."><meta property="og:title" content="The Consensus Game: Language Model Generation via Equilibrium Search"><meta property="og:description" content="When applied to question answering and other text generation tasks, language models (LMs) may be queried generatively (by sampling answers from their output distribution) or discriminatively (by..."><meta property="og:type" content="article"><meta name="citation_title" content="The Consensus Game: Language Model Generation via Equilibrium Search"><meta name="citation_author" content="Athul Paul Jacob"><meta name="citation_author" content="Yikang Shen"><meta name="citation_author" content="Gabriele Farina"><meta name="citation_author" content="Jacob Andreas"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=n9xeGcI4Yg"><meta name="citation_abstract" content="When applied to question answering and other text generation tasks, language models (LMs) may be queried generatively (by sampling answers from their output distribution) or discriminatively (by using them to score or rank a set of candidate answers). These procedures sometimes yield very different predictions. How do we reconcile mutually incompatible scoring procedures to obtain coherent LM predictions? We introduce a new, a training-free, game-theoretic procedure for language model decoding. Our approach casts language model decoding as a regularized imperfect-information sequential signaling game—which we term the concensus game—in which a generator seeks to communicate an abstract correctness parameter using natural language sentences to a discriminator. We develop computational procedures for finding approximate equilibria of this game, resulting in a decoding algorithm we call equilibrium-ranking. Applied to a large number of tasks (including reading comprehension, commonsense reasoning, mathematical problem-solving, and assistive dialog), equilibrium-ranking consistently improves performance over existing LM decoding procedures. These improvements are sometimes substantial—on multiple benchmarks, we observe that applying equilibrium-ranking to LLaMA-7B outperforms the much larger LLaMA-65B and PaLM-540B models."><meta name="citation_conference_title" content="The Twelfth International Conference on Learning Representations"><meta name="next-head-count" content="24"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msubsup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-script {
+  display: inline-block;
+  padding-right: .05em;
+  padding-left: .033em;
+}
+
+mjx-script > mjx-spacer {
+  display: block;
+}
+
+mjx-msup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mfrac {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-frac {
+  display: inline-block;
+  vertical-align: 0.17em;
+  padding: 0 .22em;
+}
+
+mjx-frac[type="d"] {
+  vertical-align: .04em;
+}
+
+mjx-frac[delims] {
+  padding: 0 .1em;
+}
+
+mjx-frac[atop] {
+  padding: 0 .12em;
+}
+
+mjx-frac[atop][delims] {
+  padding: 0;
+}
+
+mjx-dtable {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-dtable > * {
+  font-size: 2000%;
+}
+
+mjx-dbox {
+  display: block;
+  font-size: 5%;
+}
+
+mjx-num {
+  display: block;
+  text-align: center;
+}
+
+mjx-den {
+  display: block;
+  text-align: center;
+}
+
+mjx-mfrac[bevelled] > mjx-num {
+  display: inline-block;
+}
+
+mjx-mfrac[bevelled] > mjx-den {
+  display: inline-block;
+}
+
+mjx-den[align="right"], mjx-num[align="right"] {
+  text-align: right;
+}
+
+mjx-den[align="left"], mjx-num[align="left"] {
+  text-align: left;
+}
+
+mjx-nstrut {
+  display: inline-block;
+  height: .054em;
+  width: 0;
+  vertical-align: -.054em;
+}
+
+mjx-nstrut[type="d"] {
+  height: .217em;
+  vertical-align: -.217em;
+}
+
+mjx-dstrut {
+  display: inline-block;
+  height: .505em;
+  width: 0;
+}
+
+mjx-dstrut[type="d"] {
+  height: .726em;
+}
+
+mjx-line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1px;
+  height: .06em;
+  border-top: .06em solid;
+  margin: .06em -.1em;
+  overflow: hidden;
+}
+
+mjx-line[type="d"] {
+  margin: .18em -.1em;
+}
+
+mjx-mrow {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D6FD.TEX-I::before {
+  padding: 0.705em 0.566em 0.194em 0;
+  content: "\3B2";
+}
+
+mjx-c.mjx-c3D::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "=";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c2E::before {
+  padding: 0.12em 0.278em 0 0;
+  content: ".";
+}
+
+mjx-c.mjx-c30::before {
+  padding: 0.666em 0.5em 0.022em 0;
+  content: "0";
+}
+
+mjx-c.mjx-c1D716.TEX-I::before {
+  padding: 0.431em 0.406em 0.011em 0;
+  content: "\3F5";
+}
+
+mjx-c.mjx-c1D706.TEX-I::before {
+  padding: 0.694em 0.583em 0.012em 0;
+  content: "\3BB";
+}
+
+mjx-c.mjx-c1D43A.TEX-I::before {
+  padding: 0.705em 0.786em 0.022em 0;
+  content: "G";
+}
+
+mjx-c.mjx-c1D702.TEX-I::before {
+  padding: 0.442em 0.497em 0.216em 0;
+  content: "\3B7";
+}
+
+mjx-c.mjx-c1D461.TEX-I::before {
+  padding: 0.626em 0.361em 0.011em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c2F::before {
+  padding: 0.75em 0.5em 0.25em 0;
+  content: "/";
+}
+
+mjx-c.mjx-c1D444.TEX-I::before {
+  padding: 0.704em 0.791em 0.194em 0;
+  content: "Q";
+}
+
+mjx-c.mjx-c1D70B.TEX-I::before {
+  padding: 0.431em 0.57em 0.011em 0;
+  content: "\3C0";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c1D437.TEX-I::before {
+  padding: 0.683em 0.828em 0 0;
+  content: "D";
+}
+
+mjx-c.mjx-c1D5A2.TEX-SS::before {
+  padding: 0.705em 0.639em 0.011em 0;
+  content: "C";
+}
+
+mjx-c.mjx-c1D5B5.TEX-SS::before {
+  padding: 0.694em 0.667em 0 0;
+  content: "V";
+}
+
+mjx-c.mjx-c2B::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "+";
+}
+
+mjx-c.mjx-c1D44E.TEX-I::before {
+  padding: 0.441em 0.529em 0.01em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c221D::before {
+  padding: 0.442em 0.778em 0.011em 0;
+  content: "\221D";
+}
+
+mjx-c.mjx-c65::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c78::before {
+  padding: 0.431em 0.528em 0 0;
+  content: "x";
+}
+
+mjx-c.mjx-c70::before {
+  padding: 0.442em 0.556em 0.194em 0;
+  content: "p";
+}
+
+mjx-c.mjx-c2061::before {
+  padding: 0 0 0 0;
+  content: "";
+}
+
+mjx-c.mjx-c6C::before {
+  padding: 0.694em 0.278em 0 0;
+  content: "l";
+}
+
+mjx-c.mjx-c6F::before {
+  padding: 0.448em 0.5em 0.01em 0;
+  content: "o";
+}
+
+mjx-c.mjx-c67::before {
+  padding: 0.453em 0.5em 0.206em 0;
+  content: "g";
+}
+
+mjx-c.mjx-c1D70F.TEX-I::before {
+  padding: 0.431em 0.517em 0.013em 0;
+  content: "\3C4";
+}
+
+mjx-c.mjx-c2211.TEX-S1::before {
+  padding: 0.75em 1.056em 0.25em 0;
+  content: "\2211";
+}
+
+mjx-c.mjx-c32::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "2";
+}
+
+mjx-c.mjx-c22EF::before {
+  padding: 0.31em 1.172em 0 0;
+  content: "\22EF";
+}
+
+mjx-c.mjx-c1D43F.TEX-I::before {
+  padding: 0.683em 0.681em 0 0;
+  content: "L";
+}
+
+mjx-c.mjx-c2192::before {
+  padding: 0.511em 1em 0.011em 0;
+  content: "\2192";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3Dn9xeGcI4Yg&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display:none"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">The Consensus Game: Language Model Generation via Equilibrium Search</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=n9xeGcI4Yg" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Athul_Paul_Jacob1" data-original-title="~Athul_Paul_Jacob1">Athul Paul Jacob</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Yikang_Shen1" data-original-title="~Yikang_Shen1">Yikang Shen</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Gabriele_Farina1" data-original-title="~Gabriele_Farina1">Gabriele Farina</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Jacob_Andreas1" data-original-title="~Jacob_Andreas1">Jacob Andreas</a> <!-- --> </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>Published: 16 Jan 2024, Last Modified: 17 Apr 2024</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>ICLR 2024 spotlight</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=n9xeGcI4Yg">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40inproceedings%7B%0Ajacob2024the%2C%0Atitle%3D%7BThe%20Consensus%20Game%3A%20Language%20Model%20Generation%20via%20Equilibrium%20Search%7D%2C%0Aauthor%3D%7BAthul%20Paul%20Jacob%20and%20Yikang%20Shen%20and%20Gabriele%20Farina%20and%20Jacob%20Andreas%7D%2C%0Abooktitle%3D%7BThe%20Twelfth%20International%20Conference%20on%20Learning%20Representations%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3Dn9xeGcI4Yg%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics<!-- -->:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords<!-- -->:</strong> <span class="note-content-value">language models, decoding, planning, game theory</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines<!-- -->:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract<!-- -->:</strong> <div class="note-content-value markdown-rendered"><p>When applied to question answering and other text generation tasks, language models (LMs) may be queried generatively (by sampling answers from their output distribution) or discriminatively (by using them to score or rank a set of candidate answers). These procedures sometimes yield very different predictions. How do we reconcile mutually incompatible scoring procedures to obtain coherent LM predictions? We introduce a new, a training-free, game-theoretic procedure for language model decoding. Our approach casts language model decoding as a regularized imperfect-information sequential signaling game—which we term the concensus game—in which a generator seeks to communicate an abstract correctness parameter using natural language sentences to a discriminator. We develop computational procedures for finding approximate equilibria of this game, resulting in a decoding algorithm we call equilibrium-ranking. Applied to a large number of tasks (including reading comprehension, commonsense reasoning, mathematical problem-solving, and assistive dialog), equilibrium-ranking consistently improves performance over existing LM decoding procedures. These improvements are sometimes substantial—on multiple benchmarks, we observe that applying equilibrium-ranking to LLaMA-7B outperforms the much larger LLaMA-65B and PaLM-540B models.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url<!-- -->:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section<!-- -->:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area<!-- -->:</strong> <span class="note-content-value">generative models</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number<!-- -->:</strong> <span class="note-content-value">8650</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">18 / 18 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="YTa5KFdTre"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=YTa5KFdTre"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:53 (modified: 16 Feb 2024, 15:42)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=YTa5KFdTre">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Accept (spotlight)</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="p7vpMtl6cx"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission8650 by Area Chair sGL4</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=p7vpMtl6cx"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair sGL4</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>06 Dec 2023, 11:46 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=p7vpMtl6cx">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>The paper proposes a decoding strategy for language models based on a game theoretic formulation. The main objective is to reconcile the inconsistency between the model's response in generative and discriminative settings. The paper adapts recent regularized equilibrium approaches that operate directly on the outputs of samples from the generator and a discriminator to produce final answers. The method is a training-free method and consistently outperforms several baselines on a variety of QA tasks, including open-ended and math reasoning tasks. The novelty of the method and strength of the experimental evaluation justifies acceptance, and the paper has the potential to be very impactful. The main weakness is that the clarity of the presentation can be improved.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><p>The paper is likely to be impactful, but possibly not enough to justify oral.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>This will likely be one of the better papers at ICLR.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="hycrVey01C"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Note from Authors</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=hycrVey01C"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>20 Nov 2023, 12:45</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Dear Reviewers,</p>
+<p>As the discussion period is about to close, please let us know if there is any additional questions or anything else you would like to see in our revision. Thank you!</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="SMk5jYGvWC"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Note from Authors</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=SMk5jYGvWC"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 16:12 (modified: 17 Nov 2023, 16:12)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=SMk5jYGvWC">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you all for your thorough reviews! </p>
+<p>We're gratified that you found the paper "very impactful" (DG2h), "principled" (XHXa), "innovative" (ji8z), and "novel and interesting" (Jsc5).
+We believe that your suggestions have helped improve the manuscript. In the next few days, we will submit a revised version that incorporates your comments.</p>
+<p>In the meantime, all reviewers may be interested in a set of new baselines and comparison we have run at the suggestion of DG2h and XHXa, which (1) show that ER outperforms concurrent results from Contrastive Decoding methods in larger models, and (2) investigate a ablation of EQUILIBRIUM-RANKING that isolates contributions from normalization of base models. We have additionally quantified the base rate of disagreement between generative and discriminative LM queries, helping explain why ER improves accuracy.</p>
+<p>Please let us know if there are any other questions we can answer during the discussion period.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="6bHLVaPZe9"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8650 by Reviewer DG2h</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=6bHLVaPZe9"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer DG2h</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>04 Nov 2023, 08:46 (modified: 10 Nov 2023, 12:24)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=6bHLVaPZe9">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper introduces a new decoding strategy for LM's based on a game theoretic formulation. It is directed at tasks requiring objective, factual answers for which a clear notion of a generative version and a discriminative version can be applied. In such settings, the paper describes an adaptation of recent regularized equilibrium approaches that operate directly on the outputs of samples from the Generator/discriminator to produce final answers that do quite well in experiments over a range of challenging fact-seeking or reasoning-seeking benchmarks.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p>Originality: There have a lot of recent investigations into improved decoding strategies; this paper's approach is quite original in taking a game-theoretic formulation to (essentially) the problem of factuality from language models. This actually makes a lot of sense; human language as pointed out in one of the references is a strategic game between agents and thus we should be modeling it as such and not a pure optimization problem. This particular insight is not new, but this idea stands out to me because of its practicality. It should be noted that the idea could be said to be inspired by recent work on diplomacy and the core algorithm is an adaptation of the same. However, it takes a good deal of originality to make the connection to discriminator/generator as a game and present the particular formulation in the paper.</p>
+<p>Quality: The approach has the strong benefit of simplicity in implementation, it requires no re-training of the LM itself. It does seem to require some degree of non-trivial post-processing in the form of running the iteration procedure of eq 1/2. The authors dont address this but I would expect that it would not affect overall latency of LM inference by much and also it scales zero with LM size (iiuc). The experimental evaluation is quite exhaustive and satisfactory, there are a range of datset types explored. the equilibrium methods don't dominate on every single dataset but they generally do quite close to the SoTA and in some instances far exceed. </p>
+<p>Clarity: The motivational sections, the presentation of the key insight and the experimental section are mostly quite clear and the paper was a pleasure to read. I appreciate the use of shading to visualize the relative improvement between the best and other methods in Table 1/2/3.</p>
+<p>Significance: I think this could be an very impactful paper. The results are generally very good, it is easy to implement and does not require extensive tuning it seems to get to work, and it seems from my understanding to be scalable to very large LM sizes.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>Clarity: The paper is actually written fairly well, but there could be some improvements: 
+ a. sec 2.2 was far too short. readers without any Game theory background might not even know what regret means. You dont need to fully flesh out all the derivation and algorithm, but a better intuition I think should be built, which might require 2-3 paragaphs more. I think this can be taken from the experimental section, where although there is a lot of useful material, at a pinch some of it can be moved to appendix to make room. Further a couple of (minor) sources of confusion on my first read:</p>
+<p> a.  'reasonableness' is a bit of a misleading word for the concept you are trying to capture. Maybe 'alignment' ? bu that has other implications in the LM space.
+ b. eq 1/2: i think it's helpful to clarify that this update does not result in a backprop to the params of the LM. The reason is that in the current RLHF literature that is generally what happens so it is easy to get confused.</p>
+<p>c. Bit confusing to put ER-G and ER-D in the section on "Baselines".</p>
+<p>Quality: I am not at all sure about the characterization of SC as significantly related to Contrastive Decoding. The idea of using a weaker LM as the contrastive seems quite significant to me as it enables the strong LM to "avoid" the weaker ones mistakes, which for reasoning problems often are systematic reasoning errors. So it is unfortunate that CD was not compared against (Though I guess the paper with strong results for CD on reasoning problems was quite recent?) </p>
+<p>Significance:  The biggest challenge to the potential significance of this work is that it doesnt seem readily applicable for all use cases of LMs. You need a sort of fact-checking problem, where a set of candidate answers are present. This means it can't be used out of the box as a general decoder, which would be sort of a holy grail right now. Nevertheless, I think the set of applications it is relevant for is hugely important and it is likely to find application given its ease of use.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Regarding the remark in the last para of sec 2.2, what is the difference between the convergence result of Anagostides (2022) and the one claimed earlier in the prev para?</p>
+</li>
+<li><p>I am wondering about a subtle form of bias that may creep in with use of this method. We "train" the model with both correct and incorrect answers at the root node, which is good. but then over time we are likely to model select on some dev set using only accuracy as our metric [since generally that's what we care about], which means we only care about the 'correct' branches. Is this a possible problem?</p>
+</li>
+<li><p>Both ER-G and ER-D are quite competitive and there is no clear winner between the 2. Is there some simple combination strategy you recommend? ensemble or averaging?</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">10: strong accept, should be highlighted at the conference</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="l02zfM8uVk"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer DG2h</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=l02zfM8uVk"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 15:48 (modified: 17 Nov 2023, 15:51)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=l02zfM8uVk">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review!</p>
+<p><strong>Clarity</strong></p>
+<ol>
+<li>Thank you for your suggestion, we will improve section 2.2 to include a more detailed introduction in our revision.
+a. "Reasonableness": We acknowledge this concern and are open to suggestions! As you pointed out, "alignment" does have usage in this space that could make it confusing.
+b. We agree and will note this point in our revision.
+c. You are right. This subsection should be called "decoding methods".</li>
+</ol>
+<p><strong>What is the relationship between our CD experiments and [1]?</strong></p>
+<p>We agree our CD baseline is sufficiently different from other work that we should clarify in our revision. We were unable to compare against CD for reasoning [1] as it was concurrent with our work. We do note that we <em>can</em> provide a direct comparison to published CD numbers on ARC-E and ARC-C. On ARC-E, LLaMA-13B + ER-D (76.4) is competitive with the (<strong>much larger</strong>) LLaMA-65B + CD (<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi><mo>=</mo><mn>1.0</mn></math></mjx-assistive-mml></mjx-container>) (76.9). On ARC-C, LLaMA-13B + ER-D (61.4) outperforms LLaMA-65B + CD (<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi><mo>=</mo><mn>1.0</mn></math></mjx-assistive-mml></mjx-container>) (59.7).</p>
+<p><strong>How does this generalize to other language modeling problems?</strong></p>
+<p>Our approach does require using LMs as "sequence-level" discriminators that evaluate complete generations. That said, we are still able to apply it to standard generation tasks by formulating them as generate-and-rerank problems (like we do in GSM8K and TruthfulQA) - that is, we first sample a set of candidates from the language model using top-p and top-k sampling then use EQUILIBRIUM-RANKING on top. It can thus already be applied to open-ended generation problems. We think that recent work in partial reward models [2, 3] is a promising direction for future work that could apply it directly to generation rather than discriminative reranking.</p>
+<p><strong>Convergence result of Anagostides et al.</strong></p>
+<p>A celebrated result in the theory of learning in games is that the average play of no-regret dynamics converges to the set of coarse correlated equilibria of the game. However, since our game has additional structure (in particular, it is a potential game), most learning dynamics in fact converge to Nash equilibria, which are always a subset of coarse correlated equilibria. Anagnostides et al. provide a general framework for analyzing this phenomenon for a general class of dynamics based on the online mirror descent framework. Unfortunately, while piKL is in the spirit of the algorithms studied by Anagnostides at al., we remark that due to technical conditions (specifically, a lack of Lipschitz continuity of the gradient of the entropy regularizer close to the boundary of the policy space), piKL is not, strictly speaking, an instance of the dynamics studied by Anagnostides et al. In practice, this subtlety seems to be simply a technical detail, and we indeed observe excellent convergence properties. We leave the question of ironing out these technicalities for future work.</p>
+<p><strong>Bias in approach</strong></p>
+<p>In the gameplay itself, the "correctness parameter" is always uniformly sampled from between "correct" and "incorrect". However, we haven't experimented with fitting this prior on a dev set, which as you pointed out could result in bias of the form you described.</p>
+<p><strong>Combining ER-G and ER-D</strong></p>
+<p>We do not have strong intuition here but we think that additive or multiplicative ensembling are both great options for combining these two approaches!</p>
+<p>[1] O'Brien, Sean, and Mike Lewis. "Contrastive decoding improves reasoning in large language models." arXiv preprint arXiv:2309.09117 (2023).</p>
+<p>[2] Wu, Zeqiu, et al. "Fine-Grained Human Feedback Gives Better Rewards for Language Model Training." arXiv preprint arXiv:2306.01693 (2023).</p>
+<p>[3] Yang, Kevin, and Dan Klein. "FUDGE: Controlled Text Generation With Future Discriminators." Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies. 2021.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="06D2Bjit4a"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer DG2h</h5></div><div class="heading"><h4><strong>thanks</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=06D2Bjit4a"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer DG2h</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 10:22</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your response ! I have no further q's.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="3Eyey5RfhE"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8650 by Reviewer Jsc5</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=3Eyey5RfhE"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer Jsc5</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>02 Nov 2023, 11:42 (modified: 10 Nov 2023, 12:24)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=3Eyey5RfhE">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>In this paper, the authors present an interesting framework centered around a consensus game involving generators and discriminators within language models. They delve into the concept of equilibrium within this game and leverage the equilibrium states of the generator and discriminator to enhance output generation in language models. The efficacy of this approach is validated through rigorous experimentation across various question-answering (QA) tasks.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The game-theoretic formulation introduced for the interaction between generators and discriminators in language models is novel and interesting.</li>
+<li>The experiments is comprehensive, covering an array of QA tasks, and the results presented are compelling.</li>
+<li>The paper is generally well-written and easy to follow.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The paper could benefit from a more detailed explanation on the methodological. The process by which Equations (1) and (2) facilitate the attainment of the game's equilibrium is not sufficiently illuminated.</li>
+<li>The reliance on the piKL algorithm for the learning dynamics of the consensus game may limit the methodological novelty of the paper.</li>
+<li>The pursuit of a no-regret dynamic steers the system towards a coarse correlated equilibrium. The paper could be enriched by an exploration into the feasibility and potential advantages of converging to stronger equilibrium constructs, such as pure Nash or mixed Nash equilibria.</li>
+<li>A notable performance drop is observed on the HHH dataset when transitioning from the LLaMA-7B to LLaMA-13B backbone model. An elaboration on this counterintuitive outcome would be beneficial.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>See the weakness part.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">2: You are willing to defend your assessment, but it is quite likely that you did not understand the central parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="0ryYM8N1OH"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer Jsc5</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=0ryYM8N1OH"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 15:51</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for your review!</p>
+<p><strong>Methodological notes behind the choice of Equations (1) and (2)</strong></p>
+<p>We use Equations (1) and (2) to iteratively refine the policies of the players (generator and discriminator). Such policy-refinement procedures typically go under the name of "learning dynamics" in the theory of learning in games. Methogologically, the learning dynamics we use in our paper were designed to achieve the following desiderata:</p>
+<ol>
+<li>The update rules in Equation (1) and (2) are very easy to implement in practice, in that they only require elementary operations such as exponentiation and normalization. This enables us to efficiently implement the refinement operations in a framework such as NumPy or PyTorch in only a couple of lines of code.</li>
+<li>The update rules guarantee strong <em>no-regret</em> properties. Regret is the standard optimality metric for online learning, and intuitively tracks the discrepancy between realized utility and the best utility that could have been realized in hindsight. </li>
+<li>The update rules ensure that the refined policies do not get arbitrarily far from the initial policies that are produced by the language model. As explained in the paper, this is important to guarantee <em>reasonableness</em>.</li>
+<li>By virtue of their no-regret properties, the update rules retain strong connections with game-theoretic notions of optimality.</li>
+</ol>
+<p>From a technical point of view, Equations (1) and (2) are a form of mirror descent, a generalization of gradient descent that accomodates more specialized geometries, such as the natural geometry of conditional probability distributions, such as in the case of this paper.</p>
+<p><strong>On the reliance on piKL</strong></p>
+<p>We disagree that reliance on piKL limits the methodological novelty of the paper, for two reasons:</p>
+<ol>
+<li>The use of game-theoretic learning dynamics for language generation is novel. For historical context, prior uses of piKL were in the direction of providing interpolations between imitation learning (aka. behavioral cloning) and pure self-play learning in the context of multi-agent reinforcement learning. However, we realized that the strong mathematical properties of piKL dynamics could be used to help guide production of language, which led to this paper. (See also above for considerations that help explain the speicifc choice of using piKL dynamics.)</li>
+<li>From a technical point of view, piKL dynamics were defined in the context of normal-form games (that is, simultaneous-action nonsequential games, such as rock-paper-scissors). Instead, we instantiate piKL as part of a sequential potential (coordination) game.</li>
+</ol>
+<p><strong>Why search for coarse correlated equilibria?</strong></p>
+<p>The existing analysis of piKL-hedge provides a guarantee of convergence to a coarse correlated equilibrium. However, as we hinted at the very end of Section 2.2, we  believe that in the case at hand most no-regret dynamics (including our own) will actually converge to Nash equilibrium. This is because the consensus game is a <em>potential game</em>, and in potential games dynamics based on smooth regularization are known to lead to Nash equilibria. Unfortunately, piKL is not, strictly speaking, an instance of such a dynamics, due to the fact that entropic regularization does not guarantee Lipschitz-continuous gradients. (Very small perturbations of piKL dynamics could fix the issue, but introducing a negligible amount of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D716 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></mjx-assistive-mml></mjx-container>-exploration). In practice, we observe excellent convergence properties, and leave the question of ironing out these technical subtleties for future work.</p>
+<p>We will add this discussion in the next version of the paper that we will upload in the next few days.</p>
+<p><strong>Drop in performance on the HHH dataset</strong></p>
+<p>We first note that on this benchmark, other hyperparameter settings of EQUILIBRIUM-RANKING for LLaMA-13B results in the performance that is close to LLaMA-7B. The drop in performance for the larger model could be explained by the fact that HHH dataset tests the alignment of instruction-tuned chatbots. The LLaMA models that we use are not instruction-tuned which makes them poor at following prompts of the form listed in Appendix B. Furthermore, inverse-scaling (where, performance of larger models degrade) has been observed in similar tasks such as TruthfulQA [1].</p>
+<p>[1] Lin, Stephanie, Jacob Hilton, and Owain Evans. "TruthfulQA: Measuring How Models Mimic Human Falsehoods." Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 2022.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="WehQ3klkAR"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer Jsc5</h5></div><div class="heading"><h4><span>Official Comment by Reviewer Jsc5</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=WehQ3klkAR"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer Jsc5</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 10:24</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>I thank the authors for the response. I will keep my score unchanged.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="14LRzCREoe"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer Jsc5</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=14LRzCREoe"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 12:18 (modified: 21 Nov 2023, 14:20)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=14LRzCREoe">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your response! We have attempted to address all the weaknesses above. Are there any aspects you don't think have been addressed, and is there anything else we could do to address these concerns in our revision?</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="kq15EdEgzm"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8650 by Reviewer XHXa</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=kq15EdEgzm"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer XHXa</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>29 Oct 2023, 22:11 (modified: 25 Nov 2023, 14:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=kq15EdEgzm">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This work proposes a new answer reranking method for LLMs. The main objective is to reconcile the inconsistency between the model's response in the generator setting and its response in the discriminator setting. Specifically, this work designs a regularized imperfect-information sequential signaling game involving the generator and discriminator and finds the Nash equilibrium between them. To find the equilibrium, this work adopts the piKL algorithm proposed by Jacob et al., 2022. The overall method is a training-free method and can consistently outperform several baselines on a variety of QA tasks (also including open-ended and math reasoning tasks).</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The inconsistent behavior of LLMs across different prompts is an annoying phenomenon. This paper proposes a principled method to reconcile such consistency via game theory.</li>
+<li>The proposed method is evaluated on various tasks and consistently improves over popular baselines.</li>
+<li>The proposed method is training-free, so it's applicable to even very large-scale models.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>If we compare the proposed ER-based reranking method and previous baselines, there are actually two major differences. One is the process of finding the Nash equilibrium under the regularization part, the other is the combination of two normalized probabilities in Section 2.2. In the current evaluation, it is clear that the combination of these two can bring consistent improvement, but it's unclear what is the effect of each individual component. It would be helpful to have a baseline just combining the two normalized probabilities (e.g., via the MI approach).</li>
+<li>This paper can benefit from showing some intrinsic analysis of the inconsistency of the generator and the discriminator. Right now, while the evaluation shows the effectiveness of the proposed approach, it is unclear how severe the problem is, and in how many cases finding the equilibrium can help.</li>
+<li>I understand the piKL algorithm is from Jacobs et al., 2022, but I would still suggest the authors provide a slightly more detailed description in the appendix. The lack of related details makes it very hard to understand how important the hyper-parameters are, and if the method is sensitive to these values.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>I'm trying to understand equations (1) and (2) on page 5, but I can't really understand how the weights terms (i.e., <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>λ</mi><mrow data-mjx-texclass="ORD"><mi>G</mi></mrow></msub></math></mjx-assistive-mml></mjx-container>  and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>η</mi><mi>G</mi></msub><mi>t</mi></math></mjx-assistive-mml></mjx-container> part) work. Should there be an additional <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mi>t</mi></math></mjx-assistive-mml></mjx-container> before the <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Q</mi></math></mjx-assistive-mml></mjx-container>? This will also make it more similar to the algorithm in Jacob et al., 2022. Otherwise, can you explain why there is a difference?</li>
+<li>Since this is a training-free method, I'm wondering if the authors have tried on even larger models.</li>
+<li>This can entirely be future work for a separate paper, but I just wonder if the authors have tried to fine-tune the models (e.g., the smaller 7B one) using the same objective.</li>
+</ol>
+<p>Typo: on page 7, Race-high -&gt; RACE-high</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="GKs16JJk2w"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer XHXa -- Part 1 / 2</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=GKs16JJk2w"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 15:54 (modified: 17 Nov 2023, 16:06)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=GKs16JJk2w">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review!</p>
+<p><strong>What are the relative contributions of normalization and equilibrium search?</strong></p>
+<p>This is a great question! To tease apart these two components of EQUILIBRIUM-RANKING, we have run a new ablation experiment that reranks using a pointwise-mutual-information-style product using <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.325em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>G</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.309em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>D</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> rather than unnormalized generator and discriminator probabilities. This new ablation (labled MI* in the table below) does improves performance over  baseline approaches but consistently underperforms the full EQUILIBRIUM-RANKING method. We will include these results in the revised version of the paper that we will upload in the next few days.</p>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Model</th>
+<th>ER-G</th>
+<th>ER-D</th>
+<th>MI*</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MMLU</td>
+<td>7B</td>
+<td>39.4</td>
+<td><strong>39.9</strong></td>
+<td>35.8</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>44.9</td>
+<td><strong>45.1</strong></td>
+<td>43.1</td>
+</tr>
+<tr>
+<td>ARC-Easy</td>
+<td>7B</td>
+<td><strong>71.6</strong></td>
+<td>71.5</td>
+<td>71.04</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>76.1</td>
+<td><strong>76.4</strong></td>
+<td>76.1</td>
+</tr>
+<tr>
+<td>ARC-Challenge</td>
+<td>7B</td>
+<td><strong>58.7</strong></td>
+<td>58.3</td>
+<td>58.5</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>61.1</td>
+<td><strong>61.4</strong></td>
+<td><strong>61.4</strong></td>
+</tr>
+<tr>
+<td>RACE-Middle</td>
+<td>7B</td>
+<td>63.2</td>
+<td><strong>63.5</strong></td>
+<td>62.8</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>67.9</td>
+<td><strong>68.6</strong></td>
+<td>67.5</td>
+</tr>
+<tr>
+<td>RACE-High</td>
+<td>7B</td>
+<td>56.3</td>
+<td><strong>56.4</strong></td>
+<td>55.9</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>62.1</td>
+<td><strong>62.8</strong></td>
+<td>62.2</td>
+</tr>
+<tr>
+<td>HHH</td>
+<td>7B</td>
+<td>71.5</td>
+<td><strong>71.5</strong></td>
+<td>69.7</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>61.1</td>
+<td>61.1</td>
+<td>61.1</td>
+</tr>
+</tbody></table>
+<p><strong>Intrinsic Analysis of Inconsistency</strong></p>
+<p>Thank you for the suggestion! In order to look at how severe the problem is, we performed an analysis looking at how often the argmax answers from G and D disagree in each task. The table below shows that they do in fact disagree with each other a significant amount. Furthermore, we also observe that in cases where the disagreement % is larger, EQUILIBRIUM-RANKING offers the most benefit relative to G (The pearson correlation between "Disagreement %" and "% Improvement" is 0.64). We will include these results in the revised version of the paper that we will upload in the next few days.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Model</th>
+<th>Disagreement % (G &amp; D)</th>
+<th>G</th>
+<th>ER-D</th>
+<th>% Improvement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MMLU</td>
+<td>7B</td>
+<td>69</td>
+<td>30.4</td>
+<td>39.9</td>
+<td>31.3</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>60.6</td>
+<td>41.7</td>
+<td>45.1</td>
+<td>8.1</td>
+</tr>
+<tr>
+<td>ARC-Easy</td>
+<td>7B</td>
+<td>56.1</td>
+<td>68.2</td>
+<td>71.5</td>
+<td>4.8</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>46.1</td>
+<td>71.2</td>
+<td>76.4</td>
+<td>7.3</td>
+</tr>
+<tr>
+<td>ARC-Challenge</td>
+<td>7B</td>
+<td>65.9</td>
+<td>47.3</td>
+<td>58.3</td>
+<td>23.2</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>59.1</td>
+<td>51.9</td>
+<td>61.4</td>
+<td>18.3</td>
+</tr>
+<tr>
+<td>RACE-Middle</td>
+<td>7B</td>
+<td>55.8</td>
+<td>57.7</td>
+<td>63.5</td>
+<td>10.0</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>53.2</td>
+<td>60.1</td>
+<td>68.6</td>
+<td>14.1</td>
+</tr>
+<tr>
+<td>RACE-High</td>
+<td>7B</td>
+<td>62</td>
+<td>46.4</td>
+<td>56.4</td>
+<td>21.5</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>58.8</td>
+<td>47.9</td>
+<td>62.8</td>
+<td>31.1</td>
+</tr>
+<tr>
+<td>HHH</td>
+<td>7B</td>
+<td>46.1</td>
+<td>59.3</td>
+<td>71.5</td>
+<td>20.5</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>38</td>
+<td>60.2</td>
+<td>61.1</td>
+<td>1.5</td>
+</tr>
+</tbody></table>
+<p><strong>More detailed discussion of piKL in the appendix?</strong></p>
+<p>Thank you for your suggestion, we will do that!
+More context behind the choice and properties of piKL can be found in our response to Reviewer Jsc5.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="755DuE2qJg"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer XHXa -- Part 2 / 2</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=755DuE2qJg"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 15:55 (modified: 17 Nov 2023, 16:06)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=755DuE2qJg">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p><strong>Question 1 (Equations (1) and (2))</strong></p>
+<p>The difference between the way our algorithm is written, and the way piKL-Hedge (Algorithm 1 of Jacob et al.) is written, is just cosmetic and amounts to a change of variable. The policies the two algorithms produce are equivalent. </p>
+<p>In the original piKL paper, Algorithm 1 (piKL-Hedge) keeps track of cumulative values in the variable named <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mtext class="mjx-ss"><mjx-c class="mjx-c1D5A2 TEX-SS"></mjx-c><mjx-c class="mjx-c1D5B5 TEX-SS"></mjx-c></mjx-mtext><mjx-script style="vertical-align: 0.432em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mtext mathvariant="sans-serif">CV</mtext><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow></msup></math></mjx-assistive-mml></mjx-container> on line 11. Then, the update is </p>
+<p><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" justify="left" tabindex="0" ctxtmenu_counter="10" style="font-size: 121.3%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px;"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c221D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-msup><mjx-mtext class="mjx-ss"><mjx-c class="mjx-c1D5A2 TEX-SS"></mjx-c><mjx-c class="mjx-c1D5B5 TEX-SS"></mjx-c></mjx-mtext><mjx-script style="vertical-align: 0.432em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D70F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>π</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>∝</mo><mi>exp</mi><mo data-mjx-texclass="NONE">⁡</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow><mi>η</mi><msup><mtext mathvariant="sans-serif">CV</mtext><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>+</mo><mi>t</mi><mi>λ</mi><mi>η</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>τ</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mo>+</mo><mi>t</mi><mi>λ</mi><mi>η</mi></mrow></mfrac></mrow></math></mjx-assistive-mml></mjx-container></p>
+<p>(where for us the anchor policy <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="11" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>τ</mi></math></mjx-assistive-mml></mjx-container> is <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="12" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>π</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msup></math></mjx-assistive-mml></mjx-container>, the initial policy of the language model.) In our paper, we use the same formula above, but divide the numerator and denominator of the fraction inside the exponentiation by the same quantity <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="13" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>η</mi><mi>t</mi></math></mjx-assistive-mml></mjx-container>. This results in an update of the form
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" justify="left" tabindex="0" ctxtmenu_counter="14" style="font-size: 121.3%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px;"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c221D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-msup><mjx-mtext class="mjx-ss"><mjx-c class="mjx-c1D5A2 TEX-SS"></mjx-c><mjx-c class="mjx-c1D5B5 TEX-SS"></mjx-c></mjx-mtext><mjx-script style="vertical-align: 0.432em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D70F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>π</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>∝</mo><mi>exp</mi><mo data-mjx-texclass="NONE">⁡</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow><mo stretchy="false">(</mo><mfrac><mn>1</mn><mi>t</mi></mfrac><msup><mtext mathvariant="sans-serif">CV</mtext><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>+</mo><mi>λ</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>τ</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mo stretchy="false">(</mo><mi>η</mi><mi>t</mi><mo stretchy="false">)</mo><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></math></mjx-assistive-mml></mjx-container></p>
+<p>In fact, in our paper we keep track of the average values, which we call <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="15" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Q</mi></math></mjx-assistive-mml></mjx-container> (indeed, observe in the display equation at the very bottom of page 4, the cumulated values <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="16" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c2211 TEX-S1"></mjx-c></mjx-mo><mjx-mfrac space="2"><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c22EF"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo data-mjx-texclass="OP">∑</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>π</mi><mo stretchy="false">(</mo><mo>⋯</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container> are divided by <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="17" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>t</mi></math></mjx-assistive-mml></mjx-container> on the left of the sum). So, in summary, our updates are equivalent to those of piKL and can be written as
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" justify="left" tabindex="0" ctxtmenu_counter="18" style="font-size: 121.3%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px;"><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c221D"></mjx-c></mjx-mo><mjx-mi class="mjx-n" space="4"><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c78"></mjx-c><mjx-c class="mjx-c70"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mfrac><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-n" space="2"><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D70F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-texatom texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2F"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D702 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi>π</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>∝</mo><mi>exp</mi><mo data-mjx-texclass="NONE">⁡</mo><mrow data-mjx-texclass="ORD"><mfrac><mrow><msup><mi>Q</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow></msup><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>+</mo><mi>λ</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>τ</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mrow data-mjx-texclass="ORD"><mo>/</mo></mrow><mo stretchy="false">(</mo><mi>η</mi><mi>t</mi><mo stretchy="false">)</mo><mo>+</mo><mi>λ</mi></mrow></mfrac></mrow></math></mjx-assistive-mml></mjx-container>
+which is what we have in the paper.</p>
+<p>The reason why we performed this change is that the numerical range of the <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="19" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D444 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>Q</mi></math></mjx-assistive-mml></mjx-container> variables we keep track of remains small, whereas the cumulated utilities <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="20" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mtext class="mjx-ss"><mjx-c class="mjx-c1D5A2 TEX-SS"></mjx-c><mjx-c class="mjx-c1D5B5 TEX-SS"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext mathvariant="sans-serif">CV</mtext></math></mjx-assistive-mml></mjx-container> can grow linearly in absolute value.</p>
+<p><strong>Question 2 (What about larger models?)</strong></p>
+<p>Thank you for the suggestion. Unfortunately, due to the size of the datasets and the number of tasks involved, we have not been able to evaluate our approach on models larger than LLaMA-13B. We leave this to future work!</p>
+<p><strong>Question 3 (Could ER be used for fine-tuning?)</strong></p>
+<p>We think the idea of fine-tuning the models using this objective is a great idea, but this is not something we have been able to try yet.</p>
+<p><strong>Typo</strong></p>
+<p>Thanks for the catch. We will fix this in our revision.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="Y2IrOkTl19"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer XHXa -- Part 2 / 2</h5></div><div class="heading"><h4><span>Official Comment by Reviewer XHXa</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=Y2IrOkTl19"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer XHXa</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>20 Nov 2023, 21:08</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank the authors for the additional experiments and the clarifications. The response resolved many weaknesses in my original review. I believe this paper will be substantially clearer and stronger with these additional results in the final version. That said, the improvement is slightly underwhelming (&lt;1% in 8/12 experiments) compared to the new baseline. In such cases, it would be great if the authors can provide some insight on when and how the ER-D/ER-G methods can bring substantial improvement. For that reason, I feel this paper is more suitable for a score of 7 instead of 8, However, 7 is not an option available, so I keep my score unchanged.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="iHVGf7i2sQ"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Reviewer XHXa</h5></div><div class="heading"><h4><strong>Follow-up Response to Reviewer XHXa</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=iHVGf7i2sQ"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 15:16</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your response! We really appreciate that you are engaging with us in constructive discussion that is allowing us to strengthen this paper further.</p>
+<p><strong>Magnitude of improvement</strong></p>
+<p>(Thanks for the intended increase in score!) We hope that the following additional considerations provide additional clarification about the MI* experiments:</p>
+<ol>
+<li><p>The formulas used to compute initial <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="21" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.325em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>G</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="22" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.309em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>D</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> are themselves an independent contribution of this work and stem from the specific game-theoretic formulation we propose (based on transmitting an abstract correctness parameter). So, it would be more accurate to characterize MI* more as an <em>ablation</em> than an additional <em>baseline</em>.</p>
+</li>
+<li><p>Our data shows that performing equilibrium search on top of the anchors is always better than not doing so. In other words, allowing the learning agents to explore within some reasonable radius from the initial policies is beneficial across the variety of tasks we experiment on, and in some cases it is in fact significantly better. Arguably, this points pretty strongly towards the benefit of equilibrium refinement as a default component that can be enabled in the loop.</p>
+</li>
+<li><p>The results for ER-D and ER-G in the paper are for the default values of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="23" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>λ</mi><mi>G</mi></msub><mo>=</mo><msub><mi>λ</mi><mi>D</mi></msub><mo>=</mo><mn>0.1</mn></math></mjx-assistive-mml></mjx-container> we use across all domains. We kept this consistent to demonstrate that our approach does not require extensive hyperparameter search and consistently beats (sometimes significantly) the baselines. In subsequent experiments, we have found that by tuning the <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="24" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>λ</mi></math></mjx-assistive-mml></mjx-container> parameters, the gains could be even larger. For example, we know that in HHH, setting <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="25" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>λ</mi><mi>G</mi></msub><mo>=</mo><mn>0.01</mn></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="26" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D706 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>λ</mi><mi>L</mi></msub><mo>=</mo><mn>1.0</mn></math></mjx-assistive-mml></mjx-container> leads to a substantial improvement in performance for ER-D (61.1 <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="27" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c2192"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo accent="false" stretchy="false">→</mo></math></mjx-assistive-mml></mjx-container> 70.6).</p>
+</li>
+</ol>
+<p>We will add this discussion to our final revision.</p>
+<p><strong>Insight on when and how the ER-D/ER-G methods improves over ablations and baselines</strong></p>
+<p>Consider the table below that computes the conditional probability that <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="28" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.325em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>G</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="29" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.309em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>D</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> pick the wrong answer conditional on them agreeing. </p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Model</th>
+<th>ER-G</th>
+<th>ER-D</th>
+<th>MI*</th>
+<th>P(answer is incorrect | <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="30" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.325em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>G</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="31" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.309em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>D</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> agree on the same answer)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MMLU</td>
+<td>7B</td>
+<td>39.4</td>
+<td>39.9</td>
+<td>35.8</td>
+<td>0.528</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>44.9</td>
+<td>45.1</td>
+<td>43.1</td>
+<td>0.426</td>
+</tr>
+<tr>
+<td>ARC-Easy</td>
+<td>7B</td>
+<td>71.6</td>
+<td>71.5</td>
+<td>71.04</td>
+<td>0.161</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>76.1</td>
+<td>76.4</td>
+<td>76.1</td>
+<td>0.096</td>
+</tr>
+<tr>
+<td>ARC-Challenge</td>
+<td>7B</td>
+<td>58.7</td>
+<td>58.3</td>
+<td>58.5</td>
+<td>0.303</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>61.1</td>
+<td>61.4</td>
+<td>61.4</td>
+<td>0.253</td>
+</tr>
+<tr>
+<td>RACE-Middle</td>
+<td>7B</td>
+<td>63.2</td>
+<td>63.5</td>
+<td>62.8</td>
+<td>0.252</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>67.9</td>
+<td>68.6</td>
+<td>67.5</td>
+<td>0.178</td>
+</tr>
+<tr>
+<td>RACE-High</td>
+<td>7B</td>
+<td>56.3</td>
+<td>56.4</td>
+<td>55.9</td>
+<td>0.309</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>62.1</td>
+<td>62.8</td>
+<td>62.2</td>
+<td>0.231</td>
+</tr>
+<tr>
+<td>HHH</td>
+<td>7B</td>
+<td>71.5</td>
+<td>71.5</td>
+<td>69.7</td>
+<td>0.182</td>
+</tr>
+<tr>
+<td></td>
+<td>13B</td>
+<td>61.1</td>
+<td>61.1</td>
+<td>61.1</td>
+<td>0.279</td>
+</tr>
+</tbody></table>
+<p>Generally speaking, there seems to be a weak correlation such that the highest performance increase for ER relative to MI* corresponds to those cases in which G and D were agreeing on the <strong>wrong</strong> answer. In MMLU - 7B, G and D have the highest conditional probability of 0.528 and this is also where ER-D has the highest relative improvement over MI* by 11.45%. Similarly, in MMLU - 13B, we see a relative improvement of 4.6% when this conditional probability is 0.42.</p>
+<p>So, we believe that a reasonable predictor of substantial improvement over MI* for EQUILIBRIUM-RANKING could be a measure of how often the unrefined <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="32" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.325em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>G</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="33" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.309em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>π</mi><mi>D</mi><mrow data-mjx-texclass="ORD"><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup></math></mjx-assistive-mml></mjx-container> agree on the wrong answer.</p>
+<p>We hope we have addressed your questions!</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="eh1cPNoPW5"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission8650 by Reviewer ji8z</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=eh1cPNoPW5"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer ji8z</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>26 Oct 2023, 10:42 (modified: 10 Nov 2023, 12:24)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=eh1cPNoPW5">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper introduces a new decoding algorithm called EQUILIBRIUM-RANKING, which addresses the challenge of reconciling different scoring procedures in language models (LMs) for question-answering and text-generation tasks. EQUILIBRIUM-RANKING is a game-theoretic approach, where a generator aims to communicate a correctness parameter to a discriminator through natural language sentences. By formulating language model decoding as an imperfect information sequential signaling game, the authors develop computational procedures to find approximate equilibria of the game. The experiment uses a set of QA tasks to evaluate EQUILIBRIUM-RANKING, including MMLU, ARC, RACE, HHH, and TruthfulQA, and a math benchmark GSM8K. Across these tasks, EQUILIBRIUM-RANKING consistently improves performance compared to existing LM decoding procedures.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>The paper demonstrates originality by introducing a novel approach to decoding language models through the consensus game framework. The idea of casting language model decoding as a game-theoretic problem and seeking approximate equilibria is innovative and provides a fresh perspective on addressing the challenge of reconciling different scoring procedures. </p>
+</li>
+<li><p>The authors develop robust computational techniques for finding approximate equilibria in the consensus game, ensuring reliable and practical implementation of the EQUILIBRIUM-RANKING algorithm. The paper also demonstrates the quality of the research through its extensive evaluation across a diverse range of tasks, showcasing consistent performance improvements over existing decoding procedures.</p>
+</li>
+<li><p>The authors provide a concise and coherent description of the EQUILIBRIUM-RANKING algorithm, making it accessible to readers. The clarity of the writing facilitates the comprehension and replication of the proposed approach. The paper also presents the results and performance improvements in a straightforward manner, enabling readers to grasp the significance of the findings.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>To improve the clarity of the proposed method, it would be advantageous to include a running example that demonstrates the step-by-step process.</p>
+</li>
+<li><p>To enhance the quality of the paper, it is recommended to address minor typos and errors. For instance, in line 6 of the abstract, "a new, a training-free" should be corrected to "a new, training-free." Additionally, in section 2, line 6, "we may them" appears to be a typographical error and should be revised for clarity.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>How is the payoff matrix defined for the consensus game?</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="bdkR6utoAW"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer ji8z</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=n9xeGcI4Yg&amp;noteId=bdkR6utoAW"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 16:08</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your review!</p>
+<p><strong>Clarity of the proposed method</strong></p>
+<p>Thank you for the suggestion. To improve clarity, we will include a pseudo-code with a running example in our revision.</p>
+<p><strong>Typos</strong></p>
+<p>Thank you for catching those typos. We will fix them in our revision.</p>
+<p><strong>How is the payoff matrix defined for the consensus game?</strong></p>
+<p>Signalling games are sequential in nature, as such, they are typically represented in tree-form as we show in Figure 1 (i.e., D and G both receive a reward of 1 each if D picks the correctness parameter that D was trying to communicate. In all other cases, they receive a reward of 0 each). More specifically, D and G receive a reward of (1, 1) each if and only if G picks the same correctness parameter (correct or incorrect) that D received. In all other cases, they receive (0, 0). So, for example, if D receives the signal "correct" and produces a natural language string "u". And if G, conditioned on "u", produces "correct", they both receive (1, 1). If G instead picks "incorrect", they both receive (0,0).</p>
+<p>We hope we have addressed your questions and concerns. Do let us know if you have any other questions!</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission8650/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> <!-- -->is a long-term project to advance science through improved peer review, with legal nonprofit status through<!-- --> <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the<!-- --> <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © <!-- -->2024<!-- --> OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" style="label:input;color:inherit;background:0;opacity:1;width:100%;grid-area:1 / 2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-activedescendant="" aria-describedby="react-select-feedback-subject-placeholder" value=""></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-wbbdf_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"The Consensus Game: Language Model Generation via Equilibrium Search"},"authors":{"value":["Athul Paul Jacob","Yikang Shen","Gabriele Farina","Jacob Andreas"]},"authorids":{"value":["~Athul_Paul_Jacob1","~Yikang_Shen1","~Gabriele_Farina1","~Jacob_Andreas1"]},"keywords":{"value":["language models","decoding","planning","game theory"]},"abstract":{"value":"When applied to question answering and other text generation tasks, language models (LMs) may be queried generatively (by sampling answers from their output distribution) or discriminatively (by using them to score or rank a set of candidate answers). These procedures sometimes yield very different predictions. How do we reconcile mutually incompatible scoring procedures to obtain coherent LM predictions? We introduce a new, a training-free, game-theoretic procedure for language model decoding. Our approach casts language model decoding as a regularized imperfect-information sequential signaling game—which we term the concensus game—in which a generator seeks to communicate an abstract correctness parameter using natural language sentences to a discriminator. We develop computational procedures for finding approximate equilibria of this game, resulting in a decoding algorithm we call equilibrium-ranking. Applied to a large number of tasks (including reading comprehension, commonsense reasoning, mathematical problem-solving, and assistive dialog), equilibrium-ranking consistently improves performance over existing LM decoding procedures. These improvements are sometimes substantial—on multiple benchmarks, we observe that applying equilibrium-ranking to LLaMA-7B outperforms the much larger LLaMA-65B and PaLM-540B models."},"primary_area":{"value":"generative models"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"ICLR 2024 spotlight"},"venueid":{"value":"ICLR.cc/2024/Conference"},"pdf":{"value":"/pdf/6a766aa0bf6a7a4f5d339309db677987d04377ce.pdf"},"_bibtex":{"value":"@inproceedings{\njacob2024the,\ntitle={The Consensus Game: Language Model Generation via Equilibrium Search},\nauthor={Athul Paul Jacob and Yikang Shen and Gabriele Farina and Jacob Andreas},\nbooktitle={The Twelfth International Conference on Learning Representations},\nyear={2024},\nurl={https://openreview.net/forum?id=n9xeGcI4Yg}\n}"},"paperhash":{"value":"jacob|the_consensus_game_language_model_generation_via_equilibrium_search"}},"id":"n9xeGcI4Yg","forum":"n9xeGcI4Yg","signatures":["ICLR.cc/2024/Conference/Submission8650/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission8650/Authors"],"number":8650,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission8650/-/Revision","ICLR.cc/2024/Conference/-/Edit","ICLR.cc/2024/Conference/Submission8650/-/Camera_Ready_Revision"],"domain":"ICLR.cc/2024/Conference","tcdate":1695519914123,"cdate":1695519914123,"tmdate":1713361827522,"mdate":1713361827522,"pdate":1705411045856,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"supplementary_material","order":8},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"primary_area","order":9,"input":"select","value":"generative models","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"n9xeGcI4Yg"}}},"page":"/forum","query":{"id":"n9xeGcI4Yg"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

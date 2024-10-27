@@ -1,0 +1,1093 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>Towards Cross Domain Generalization of Hamiltonian Representation via Meta Learning | OpenReview</title><meta name="description" content="Recent advances in deep learning for physics have focused on discovering shared representations of target systems by incorporating physics priors or inductive biases into neural networks. While effective, these methods are limited to the system domain, where the type of system remains consistent and thus cannot ensure the adaptation to new, or unseen physical systems governed by different laws. For instance, a neural network trained on a mass-spring system cannot guarantee accurate predictions for the behavior of a two-body system or any other system with different physical laws.
+In this work, we take a significant leap forward by targeting cross domain generalization within the field of Hamiltonian dynamics. 
+We model our system with a graph neural network (GNN) and employ a meta learning algorithm to enable the model to gain experience over a distribution of systems and make it adapt to new physics. Our approach aims to learn a unified Hamiltonian representation that is generalizable across multiple system domains, thereby overcoming the limitations of system-specific models. 
+We demonstrate that the meta-trained model captures the generalized Hamiltonian representation that is consistent across different physical domains.
+Overall, through the use of meta learning, we offer a framework that achieves cross domain generalization, providing a step towards a unified model for understanding a wide array of dynamical systems via deep learning."><meta property="og:title" content="Towards Cross Domain Generalization of Hamiltonian Representation..."><meta property="og:description" content="Recent advances in deep learning for physics have focused on discovering shared representations of target systems by incorporating physics priors or inductive biases into neural networks. While..."><meta property="og:type" content="article"><meta name="citation_title" content="Towards Cross Domain Generalization of Hamiltonian Representation via Meta Learning"><meta name="citation_author" content="Yeongwoo Song"><meta name="citation_author" content="Hawoong Jeong"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=AZGIwqCyYY"><meta name="citation_abstract" content="Recent advances in deep learning for physics have focused on discovering shared representations of target systems by incorporating physics priors or inductive biases into neural networks. While effective, these methods are limited to the system domain, where the type of system remains consistent and thus cannot ensure the adaptation to new, or unseen physical systems governed by different laws. For instance, a neural network trained on a mass-spring system cannot guarantee accurate predictions for the behavior of a two-body system or any other system with different physical laws.
+In this work, we take a significant leap forward by targeting cross domain generalization within the field of Hamiltonian dynamics. 
+We model our system with a graph neural network (GNN) and employ a meta learning algorithm to enable the model to gain experience over a distribution of systems and make it adapt to new physics. Our approach aims to learn a unified Hamiltonian representation that is generalizable across multiple system domains, thereby overcoming the limitations of system-specific models. 
+We demonstrate that the meta-trained model captures the generalized Hamiltonian representation that is consistent across different physical domains.
+Overall, through the use of meta learning, we offer a framework that achieves cross domain generalization, providing a step towards a unified model for understanding a wide array of dynamical systems via deep learning."><meta name="citation_conference_title" content="The Twelfth International Conference on Learning Representations"><meta name="next-head-count" content="22"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mfrac {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-frac {
+  display: inline-block;
+  vertical-align: 0.17em;
+  padding: 0 .22em;
+}
+
+mjx-frac[type="d"] {
+  vertical-align: .04em;
+}
+
+mjx-frac[delims] {
+  padding: 0 .1em;
+}
+
+mjx-frac[atop] {
+  padding: 0 .12em;
+}
+
+mjx-frac[atop][delims] {
+  padding: 0;
+}
+
+mjx-dtable {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-dtable > * {
+  font-size: 2000%;
+}
+
+mjx-dbox {
+  display: block;
+  font-size: 5%;
+}
+
+mjx-num {
+  display: block;
+  text-align: center;
+}
+
+mjx-den {
+  display: block;
+  text-align: center;
+}
+
+mjx-mfrac[bevelled] > mjx-num {
+  display: inline-block;
+}
+
+mjx-mfrac[bevelled] > mjx-den {
+  display: inline-block;
+}
+
+mjx-den[align="right"], mjx-num[align="right"] {
+  text-align: right;
+}
+
+mjx-den[align="left"], mjx-num[align="left"] {
+  text-align: left;
+}
+
+mjx-nstrut {
+  display: inline-block;
+  height: .054em;
+  width: 0;
+  vertical-align: -.054em;
+}
+
+mjx-nstrut[type="d"] {
+  height: .217em;
+  vertical-align: -.217em;
+}
+
+mjx-dstrut {
+  display: inline-block;
+  height: .505em;
+  width: 0;
+}
+
+mjx-dstrut[type="d"] {
+  height: .726em;
+}
+
+mjx-line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1px;
+  height: .06em;
+  border-top: .06em solid;
+  margin: .06em -.1em;
+  overflow: hidden;
+}
+
+mjx-line[type="d"] {
+  margin: .18em -.1em;
+}
+
+mjx-mrow {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mover {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mover:not([limits="false"]) {
+  padding-top: .1em;
+}
+
+mjx-mover:not([limits="false"]) > * {
+  display: block;
+  text-align: left;
+}
+
+mjx-munder {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-over {
+  text-align: left;
+}
+
+mjx-munder:not([limits="false"]) {
+  display: inline-table;
+}
+
+mjx-munder > mjx-row {
+  text-align: left;
+}
+
+mjx-under {
+  padding-bottom: .1em;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+.mjx-stretched mjx-c.mjx-c2013::before {
+  content: "\2013";
+}
+
+mjx-stretchy-h.mjx-c2013 mjx-ext mjx-c::before {
+  content: "\2013";
+  padding: 0.285em 0 0 0;
+}
+
+mjx-c.mjx-c1D452.TEX-I::before {
+  padding: 0.442em 0.466em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c2208::before {
+  padding: 0.54em 0.667em 0.04em 0;
+  content: "\2208";
+}
+
+mjx-c.mjx-c45.TEX-C::before {
+  padding: 0.705em 0.564em 0.022em 0;
+  content: "E";
+}
+
+mjx-c.mjx-c1D453.TEX-I::before {
+  padding: 0.705em 0.55em 0.205em 0;
+  content: "f";
+}
+
+mjx-c.mjx-c1D451.TEX-I::before {
+  padding: 0.694em 0.52em 0.01em 0;
+  content: "d";
+}
+
+mjx-c.mjx-c1D465.TEX-I::before {
+  padding: 0.442em 0.572em 0.011em 0;
+  content: "x";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c1D461.TEX-I::before {
+  padding: 0.626em 0.361em 0.011em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c3D::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "=";
+}
+
+mjx-c.mjx-c20D7.TEX-V::before {
+  padding: 0.714em 0.5em 0 0;
+  content: "\2192";
+}
+
+mjx-c.mjx-c1D45E.TEX-I::before {
+  padding: 0.442em 0.46em 0.194em 0;
+  content: "q";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D45D.TEX-I::before {
+  padding: 0.442em 0.503em 0.194em 0;
+  content: "p";
+}
+
+mjx-c.mjx-c1D450.TEX-I::before {
+  padding: 0.442em 0.433em 0.011em 0;
+  content: "c";
+}
+
+mjx-c.mjx-c4F::before {
+  padding: 0.705em 0.778em 0.022em 0;
+  content: "O";
+}
+
+mjx-c.mjx-c72::before {
+  padding: 0.442em 0.392em 0 0;
+  content: "r";
+}
+
+mjx-c.mjx-c69::before {
+  padding: 0.669em 0.278em 0 0;
+  content: "i";
+}
+
+mjx-c.mjx-c67::before {
+  padding: 0.453em 0.5em 0.206em 0;
+  content: "g";
+}
+
+mjx-c.mjx-c6E::before {
+  padding: 0.442em 0.556em 0 0;
+  content: "n";
+}
+
+mjx-c.mjx-c61::before {
+  padding: 0.448em 0.5em 0.011em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c6C::before {
+  padding: 0.694em 0.278em 0 0;
+  content: "l";
+}
+
+mjx-c.mjx-c74::before {
+  padding: 0.615em 0.389em 0.01em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c79::before {
+  padding: 0.431em 0.528em 0.204em 0;
+  content: "y";
+}
+
+mjx-c.mjx-c51::before {
+  padding: 0.705em 0.778em 0.193em 0;
+  content: "Q";
+}
+
+mjx-c.mjx-c75::before {
+  padding: 0.442em 0.556em 0.011em 0;
+  content: "u";
+}
+
+mjx-c.mjx-c43::before {
+  padding: 0.705em 0.722em 0.021em 0;
+  content: "C";
+}
+
+mjx-c.mjx-c53::before {
+  padding: 0.705em 0.556em 0.022em 0;
+  content: "S";
+}
+
+mjx-c.mjx-c66::before {
+  padding: 0.705em 0.372em 0 0;
+  content: "f";
+}
+
+mjx-c.mjx-c63::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "c";
+}
+
+mjx-c.mjx-c65::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c1D454.TEX-I::before {
+  padding: 0.442em 0.477em 0.205em 0;
+  content: "g";
+}
+
+mjx-c.mjx-c1D45B.TEX-I::before {
+  padding: 0.442em 0.6em 0.011em 0;
+  content: "n";
+}
+
+mjx-c.mjx-c1D45F.TEX-I::before {
+  padding: 0.442em 0.451em 0.011em 0;
+  content: "r";
+}
+
+mjx-c.mjx-c1D44E.TEX-I::before {
+  padding: 0.441em 0.529em 0.01em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c1D459.TEX-I::before {
+  padding: 0.694em 0.298em 0.011em 0;
+  content: "l";
+}
+
+mjx-c.mjx-c1D456.TEX-I::before {
+  padding: 0.661em 0.345em 0.011em 0;
+  content: "i";
+}
+
+mjx-c.mjx-c1D467.TEX-I::before {
+  padding: 0.442em 0.465em 0.011em 0;
+  content: "z";
+}
+
+mjx-c.mjx-c1D45C.TEX-I::before {
+  padding: 0.441em 0.485em 0.011em 0;
+  content: "o";
+}
+
+mjx-c.mjx-c1D464.TEX-I::before {
+  padding: 0.443em 0.716em 0.011em 0;
+  content: "w";
+}
+
+mjx-c.mjx-c210E.TEX-I::before {
+  padding: 0.694em 0.576em 0.011em 0;
+  content: "h";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DAZGIwqCyYY&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display:none"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">Towards Cross Domain Generalization of Hamiltonian Representation via Meta Learning</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=AZGIwqCyYY" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Yeongwoo_Song1" data-original-title="~Yeongwoo_Song1">Yeongwoo Song</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Hawoong_Jeong1" data-original-title="~Hawoong_Jeong1">Hawoong Jeong</a> <!-- --> </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>Published: 16 Jan 2024, Last Modified: 16 Mar 2024</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>ICLR 2024 poster</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=AZGIwqCyYY">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40inproceedings%7B%0Asong2024towards%2C%0Atitle%3D%7BTowards%20Cross%20Domain%20Generalization%20of%20Hamiltonian%20Representation%20via%20Meta%20Learning%7D%2C%0Aauthor%3D%7BYeongwoo%20Song%20and%20Hawoong%20Jeong%7D%2C%0Abooktitle%3D%7BThe%20Twelfth%20International%20Conference%20on%20Learning%20Representations%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DAZGIwqCyYY%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics<!-- -->:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords<!-- -->:</strong> <span class="note-content-value">hamiltonian dynamics, cross domain generalization, learning physics, meta learning</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines<!-- -->:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">TL;DR<!-- -->:</strong> <span class="note-content-value">We explore cross domain generalization across dynamical system of diverse functional form of Hamiltonian.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract<!-- -->:</strong> <div class="note-content-value markdown-rendered"><p>Recent advances in deep learning for physics have focused on discovering shared representations of target systems by incorporating physics priors or inductive biases into neural networks. While effective, these methods are limited to the system domain, where the type of system remains consistent and thus cannot ensure the adaptation to new, or unseen physical systems governed by different laws. For instance, a neural network trained on a mass-spring system cannot guarantee accurate predictions for the behavior of a two-body system or any other system with different physical laws.
+In this work, we take a significant leap forward by targeting cross domain generalization within the field of Hamiltonian dynamics. 
+We model our system with a graph neural network (GNN) and employ a meta learning algorithm to enable the model to gain experience over a distribution of systems and make it adapt to new physics. Our approach aims to learn a unified Hamiltonian representation that is generalizable across multiple system domains, thereby overcoming the limitations of system-specific models. 
+We demonstrate that the meta-trained model captures the generalized Hamiltonian representation that is consistent across different physical domains.
+Overall, through the use of meta learning, we offer a framework that achieves cross domain generalization, providing a step towards a unified model for understanding a wide array of dynamical systems via deep learning.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url<!-- -->:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">Supplementary Material<!-- -->:</strong> <span class="note-content-value"><a href="/attachment?id=AZGIwqCyYY&amp;name=supplementary_material" class="attachment-download-link" title="Download Supplementary Material" target="_blank"><span class="glyphicon glyphicon-download-alt " aria-hidden="true"></span> <!-- -->zip</a></span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section<!-- -->:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area<!-- -->:</strong> <span class="note-content-value">applications to physical sciences (physics, chemistry, biology, etc.)</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number<!-- -->:</strong> <span class="note-content-value">9361</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">24 / 24 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="n2XeqV6Rtc"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=n2XeqV6Rtc"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:53 (modified: 16 Feb 2024, 15:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=n2XeqV6Rtc">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Accept (poster)</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="NGLioulGyK"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission9361 by Area Chair 9tyn</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=NGLioulGyK"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair 9tyn</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>05 Dec 2023, 11:42 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=NGLioulGyK">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>This paper introduces an approach for meta-learning across a variety of cross-domain Hamiltonian systems. The reviewers generally found the paper well-written and well-motivated and the experiments interesting and compelling within the setting of Hamiltonian systems. The discussion highlighted some weaknesses of the paper, particularly related to experimental baselines and limitations. The author response and updated manuscript addressed many of the most significant weaknesses, and as such I recommend acceptance.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><p>The limitations of the approach and setting are not clearly defined or investigated, and therefore the scope of applicability and broader appeal remains unclear.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>The paper is well-written and interesting, the approach sensible, and the qualitative and quantitative results are strong and the benefit of meta-learning appears clear.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="YlSU3aUagY"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Overall response</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=YlSU3aUagY"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 05:04 (modified: 21 Nov 2023, 05:11)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=YlSU3aUagY">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We would like to thank all of the reviewers for their constructive and valuable feedback on our work, and furthermore recognizing the strengths of our paper as follows;</p>
+<ul>
+<li>the originality of our work in contrast to previous studies; learning the unified representation across diverse Hamiltonian system domains (<strong>Reviewer xLig</strong> and <strong>Reviewer GtBu</strong>)</li>
+<li>the importance of the experimental aspects of our work; analysis of the unified representation of Hamiltonian dynamics using CKA (<strong>Reviewer hDu2 and Reviewer jozM</strong>)</li>
+</ul>
+<p>We rigorously addressed and incorporated the feedback to strengthen our work. Below are the main points of the revised manuscript (the changes in the manuscript are indicated as <strong>bold</strong>).</p>
+<ol>
+<li>Most reviewers suggested a comparison with the baseline of the existing methods described in sections 2.2, and 2.3. The reason we did not include the previous generalization methods was that it was rather difficult to make a direct comparison with our model. Our model aims to learn a unified representation of the Hamiltonian dynamics across the types of physical systems, while the previous studies focus on the scenario of generalizing the dynamics across multiple environments within a fixed system situation. However, we agree with the reviewers that adding the existing baselines would give more concreteness to our result, and added the CoDA (<a href="https://arxiv.org/abs/2202.01889">Kerchmeyer et al. 2022</a>) (which showed a significantly high performance among various generalization methods across environments within a system, according to the CoDA authors) baseline experiment. <strong>We updated Section 4.4 and SM C.3 with the CoDA baseline and again verified the originality and superiority of our approach.</strong></li>
+<li>We have added experiment to further discuss the limitation of our method, which is indeed a crucial point to make an argument from our experimental point of view. The added experiment is an adaptation task to the dissipative mass-spring system with the meta-trained model with conservative other systems. The meta-trained model fails to adapt to the dissipative system, indicating a possible limitation of our approach. <strong>We updated Section 4.5 and SM C.4 with the corresponding additional experiments and discussions to explore the limitations of our work.</strong> </li>
+<li>Although all reviewers commented that the motivation and presentation of our paper are clearly written, there were some missing points regarding the implementation challenges solved. Although the existing generalization methods (as noted in the first numbered point above) propose new frameworks to learn the generalized dynamics across environments, their applications are limited when we want to generalize across the system type itself, and especially when the degree of freedom of the system changes in the data distribution. <strong>We updated Section 2.3 to clearly state that our approach straightened out the challenges.</strong></li>
+<li>Some of the text, such as section titles and figure captions, has been updated to reflect the comments made by reviewers. <strong>We fixed the title of Section 2.2, 2.3, the caption of Figure 3, and moved Table 1. to SM A.3</strong></li>
+</ol>
+<p>Our manuscript has been revised accordingly (blue; major updates, red; minor updates such as typos) and we kindly ask all reviewers to check the updated part of the paper. We hope that our revised manuscript and responses will have a positive impact on the final evaluation.
+Once again, we thank all reviewers for their efforts in this review and look forward to further discussions.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="qvwExZcUvT"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=qvwExZcUvT"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 21:13 (modified: 22 Nov 2023, 22:58)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=qvwExZcUvT">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Dear reviewers, we would like to inform you that several additional experiments are updated in our manuscript as follows.</p>
+<p><strong><em>Updates</em></strong>:</p>
+<blockquote>
+<ol>
+<li>DyAd (<a href="https://arxiv.org/abs/2102.10271">Wang et al. 2022</a>) baseline results tested on magnetic-mirror system are added in Section 4.4 and SM C.5.</li>
+<li>To further emphasize the generalization ability of multi held-out systems, the adaptation task to a new 2D harmonic oscillator system is added in Section 4.4 and SM C.3.</li>
+<li>Section 2.2 has been revised to provide a more discussion of methods of generalizing dynamics based on meta-learning. This revision outlines the inherent limitations of these methods and describe how our approach differs.</li>
+</ol>
+</blockquote>
+<p>We are grateful for the opportunity to provide further clarification and deeply appreciate the consideration given to our responses, especially within the limited discussion period. We hope that our additional responses will have a positive impact on the final evaluation.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="JCGZ2wMCAL"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=JCGZ2wMCAL"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:52</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Dear reviewers, we would like to inform you that the Section 4.4 and SM C.3 are updated with an additional test system; Kepler system, to add more concreteness to the ability of generalization of multi held-out systems.</p>
+<p>Once again, we deeply appreciate the consideration given to our responses, especially within the limited discussion period.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="ux7s4C5vaw"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9361 by Reviewer hDu2</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=ux7s4C5vaw"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer hDu2</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 10:03 (modified: 22 Nov 2023, 23:12)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=ux7s4C5vaw">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper proposes to use meta-learning to learn generalized representations across different types of dynamical systems. The meta-learning step helps improve the adaptation to unknown systems with fewer data points (compared to randomly initialized and pre-trained baselines) by virtue of generalized representations. The authors also analyze the representations learned by different baselines and meta-learning by using centered kernel alignment (CKA) to gain insights into better performance by the meta-learning model.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The paper is easy to follow and the motivation to learn a generalized model is clear. </li>
+<li>The experiments are performed with different numbers of data-points for the adaptation task to evaluate the robustness of the approach. </li>
+<li>The analysis using CKA gives further insight into how the meta-learning model learns closer representations of the adaptation task. </li>
+<li>The implementation and task curation are described in detail for reproducibility.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The main contribution of the paper seems to be utilizing meta-learning to efficiently adapt to new systems. However, it is not clear from the paper if it is as simple as just using off-the-shelf implementation or if there are some challenges to doing this. </li>
+<li>Also, I would like to see some discussion around why meta-learning is preferred over other representation learning methods e.g. Domain Generalization, and why optimization-based methods surpass other approaches in meta-learning.</li>
+<li>The experiments are not sufficient. First, there is no comparison with existing baseline models in domain generalization or meta-learning. Second, the comparison of the meta-model and pre-trained model is not fair, and I would suggest the author fine-tune the pre-trained model on the K-shot support set. Third, no visual comparison of the predicted dynamics and the ground truth, making the conclusion less convincing.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>Please check the weaknesses above.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="5R0lr0VCbl"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer hDu2</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=5R0lr0VCbl"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 05:07</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We sincerely appreciate your efforts in reviewing our paper. We are pleased that the reviewer noticed the strengths regarding the CKA analysis of the learned representations. We have carefully reviewed the weaknesses pointed out by the reviewer and have revised our manuscript as follows (we also recommend the reviewer review the overall response).</p>
+<p><strong><em>List of changes in the manuscript</em></strong>:</p>
+<blockquote>
+<ol>
+<li>Section 2.3 is revised to add clarity to the paper based on W1, and W2.</li>
+<li>Section 4.4 and SM C.3 are revised to add existing baseline results following W3.</li>
+<li>The titles of Sections 4.1, and 4.2 and the caption of Fig. 3 are updated based on W3.</li>
+</ol>
+</blockquote>
+<p><strong>W1</strong> The main contribution of the paper seems to be utilizing meta-learning to efficiently adapt to new systems. However, it is not clear from the paper if it is as simple as just using off-the-shelf implementation or if there are some challenges to doing this.</p>
+<p><strong>W2</strong> Also, I would like to see some discussion around why meta-learning is preferred over other representation learning methods e.g. Domain Generalization, and why optimization-based methods surpass other approaches in meta-learning.</p>
+<blockquote>
+<p><strong>A1, A2</strong>
+We presume that weaknesses 1 and 2 arise from the lack of clarity that we have written in the paper. Existing previous methods have clear limitations; 1) they do not guarantee generalization across diverse systems, and 2) to do so, they need to be flexible with respect to the varying degrees of freedom of the systems. Our approach aims at resolving these challenges by jointly using GNNs and meta-learning. Accordingly, we have revised section 2.3 to clearly state the points mentioned by the reviewer in Q1 and Q2.</p>
+</blockquote>
+<p><strong>W3</strong> The experiments are not sufficient. First, there is no comparison with existing baseline models in domain generalization or meta-learning. Second, the comparison of the meta-model and pre-trained model is not fair, and I would suggest the author fine-tune the pre-trained model on the K-shot support set. Third, no visual comparison of the predicted dynamics and the ground truth, making the conclusion less convincing.</p>
+<blockquote>
+<p><strong>A3</strong></p>
+<ul>
+<li>First, we acknowledge the insufficient comparison with existing baselines. Originally, we considered it to be hard to directly compare our method with other prior baselines due to the different definitions of the scope of generalization, we added a baseline experiment with CoDA (<a href="https://arxiv.org/abs/2202.01889">Kerchmeyer et al. 2022</a>) which is considered a representative method for domain generalization in learning physical dynamics (as it is reported to be superior among other related methods according to the CoDA authors). As expected, CoDA failed to adapt to an unseen system with the same number of steps, even for sufficient steps up to 10000. We have revised Section 4.4 and SM C.3 of our manuscript with the CoDA baseline results and discussion.</li>
+<li>Second, while we appreciate the reviewer's perspective, our work is at the cornerstone in our scope of the problem definition, and thus to show both the possibility and the effectiveness of the unified representation of Hamiltonian dynamics, we chose as baselines the 1) pre-trained model that used the same total number of gradient steps during meta-training, and the 2) randomly initialized model, following the approach of the prior work of <a href="https://arxiv.org/abs/1703.03400">Finn et al. 2017</a> and <a href="https://arxiv.org/abs/2102.11544">Lee et al. 2021</a>.</li>
+<li>Third, we respectfully ask the reviewer to check Section 4.2, where the dynamics of the predicted systems are discussed using Figure 3. However, we acknowledge that the presentation of the predicted dynamics written in the paper should be more explicit and accordingly we have updated the title of Sections 4.1, 4.2 and the caption of Figure 3.</li>
+</ul>
+</blockquote>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="AkWTnzZetg"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer hDu2</h5></div><div class="heading"><h4><span>Official Comment by Reviewer hDu2</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=AkWTnzZetg"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer hDu2</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 14:09</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your detailed response. Although some of my concerns have been addressed, there are still major questions remaining to be answered:</p>
+<ol>
+<li>The description of the methodology is not clear. Both the proposed work and CoDA are based on optimization-based meta-learning and one of the key differences is the use of graphs. However, the details of what the vertices and edges in the graph represent and how the graph is constructed are missing. Also, it would be good to have an ablation study on the proposed method without graph representation.</li>
+<li>There are lots of non-MAML-based meta-learning models working on physics dynamics and they deserve to be compared. For instance, DyAd [1] is a model-based meta-learning with weak supervision for turbulence flow on heterogeneous domains; Sequential Neural Processes [2] has a similar see,tting of generalizing on sequential dynamics; meta-SLVM [3] addresses the adaptation across dynamics via Bayesian meta-learning and has experimented on different physics model. These works should be mentioned as related works and compared to demonstrate how the proposed work improves the generalization across different dynamics.</li>
+</ol>
+<p>I choose to keep my score unless the concerns above are addressed.</p>
+<p>[1] Wang et al, Meta-learning dynamics forecasting using task inference, 2022 
+[2] Singh et al, Sequential neural processes, 2019
+[3] Jiang et al, Sequential Latent Variable Models for Few-Shot High-Dimensional Time-Series Forecasting 2023</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="OJGNMZPaZB"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=OJGNMZPaZB"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 21:27 (modified: 22 Nov 2023, 22:54)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=OJGNMZPaZB">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We acknowledge your detailed comment regarding our response. Below we provide a response for the reviewer’s additional comments.</p>
+<ol>
+<li>As the reviewer pointed out, one of the key differences between our proposed work and CoDA is the usage of graphs. We would like to add one more major difference as follows. According to the CoDA paper, CoDA is based on the assumption that the <em>environment</em> <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2208"></mjx-c></mjx-mo><mjx-texatom space="4" texclass="ORD"><mjx-mi class="mjx-cal mjx-i"><mjx-c class="mjx-c45 TEX-C"></mjx-c></mjx-mi></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi><mo>∈</mo><mrow data-mjx-texclass="ORD"><mi data-mjx-variant="-tex-calligraphic" mathvariant="script">E</mi></mrow></math></mjx-assistive-mml></mjx-container> is from a specific dynamics <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>f</mi></math></mjx-assistive-mml></mjx-container> (where <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mfrac><mjx-frac><mjx-num><mjx-nstrut></mjx-nstrut><mjx-mrow size="s"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line></mjx-line><mjx-row><mjx-den><mjx-dstrut></mjx-dstrut><mjx-mrow size="s"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D453 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mrow><mi>d</mi><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>) such that the functional form of the dynamics set from the training data and the dynamics set of the unseen data should be the same. In other words, the context of environment-specific parameters is the same across the environments. This way of formulation can also be found for DyAd [1], and meta-SLVM [3]. However, in our setting, we do not impose such assumptions such that the term <em>environment</em> (which was a generalization within a fixed dynamics form) can be extended in the context of the term <em>domain</em> (now a generalization across different dynamics) we used in our manuscript. 
+ And for the missing details about how the graphs represent the system, we followed the settings from <a href="https://arxiv.org/abs/1909.12790">Sanchez-Gonzalez et al. 2019</a>, and <a href="https://openreview.net/forum?id=Ugl-B_at5n">Bishonoi et al. 2023</a> such that the nodes represent the state <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.317em; margin-bottom: -0.516em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-c20D7 TEX-V"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.335em; margin-bottom: -0.516em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-c20D7 TEX-V"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>q</mi><mo stretchy="false">→</mo></mover></mrow><mo>,</mo><mrow data-mjx-texclass="ORD"><mover><mi>p</mi><mo stretchy="false">→</mo></mover></mrow><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container>, while the edge features are not used for now. We revised Section 3.2 accordingly.</li>
+<li>We acknowledge the reviewer's observation regarding potential misunderstandings on our part. We focused on reporting baseline results for DyAd [1] within a specific system context. Our additional evaluation included testing the magnetic-mirror system adaptation task using a meta-trained model, which encompassed systems of mass-spring, pendulum, and Hénon-Heiles. Notably, DyAd showed limited adaptation capabilities in this context, struggling significantly with the magnetic-mirror system.
+ This observation leads us to a critical point: methods such as CoDA, DyAd, and meta-SLVM, which aim to generalize within a fixed functional form of dynamics, may not be directly applicable to our concept of domain generalization (as we have previously discussed in the above-numbered point 1.). To align DyAd more closely with our generalization scope, we made a subtle modification to the parameter <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>c</mi></math></mjx-assistive-mml></mjx-container> in the encoder loss's first term (weak supervision term), representing it as the Hamiltonian of the system. While it may be hard to argue that the explicit form of Hamiltonian is not shared across the system, we viewed this as a minimal form of weak supervision, leveraging the universal concept of energy in dynamical systems.
+ And for the meta-SLVM, although it adapted well to several physical scenarios (namely bouncing balls under 4 gravity, pendulums, and mass springs with each four different physical constants), their adaptation was tested under the same type of physics; among the four dynamics for each physical scenarios, three were used for meta training, and the remaining one was used for meta testing.
+ Therefore, despite the inherent limitations of DyAd and similar methods in this context, we posit that our approach, leveraging a vanilla MAML-based method, demonstrates superior adaptability and effectiveness compared to these baselines. This distinction underscores the rationale behind our methodological choices and the results we observed. Accordingly, we revised Section 2.3 with the discussions and Section 4.4 and SM C.5 with DyAd results. We hope that the additional response will address the concerns raised and appreciate the opportunity to clarify these aspects within the limited discussion period.</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="3WOQQSW89n"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Reviewer hDu2</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=3WOQQSW89n"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer hDu2</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 23:11</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank the authors for the clarification and additional experiments. Below are some suggestions that may improve the presentation of the work based on the discussion above:</p>
+<ol>
+<li>The authors could highlight the method is able to process unseen domains and add the details of the graph to the main text. The comparison of the proposed work and existing meta-learning works, including the non-MAML-based works, could be discussed in the related works.</li>
+<li>I appreciate the effort of adding experiments in such limited discussion time, although I still encourage the authors to make more effort on the non-MAML-based works, including the reasons of their inability to adapt to unseen domains and whether the proposed models can be applied to these frameworks.</li>
+</ol>
+<p>I modified my evaluation accordingly.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="GWKMHKkB8K"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Reviewer hDu2</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=GWKMHKkB8K"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 07:01</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for considering the additional baseline results and discussions. With the additional comments that the reviewer has given to us, we will revise our manuscript including the highlight that our method is able to process to unseen domains and so on. Once again, we heartily thank the reviewer for the effort in reviewing our work.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="FBXRP3lnzq"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9361 by Reviewer jozM</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=FBXRP3lnzq"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer jozM</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 09:08 (modified: 21 Nov 2023, 08:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=FBXRP3lnzq">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper reports the performance of MAML applied to domain generalization over different Hamiltonian dynamics. The performance gain by MAML is analyzed with multiple indices over different combinations of meta-training and meta-test data. The key findings include the superiority of the meta-trained models compared to the pre-trained and randomly initialized models and an implication that by meta-learning, the representations obtained by the models tend to be more specific to each system.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p>The experiments clearly show the superiority of meta-learning, at least within the limited number of Hamiltonian systems. </p>
+<p>The paper is well written. The motivation, the method, and the experimental results are very clearly reported.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>The limitation of meta-learning for (Hamiltonian) dynamics is not clearly investigated. This makes it difficult to assess the range where the claims made in the paper should be valid. In other words, the claims are rather weak because their applicability seems unbounded with the current set of experiments. When the meta-learning approaches for dynamics may not be beneficial? For example, what happens if you meta-train a model only with conservative systems and try to adapt it to a dissipative system? Such experiments to investigate the limitations of the empirical findings would strengthen the paper.</p>
+<p>The paper only reports the performance of a well-known method (MAML) merely applied to a particular setting. This could certainly be a kind of contribution in which ICLR audience may be interested, but I think that in such a paper, with a purely experimental point of view, the claims should be made more carefully. Specifically, as stated above, the cases where meta-learning is not necessarily beneficial should also be revealed, with which the claims would become more falsifiable and convincing.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>I don't have particular questions. It would be great if the authors could additionally report the results of some experiments to investigate the limitation of meta-learning in this context, although this is not a question.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="XGHhohTLzv"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer jozM</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=XGHhohTLzv"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 05:08</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your efforts in providing valuable comments on our work. We appreciate the reviewer's comment about the points that should be further considered from the aspect of our experimental point of view. We have thoroughly considered the concerns raised by the reviewer and revised our manuscript as follows (we also recommend the reviewer check the global response).</p>
+<p><strong><em>List of changes in the manuscript</em></strong>:</p>
+<blockquote>
+<ol>
+<li>Section 4.5 and SM C.4 are revised to add additional experiments according to W1</li>
+</ol>
+</blockquote>
+<p><strong>W1</strong> I don't have particular questions. It would be great if the authors could additionally report the results of some experiments to investigate the limitation of meta-learning in this context, although this is not a question.</p>
+<blockquote>
+<p><strong>A1</strong>
+It should be noted that, in an attempt to provide further insight beyond the experimental results for the generalized model, we have provided the CKA analysis of the learned representations for each of the models. This was also the reason why we only compared the meta-trained model with the pre-trained and randomly initialized model, and not with the existing baselines in the first place. Nevertheless, we strongly agree with the reviewer that our results and claims should be made more carefully from our paper’s experimental point of view, and we appreciate the suggestion to make our claims more thorough by exploring the limitations of meta-learning for learning a unified representation of Hamiltonian dynamics.
+Consequently, we consider the example suggested by the reviewer (meta-training the model with conservative systems and adapting it to a dissipative system), which we believe is a good way to explore this. As expected, the meta-trained model (as well as the pre-trained and randomly initialized model) failed to adapt to a dissipative system, showing a clear limitation of our approach. We discuss the reason why, for the case of a dissipative system, Hamilton's equation (Equation 1 in the manuscript) does not hold, and thus the HNN loss (Equation 2 in the manuscript) is not appropriate for dissipative systems. We argue that to make use of our method, both the system in the data distribution for meta-training and adaptation should share the same nature so that both satisfy the given loss of the implementation. We have added the corresponding experimental results and discussions in Section 4.5 and SM C.4.</p>
+</blockquote>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="GnwCeYR8JO"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer jozM</h5></div><div class="heading"><h4><span>Official Comment by Reviewer jozM</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=GnwCeYR8JO"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer jozM</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 08:28</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thanks for the response. The revised manuscript is clearer in terms of the specific contribution, and the limitation shown in the new experiments is convincing. I modified my evaluation accordingly.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="Il76fUbvDs"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Reviewer jozM</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=Il76fUbvDs"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:59</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We are glad to hear that the concerns from the reviewer were relieved with the additional experiments that the reviewer has suggested. Once again, we greatly appreciate your effort in reviewing our work.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="MPDVvgTzbR"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9361 by Reviewer xLig</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=MPDVvgTzbR"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer xLig</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 00:11 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=MPDVvgTzbR">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper proposed a novel meta-learning method aiming to learn a unified Hamiltonian representation such that it can be generalized to unseen physical systems. Hamiltonian Neural Networks were utilized as the backbone of the method for learning the unified Hamiltonian representations of different physical systems, via meta-learning pipelines of a variation of MAML. Experiments demonstrated the proposed methods achieved lower relative error of trajectories and energy when adapted to different systems.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p>(1) Unlike many existing works that focus on learning system dynamics under similar&nbsp;physical law, the proposed methods aim to learn the unified representations across diverse system domains via meta-learning the&nbsp;Hamiltonian of the given system. This sounds&nbsp;significant&nbsp;and promising.</p>
+<p>(2) Both quantitative and qualitative results demonstrated the proposed method achieved&nbsp;better adaptation&nbsp;to various new systems compared with baselines.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>The evaluation can be strengthened&nbsp;by considering comparing the proposed methods with other&nbsp;Few-shot Learning and&nbsp;Physics-informed Neural Networks methods for&nbsp;system domain generalization under both "consistent" and "different" physical laws.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>In Figure 4, why does a lower CKA value of the meta-trained model suggest it learned more similar representations during adaptation? As the authors mentioned, should a low CKA value indicate different representations?</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">2: You are willing to defend your assessment, but it is quite likely that you did not understand the central parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="adDOP3DMul"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer xLig</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=adDOP3DMul"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 05:08</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We appreciate your thoughtful effort in reviewing this work. We are delighted to hear that the reviewer has recognized the contribution of our work in contrast to many existing works. We have carefully considered the points raised by the reviewer and have revised our manuscript as follows (we also recommend that the reviewer check the overall response).</p>
+<p><strong><em>List of changes in the manuscript</em></strong>:</p>
+<blockquote>
+<ol>
+<li>Section 4.4 and SM C.3 are revised to add existing baseline results according to W1</li>
+</ol>
+</blockquote>
+<p><strong>W1</strong> The evaluation can be strengthened by considering comparing the proposed methods with other Few-shot Learning and Physics-informed Neural Networks methods for system domain generalization under both "consistent" and "different" physical laws.</p>
+<blockquote>
+<p><strong>A1</strong>
+We first thought that it would be difficult to directly compare our method with other previous baselines, as the definition of the scope of generalization is different. However, we strongly agree with the reviewer that our evaluation can be strengthened by comparing the proposed approach with other existing methods. We added a baseline experiment with CoDA (<a href="https://arxiv.org/abs/2202.01889">Kerchmeyer et al. 2022</a>) which is considered a representative method for domain generalization in learning physical dynamics (as it is reported to be superior to other related methods according to the CoDA authors). As expected, CoDA failed to adapt to an unseen system with the same number of steps, even for sufficient steps up to 10000. We have revised section 4.4 of our manuscript with the CoDA baseline results and discussion.</p>
+</blockquote>
+<p><strong>Q1</strong> In Figure 4, why does a lower CKA value of the meta-trained model suggest it learned more similar representations during adaptation? As the authors mentioned, should a low CKA value indicate different representations?</p>
+<blockquote>
+<p><strong>A1</strong>
+We acknowledge that our label notation in Figure 4 could be quite misleading. The y-axis represents the 1-CKA (1 minus CKA) value, not the raw CKA value. Therefore, the lower y-axis in Figure 4 indicates a high CKA value, which leads to more similar representations during adaptation.</p>
+</blockquote>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="KfF0ZP3s6z"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer xLig</h5></div><div class="heading"><h4><span>Official Comment by Reviewer xLig</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=KfF0ZP3s6z"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer xLig</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 12:46</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank the authors for their clarification and the additional experiments. I will maintain my score.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="jnfUL3KLXh"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Reviewer xLig</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=jnfUL3KLXh"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:58</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Although there were some additional results were presented in a rush within the limited discussion period (including additional DyAd baseline results), we hope that these points can resolve the remaining concerns. Once again, thank you for your effort in reviewing our work.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="aWxMIfTpWd"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9361 by Reviewer GtBu</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=aWxMIfTpWd"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer GtBu</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>28 Oct 2023, 06:18 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=aWxMIfTpWd">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This work leverages the power of meta-learning algorithms coupled with graph neural networks to find a shared representation of physical systems across various functional forms of Hamiltonian. In contrast to previous work, here the focus is on obtaining a representation which is valid across different physical systems. The performance of the framework is evaluated over a range of physical systems aiming to showcase its adaptivity to unseen settings.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-munder><mjx-row><mjx-base><mjx-mtext class="mjx-n"><mjx-c class="mjx-c4F"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c67"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c79"></mjx-c></mjx-mtext></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.18em;"><mjx-mo class="mjx-n"><mjx-box style="margin-bottom: -0.248em; vertical-align: -0.248em;"><mjx-stretchy-h class="mjx-c2013" style="width: 4.755em;"><mjx-ext><mjx-c></mjx-c></mjx-ext></mjx-stretchy-h></mjx-box></mjx-mo></mjx-under></mjx-row></mjx-munder></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><munder><mtext>Originality</mtext><mo accent="true">―</mo></munder></math></mjx-assistive-mml></mjx-container>: the paper presents great originality in providing a Hamiltonian representation learning framework that can generalize across multiple system domains. This is in contrast to the common approach of providing system-specific models.</p>
+<p><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-munder><mjx-row><mjx-base><mjx-mtext class="mjx-n"><mjx-c class="mjx-c51"></mjx-c><mjx-c class="mjx-c75"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c79"></mjx-c></mjx-mtext></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.18em;"><mjx-mo class="mjx-n"><mjx-box style="margin-bottom: -0.248em; vertical-align: -0.248em;"><mjx-stretchy-h class="mjx-c2013" style="width: 3.307em;"><mjx-ext><mjx-c></mjx-c></mjx-ext></mjx-stretchy-h></mjx-box></mjx-mo></mjx-under></mjx-row></mjx-munder></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><munder><mtext>Quality</mtext><mo accent="true">―</mo></munder></math></mjx-assistive-mml></mjx-container>: the paper is very well written. First, it provides the reader with all necessary background as well as motivation for the task addressed. Next, methods and results are well constructed. </p>
+<p><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-munder><mjx-row><mjx-base><mjx-mtext class="mjx-n"><mjx-c class="mjx-c43"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c79"></mjx-c></mjx-mtext></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.18em;"><mjx-mo class="mjx-n"><mjx-box style="margin-bottom: -0.248em; vertical-align: -0.248em;"><mjx-stretchy-h class="mjx-c2013" style="width: 3.087em;"><mjx-ext><mjx-c></mjx-c></mjx-ext></mjx-stretchy-h></mjx-box></mjx-mo></mjx-under></mjx-row></mjx-munder></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><munder><mtext>Clarity</mtext><mo accent="true">―</mo></munder></math></mjx-assistive-mml></mjx-container>:  the main ideas conveyed in this paper are clearly constructed and explained and supplementary information assists with providing further details and ablation studies. </p>
+<p><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-munder><mjx-row><mjx-base><mjx-mtext class="mjx-n"><mjx-c class="mjx-c53"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c67"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c63"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext></mjx-base></mjx-row><mjx-row><mjx-under style="padding-top: 0.18em;"><mjx-mo class="mjx-n"><mjx-box style="margin-bottom: -0.248em; vertical-align: -0.248em;"><mjx-stretchy-h class="mjx-c2013" style="width: 5.14em;"><mjx-ext><mjx-c></mjx-c></mjx-ext></mjx-stretchy-h></mjx-box></mjx-mo></mjx-under></mjx-row></mjx-munder></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><munder><mtext>Significance</mtext><mo accent="true">―</mo></munder></math></mjx-assistive-mml></mjx-container>:  the main significance of the paper is in defining a new task, generalizing upon existing approaches, and suggesting to derive a framework that learns a representation that is not domain-specific.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><p>The paper presents an appealing goal, providing generalized Hamiltonian representations consistent across different physical domains. However, given the presented quantitative and qualitative results it is hard to judge the actual generalization and performance of the framework as detailed in the following points:</p>
+<ol>
+<li><p>The notion of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mtext class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c><mjx-c class="mjx-c1D452 TEX-I"></mjx-c><mjx-c class="mjx-c1D45B TEX-I"></mjx-c><mjx-c class="mjx-c1D452 TEX-I"></mjx-c><mjx-c class="mjx-c1D45F TEX-I"></mjx-c><mjx-c class="mjx-c1D44E TEX-I"></mjx-c><mjx-c class="mjx-c1D459 TEX-I"></mjx-c><mjx-c class="mjx-c1D456 TEX-I"></mjx-c><mjx-c class="mjx-c1D467 TEX-I"></mjx-c><mjx-c class="mjx-c1D44E TEX-I"></mjx-c><mjx-c class="mjx-c1D461 TEX-I"></mjx-c><mjx-c class="mjx-c1D456 TEX-I"></mjx-c><mjx-c class="mjx-c1D45C TEX-I"></mjx-c><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext mathvariant="italic">generalization</mtext></math></mjx-assistive-mml></mjx-container>: ideally when discussing generalization in DL we would like to obtain a single pre-trained model which can then be used for diverse applications. With respect to the presented framework, this would suggest training the model(s) on a single task and then using the same network for prediction on all held-out systems. Similar to the setting presented in Ricci et al. (2023). However, here presented results always consider a single held-out-system. Providing an ablation over the number of systems used for training will allow for strengthening the claim of generalization and applicability for real-world applications.</p>
+</li>
+<li><p>Baselines: it would be beneficial to extend the baselines presented in the paper in two directions:
+(i) optimal;  Training over the tested task, using all regimes (meta-, pre-, and vanilla HNN). This will allow a better assessment of the quality of the generalized model and (ii) within system generalization; following the background presented in section 2 it will be valuable to add a comparison to frameworks that are similar in nature and allow <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="10" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mtext class="mjx-i"><mjx-c class="mjx-c1D464 TEX-I"></mjx-c><mjx-c class="mjx-c1D456 TEX-I"></mjx-c><mjx-c class="mjx-c1D461 TEX-I"></mjx-c><mjx-c class="mjx-c210E TEX-I"></mjx-c><mjx-c class="mjx-c1D456 TEX-I"></mjx-c><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mtext mathvariant="italic">within</mtext></math></mjx-assistive-mml></mjx-container> model generalization, e.g. CoDA (Kirchmeyer et al. 2022) or within the same functional form of the Hamiltonian, e.g. iMODE (Li et al. 2023). Here training over the same train-test splits.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>Can the authors provide additional ablation studies following the weaknesses presented above? Specifically, it will be beneficial to present the performance as a function of the number of systems used in training (see weaknesses 1.) and add additional baselines  (see weaknesses 2.) </li>
+<li>Judging from the presented results the current framework is not suitable for larger systems, could the authors suggest possible extensions that may allow? What would be the necessary refinements that could be incorporated in the meta-learning configuration to allow for that?</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="pewIAkorCM"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer GtBu</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=pewIAkorCM"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 05:09</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for your efforts in providing insightful feedback on our work. We appreciate the reviewer's recognition of the originality of our work compared to other related works. We have thoroughly examined the weaknesses and questions and revised our manuscript as follows (we also recommend the reviewer check the overall response).</p>
+<p><strong><em>List of changes in the manuscript</em></strong>:</p>
+<blockquote>
+<ol>
+<li>Section 4.4 and SM C.3 are revised to add existing baseline results according to Q1</li>
+</ol>
+</blockquote>
+<p><strong>Q1</strong> Can the authors provide additional ablation studies following the weaknesses presented above? Specifically, it will be beneficial to present the performance as a function of the number of systems used in training (see weaknesses 1.) and add additional baselines (see weaknesses 2.)</p>
+<blockquote>
+<p><strong>A1</strong>
+We appreciate the reviewer for suggesting additional experiments to strengthen our paper.
+Regarding weakness 1, it's important to clarify that our primary objective was to explore the generalization of Hamiltonian dynamics for predicting a single, unknown held-out system, underpinned by ample data. While the experiment proposed by the reviewer is indeed beneficial, it aligns more closely with further challenging scenarios involving adaptation to multiple unknown systems. Such situations extend beyond the current scope of our research, which focuses on a singular system context.
+For weakness 2, we originally thought that it was hard to directly compare our method with other prior baselines as the definition of the scope of generalization is different. However, we agree that adding such baselines would be beneficial. As such, we choose CoDA (<a href="https://arxiv.org/abs/2202.01889">Kerchmeyer et al. 2022</a>) as a representative method for domain generalization in learning the physical dynamics (as it is reported to be superior among other related methods according to the CoDA authors). As expected, CoDA failed to adapt to an unseen system with the same number of steps, even for sufficient steps up to 10000. We have revised Section 4.4 and SM C.3 of our manuscript with the CoDA baseline results and included the corresponding discussion.</p>
+</blockquote>
+<p><strong>Q2</strong> Judging from the presented results the current framework is not suitable for larger systems, could the authors suggest possible extensions that may allow? What would be the necessary refinements that could be incorporated in the meta-learning configuration to allow for that?</p>
+<blockquote>
+<p><strong>A2</strong>
+Although the results for the large systems are quite poor in the reported results, we want to mention that our approach can handle the problem when the degree of freedom of the prepared data is not consistent throughout the system, noting that the previous methods discussed in Section 2.2 and 2.3 cannot be used in such scenarios. Although we cannot give the exact refinements in our preliminary results, possible ways could be 1) tune the update method in meta-learning, e.g. <a href="https://arxiv.org/abs/2102.11544">Lee et al. 2021</a> report that using ANIL variation gives more accuracy compared to vanilla MAML, and 2) strictly search the hyperparameter space.</p>
+</blockquote>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="MPpZWmQj63"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer GtBu</h5></div><div class="heading"><h4><span>Official Comment by Reviewer GtBu</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=MPpZWmQj63"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer GtBu</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 09:04</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for the detailed response; while some of my concerns have been addressed others remain hence i choose to keep my score (mainly, while not set as a primary objective, i believe the <em>generalization</em> notion stands as a big weakness).</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="JBCNmwqx5E"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=JBCNmwqx5E"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 21:28 (modified: 22 Nov 2023, 22:55)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=JBCNmwqx5E">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We acknowledge the reviewer's concern regarding the generalization aspect of our study. The absence of the suggested ablation experiment in our work stemmed from our assessment that the number of systems (1 to 3) required for such an experiment would not be adequate for the adaptation task at hand. Instead, to evaluate such generalization, we directly tested the meta-trained model's performance on multiple held-out systems. Following the reviewer's suggestions, we extended our analysis to include the 2D harmonic oscillator system, utilizing the same meta/pre-trained models from our initial experiments. This approach aimed to assess the model's capability in generalizing across multiple held-out systems. The results showed that the meta-trained model significantly outperformed the baselines in terms of both coordinate prediction and energy estimation, thus reinforcing its generalization ability on a broader range of systems. We have updated Section 4.4 and SM C.3 in our manuscript to incorporate these findings and the corresponding discussions. We hope that the additional response will address the concerns raised and appreciate the opportunity to clarify these aspects within the limited discussion period.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="O9k40NYzXu"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=AZGIwqCyYY&amp;noteId=O9k40NYzXu"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 06:55</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Previously, we have only added 2D harmonic oscillator system as a new example to check the adaptation to multi held-out systems. To give more concreteness to the point of the <strong>notion of generalization</strong> that the reviewer has given to us, we also added Kepler system as a new system to test. Accordingly, we have revised Section 4.4 and SM C.3. We deeply appreciate the consideration given to our responses, especially within the limited discussion period.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9361/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> <!-- -->is a long-term project to advance science through improved peer review, with legal nonprofit status through<!-- --> <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the<!-- --> <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © <!-- -->2024<!-- --> OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" style="label:input;color:inherit;background:0;opacity:1;width:100%;grid-area:1 / 2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-activedescendant="" aria-describedby="react-select-feedback-subject-placeholder" value=""></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-ke0s7_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"Towards Cross Domain Generalization of Hamiltonian Representation via Meta Learning"},"authors":{"value":["Yeongwoo Song","Hawoong Jeong"]},"authorids":{"value":["~Yeongwoo_Song1","~Hawoong_Jeong1"]},"keywords":{"value":["hamiltonian dynamics","cross domain generalization","learning physics","meta learning"]},"abstract":{"value":"Recent advances in deep learning for physics have focused on discovering shared representations of target systems by incorporating physics priors or inductive biases into neural networks. While effective, these methods are limited to the system domain, where the type of system remains consistent and thus cannot ensure the adaptation to new, or unseen physical systems governed by different laws. For instance, a neural network trained on a mass-spring system cannot guarantee accurate predictions for the behavior of a two-body system or any other system with different physical laws.\nIn this work, we take a significant leap forward by targeting cross domain generalization within the field of Hamiltonian dynamics. \nWe model our system with a graph neural network (GNN) and employ a meta learning algorithm to enable the model to gain experience over a distribution of systems and make it adapt to new physics. Our approach aims to learn a unified Hamiltonian representation that is generalizable across multiple system domains, thereby overcoming the limitations of system-specific models. \nWe demonstrate that the meta-trained model captures the generalized Hamiltonian representation that is consistent across different physical domains.\nOverall, through the use of meta learning, we offer a framework that achieves cross domain generalization, providing a step towards a unified model for understanding a wide array of dynamical systems via deep learning."},"primary_area":{"value":"applications to physical sciences (physics, chemistry, biology, etc.)"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"ICLR 2024 poster"},"venueid":{"value":"ICLR.cc/2024/Conference"},"pdf":{"value":"/pdf/b18ec7715410bb144074f86aecfa3acfa91b52d9.pdf"},"supplementary_material":{"value":"/attachment/13c5178c183aa265ef6bcfdad34ad2fea13afaa0.zip"},"TLDR":{"value":"We explore cross domain generalization across dynamical system of diverse functional form of Hamiltonian."},"_bibtex":{"value":"@inproceedings{\nsong2024towards,\ntitle={Towards Cross Domain Generalization of Hamiltonian Representation via Meta Learning},\nauthor={Yeongwoo Song and Hawoong Jeong},\nbooktitle={The Twelfth International Conference on Learning Representations},\nyear={2024},\nurl={https://openreview.net/forum?id=AZGIwqCyYY}\n}"},"paperhash":{"value":"song|towards_cross_domain_generalization_of_hamiltonian_representation_via_meta_learning"}},"id":"AZGIwqCyYY","forum":"AZGIwqCyYY","signatures":["ICLR.cc/2024/Conference/Submission9361/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission9361/Authors"],"number":9361,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission9361/-/Revision","ICLR.cc/2024/Conference/Submission9361/-/Rebuttal_Revision","ICLR.cc/2024/Conference/-/Edit","ICLR.cc/2024/Conference/Submission9361/-/Camera_Ready_Revision"],"domain":"ICLR.cc/2024/Conference","tcdate":1695552644518,"cdate":1695552644518,"tmdate":1710581713869,"mdate":1710581713869,"pdate":1705411062755,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"supplementary_material","order":8},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"primary_area","order":9,"input":"select","value":"applications to physical sciences (physics, chemistry, biology, etc.)","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"AZGIwqCyYY"}}},"page":"/forum","query":{"id":"AZGIwqCyYY"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

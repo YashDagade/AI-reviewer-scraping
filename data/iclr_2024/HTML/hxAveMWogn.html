@@ -1,0 +1,537 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>InstaTAP: Instance Motion Estimation for Tracking Any Point | OpenReview</title><meta name="description" content="This paper tackles a challenge in learning the long-term point trajectories in videos, like the Tracking Any Point (TAP) task. Fundamentally, the estimation of point-level motions is hindered by the significant uncertainty inherent in comprehensive comparisons across the entire video frame. While existing models attempt to mitigate this issue by considering a regularized comparison space (e.g., the cost volumes), point-level motion remains highly noisy, often leading to failures on individual points. To tackle the issue, our key idea is to jointly track multiple points within a given semantic object: since points in an object tend to move together on average, individual noise trajectories can be effectively marginalized, subsequently obtaining fine-grained motion information. Specifically, we predict the object mask using point-prompted segmentation provided by Segment Anything Models (SAM) and enhance the performance of existing models through a systematic two-stage procedure: (a) estimating the average motion of points within the object mask (predicted by SAM) as the initial estimate, and (b) refining this estimate to achieve point-level tracking. In stage (b), we actively generate fine-grained features around the initial estimate, preserving high-frequency details for precise tracking. Consequently, our method not only overcomes the failure modes seen in existing state-of-the-art methods but also demonstrates superior precision in tracking results. For example, on the recent TAP-Vid benchmark, our method advances the state-of-the-art performance, achieving up to a 25% improvement in accuracy at the 1-pixel error threshold. Furthermore, we showcase the advantages of our method in two downstream tasks: video depth estimation and video frame interpolation, exploiting the point-wise correspondence in each task."><meta property="og:title" content="InstaTAP: Instance Motion Estimation for Tracking Any Point"><meta property="og:description" content="This paper tackles a challenge in learning the long-term point trajectories in videos, like the Tracking Any Point (TAP) task. Fundamentally, the estimation of point-level motions is hindered by..."><meta property="og:type" content="article"><meta name="citation_title" content="InstaTAP: Instance Motion Estimation for Tracking Any Point"><meta name="citation_author" content="Seong Hyeon Park"><meta name="citation_author" content="Sukmin Yun"><meta name="citation_author" content="Paul Hongsuck Seo"><meta name="citation_author" content="Jinwoo Shin"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=hxAveMWogn"><meta name="citation_abstract" content="This paper tackles a challenge in learning the long-term point trajectories in videos, like the Tracking Any Point (TAP) task. Fundamentally, the estimation of point-level motions is hindered by the significant uncertainty inherent in comprehensive comparisons across the entire video frame. While existing models attempt to mitigate this issue by considering a regularized comparison space (e.g., the cost volumes), point-level motion remains highly noisy, often leading to failures on individual points. To tackle the issue, our key idea is to jointly track multiple points within a given semantic object: since points in an object tend to move together on average, individual noise trajectories can be effectively marginalized, subsequently obtaining fine-grained motion information. Specifically, we predict the object mask using point-prompted segmentation provided by Segment Anything Models (SAM) and enhance the performance of existing models through a systematic two-stage procedure: (a) estimating the average motion of points within the object mask (predicted by SAM) as the initial estimate, and (b) refining this estimate to achieve point-level tracking. In stage (b), we actively generate fine-grained features around the initial estimate, preserving high-frequency details for precise tracking. Consequently, our method not only overcomes the failure modes seen in existing state-of-the-art methods but also demonstrates superior precision in tracking results. For example, on the recent TAP-Vid benchmark, our method advances the state-of-the-art performance, achieving up to a 25% improvement in accuracy at the 1-pixel error threshold. Furthermore, we showcase the advantages of our method in two downstream tasks: video depth estimation and video frame interpolation, exploiting the point-wise correspondence in each task."><meta name="next-head-count" content="23"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D70E.TEX-I::before {
+  padding: 0.431em 0.571em 0.011em 0;
+  content: "\3C3";
+}
+
+mjx-c.mjx-c1D44E.TEX-I::before {
+  padding: 0.441em 0.529em 0.01em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c1D463.TEX-I::before {
+  padding: 0.443em 0.485em 0.011em 0;
+  content: "v";
+}
+
+mjx-c.mjx-c1D454.TEX-I::before {
+  padding: 0.442em 0.477em 0.205em 0;
+  content: "g";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DhxAveMWogn&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display:none"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">InstaTAP: Instance Motion Estimation for Tracking Any Point</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=hxAveMWogn" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Seong_Hyeon_Park2" data-original-title="~Seong_Hyeon_Park2">Seong Hyeon Park</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Sukmin_Yun1" data-original-title="~Sukmin_Yun1">Sukmin Yun</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Paul_Hongsuck_Seo1" data-original-title="~Paul_Hongsuck_Seo1">Paul Hongsuck Seo</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Jinwoo_Shin1" data-original-title="~Jinwoo_Shin1">Jinwoo Shin</a> <!-- --> </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>24 Sept 2023 (modified: 25 Mar 2024)</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>ICLR 2024 Conference Withdrawn Submission</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=hxAveMWogn">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40misc%7B%0Apark2024instatap%2C%0Atitle%3D%7BInsta%7BTAP%7D%3A%20Instance%20Motion%20Estimation%20for%20Tracking%20Any%20Point%7D%2C%0Aauthor%3D%7BSeong%20Hyeon%20Park%20and%20Sukmin%20Yun%20and%20Paul%20Hongsuck%20Seo%20and%20Jinwoo%20Shin%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DhxAveMWogn%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Keywords<!-- -->:</strong> <span class="note-content-value">Video Point Tracking, Point Tracking, Tracking, Spatial-Temporal Vision, Segment Anything Model</span></div><div><strong class="note-content-field disable-tex-rendering">TL;DR<!-- -->:</strong> <span class="note-content-value">Enhanced video point tracking via semantic-level tracking on the segmentation masks.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract<!-- -->:</strong> <div class="note-content-value markdown-rendered"><p>This paper tackles a challenge in learning the long-term point trajectories in videos, like the Tracking Any Point (TAP) task. Fundamentally, the estimation of point-level motions is hindered by the significant uncertainty inherent in comprehensive comparisons across the entire video frame. While existing models attempt to mitigate this issue by considering a regularized comparison space (e.g., the cost volumes), point-level motion remains highly noisy, often leading to failures on individual points. To tackle the issue, our key idea is to jointly track multiple points within a given semantic object: since points in an object tend to move together on average, individual noise trajectories can be effectively marginalized, subsequently obtaining fine-grained motion information. Specifically, we predict the object mask using point-prompted segmentation provided by Segment Anything Models (SAM) and enhance the performance of existing models through a systematic two-stage procedure: (a) estimating the average motion of points within the object mask (predicted by SAM) as the initial estimate, and (b) refining this estimate to achieve point-level tracking. In stage (b), we actively generate fine-grained features around the initial estimate, preserving high-frequency details for precise tracking. Consequently, our method not only overcomes the failure modes seen in existing state-of-the-art methods but also demonstrates superior precision in tracking results. For example, on the recent TAP-Vid benchmark, our method advances the state-of-the-art performance, achieving up to a 25% improvement in accuracy at the 1-pixel error threshold. Furthermore, we showcase the advantages of our method in two downstream tasks: video depth estimation and video frame interpolation, exploiting the point-wise correspondence in each task.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Supplementary Material<!-- -->:</strong> <span class="note-content-value"><a href="/attachment?id=hxAveMWogn&amp;name=supplementary_material" class="attachment-download-link" title="Download Supplementary Material" target="_blank"><span class="glyphicon glyphicon-download-alt " aria-hidden="true"></span> <!-- -->pdf</a></span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area<!-- -->:</strong> <span class="note-content-value">representation learning for computer vision, audio, language, and other modalities</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics<!-- -->:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines<!-- -->:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url<!-- -->:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section<!-- -->:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number<!-- -->:</strong> <span class="note-content-value">9415</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">4 / 4 replies shown</em></div></div></form></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="dGy9JBMyKK"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Author Rebuttal by Authors</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=hxAveMWogn&amp;noteId=dGy9JBMyKK"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>18 Nov 2023, 01:51 (modified: 15 Mar 2024, 00:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=dGy9JBMyKK">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Dear reviewers and AC,</p>
+<p>We sincerely appreciate your valuable time and effort spent reviewing our manuscript.</p>
+<p>As reviewers highlighted, we believe our paper is generally well-written (sKxk), and the proposed scheme is easy and effective (tNTu), with the interesting idea for motion prediction (K1PM), demonstrated to be effective in the experiments (tNTu,sKxk).</p>
+<p>We appreciate your constructive comments on our manuscript. In response to the comments, we would like to clarify several important concerns and questions:</p>
+<ol>
+<li>The assumption behind Eq. 5 cannot be valid (tNTu).
+First, we would like to point out Eq. 5 is only responsible for approximating the instance-level motion rather than the final point tracking.</li>
+</ol>
+<p>In fact, eq. 5. is intended to average out rotations, which do not significantly translate the mask region occupied by an instance. We note that rotations and non-rigid motions are handled by the subsequent high-fidelity tracking stage (Sec 3.4), where we do not average multiple points. </p>
+<ol start="2">
+<li>The contribution of this framework is limited (K1PM, sKxk).
+Our contribution is not limited to simply using SAM. For example, one could stack SAM for multiple video frames to estimate the instance motion, but it suffers from severe noises and huge computation costs for segmenting multiple frames. Instead, our method relies on SAM for only once at the first frame, and then tracks the semantic neighbor points through our sophisticated procedure Eqs. 2-7, in an efficent manner.</li>
+</ol>
+<p>Moreover, our performance boost is not solely due to the instance motion powered by SAM. For instance, our proposed high-fidelity point tracking enhances the high-frequency details in the visual feature (Sec. 3.4), and boosts the performance significantly. In Tab. 3, we provide the ablation study, finding a sole contribution by the module (Clip), e.g., 28.3 -&gt; 35.4 J-1 metric.</p>
+<p>Thank you very much!</p>
+<p>Authors.</p>
+</div></div></div></div></div><div class="note  depth-odd" data-id="zlllvvdfkT"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9415 by Reviewer tNTu</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=hxAveMWogn&amp;noteId=zlllvvdfkT"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer tNTu</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Nov 2023, 08:03 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=zlllvvdfkT">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The core idea of this paper is that points on the same object are physically bound and should share the same motion statistics. To achieve this, the authors propose to average the initial motion estimates of some points on the object as the motion of the whole object. Then crop the video frames along the object trajectory to achieve high precision point trajectory tracking.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The proposed scheme is easy and effective, and its improved performance is demonstrated on various datasets as well as on downstream tasks.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>Eq 5 shows the present method takes average pixel displacements as the object motion and claims that it is a reliable instance-level motion estimation. But directly calculating the average pixel displacements is valid if and only if the object only translates in the image plane. This cannot be valid if the object is rigid and there is affine motion such as rotation, or if the object is non-rigid. I agree that such a naive assumption can be used as an initialization for model optimization, but I don't think it's an exciting innovation to elaborate on such great length.</li>
+<li>the model Seg, which produces the segmentation mask for the initial frame. This method uses SAM for preprocessing, is it only for the first image or for all video frames? How do the later frames establish associations with the points in the earlier frames? This procedure needs further clarification.</li>
+<li>InstaTAP can be built on top of any existing point tracker. But there is no discussion in experiments. </li>
+<li>Lack of computational complexity analysis. Looks like a very heavy optimization process.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>Does the proposed mechanisms require to retrain the existing point tracking models? Or just need to use publicly available pre-trained models?</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div></div><div class="note  depth-odd" data-id="N3chzFrdph"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9415 by Reviewer K1PM</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=hxAveMWogn&amp;noteId=N3chzFrdph"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer K1PM</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Nov 2023, 07:15 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=N3chzFrdph">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This study tackles the challenge of accurately learning long-term trajectories for individual points in video sequences, such as the Tracking Any Point (TAP) task. Point-level motion estimation is hindered by the inherent uncertainty in comprehensive frame-wide comparisons. Existing models address this by using regularized comparison spaces like cost volumes, but they still suffer from noisy point-level motion, leading to tracking failures. To overcome this, the proposed method jointly tracks multiple points within a semantic object, leveraging the fact that points within an object tend to move together. By predicting object masks with Segment Anything Models (SAM) and implementing a two-stage procedure, the approach significantly improves tracking precision, surpassing state-of-the-art methods by up to 25% in accuracy on the TAP-Vid benchmark. Additionally, the approach demonstrates advantages in video depth estimation and frame interpolation by utilizing point-wise correspondence in these tasks.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p>Using Segment Anything Models (SAM) to enhance performance is a very interesting idea for motion prediction.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>The main contribution is to exploit SAM to boost the performance of tracking. However, the SAM is an existing method so the contribution of this framework is limited. </p>
+</li>
+<li><p>The proposed method's performance is closely tied to the effectiveness of SAM. If SAM encounters difficulties, such as producing inaccurate or poor segmentations, it can adversely affect the performance of the tracking framework. The quality of the object mask prediction by SAM directly impacts the tracking accuracy and robustness. Therefore, in scenarios where SAM struggles or fails to provide precise segmentations, the tracking performance may indeed experience a significant drop, highlighting the method's dependency on SAM's success in providing accurate object masks.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>Can you show some failure cases of the proposed method? Is that related to the SAM results?</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Details Of Ethics Concerns:</strong> <div class="note-content-value markdown-rendered"><p>No concerns.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div></div><div class="note  depth-odd" data-id="BvKBYUqOth"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9415 by Reviewer sKxk</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=hxAveMWogn&amp;noteId=BvKBYUqOth"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer sKxk</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 08:17 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=BvKBYUqOth">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper is about tracking every point (TAP). Basically, it adopts a point-prompted segmentation by Segment Anything Model(SAM) to enhance the performance of existing models by estimating the average motion within the segmentation mask followed by a refinement stage to get final tracking results. Finally the authors evaluated on TAP-Vid benchmark to compare with previous published methods and show its practical usage in other vision tasks.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>The paper is in general well-written. It clearly pinpoints the limitations of existing methods, e.g. the failure cases of cost volume calculation, then proceed to the proposed method part.</p>
+</li>
+<li><p>The idea of utilizing occlusion information within weighted aggregation, is reasonable, and demonstrates to be effective in the experiments.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>I am not a fun of the overall idea. Basically, this work is about an "A+B" style and I don't see too much innovation behind simply adding segmentation masks produced by SAM model. If SAM can be used, then any other SOTA semantic/instance segmentation models can be adopted to yield better performance. So the contribution here is a bit too trivial.</p>
+</li>
+<li><p>There are too many engineering stuffs in designing the tracker. For example, clipping, multi-scale operations. I don't see any "learning" stuff in the contribution side.</p>
+</li>
+<li><p>Overall misleading claim. For example, in the abstract part, authors claim a SOTA performance " For example, on the recent TAP-Vid benchmark, our method advances the state-of-the-art performance," But the performance is at least inferior to the paper [A] in TAP-Vid. For example, In Kinetics [A] has AJ 55.1, <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>σ</mi><mrow data-mjx-texclass="ORD"><mi>a</mi><mi>v</mi><mi>g</mi></mrow></msub></math></mjx-assistive-mml></mjx-container>69.6 while this work achieves only AJ 51.4, <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>σ</mi><mrow data-mjx-texclass="ORD"><mi>a</mi><mi>v</mi><mi>g</mi></mrow></msub></math></mjx-assistive-mml></mjx-container>65.8. On RGB-Stacking [A] has AJ77.5 and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>σ</mi><mrow data-mjx-texclass="ORD"><mi>a</mi><mi>v</mi><mi>g</mi></mrow></msub></math></mjx-assistive-mml></mjx-container>87.0 while this work gets AJ66.6 and <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>σ</mi><mrow data-mjx-texclass="ORD"><mi>a</mi><mi>v</mi><mi>g</mi></mrow></msub></math></mjx-assistive-mml></mjx-container>81.8, this is also the case for DAVIS dataset. That is to say, the performance is NOT SOTA indeed, and it is hard to justify the usefulness of the overall idea.</p>
+</li>
+</ol>
+<p>References:
+[A] Qianqian Wang et.al. Tracking Everything Everywhere All at Once. ICCV2023</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>I wonder is it possible to add other metrics in TAP-Vid, such as OA, TC, for a more complete comparison with prior methods?</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> <!-- -->is a long-term project to advance science through improved peer review, with legal nonprofit status through<!-- --> <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the<!-- --> <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © <!-- -->2024<!-- --> OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" style="label:input;color:inherit;background:0;opacity:1;width:100%;grid-area:1 / 2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-activedescendant="" aria-describedby="react-select-feedback-subject-placeholder" value=""></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-qea0t_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"InstaTAP: Instance Motion Estimation for Tracking Any Point"},"authors":{"value":["Seong Hyeon Park","Sukmin Yun","Paul Hongsuck Seo","Jinwoo Shin"]},"authorids":{"value":["~Seong_Hyeon_Park2","~Sukmin_Yun1","~Paul_Hongsuck_Seo1","~Jinwoo_Shin1"]},"keywords":{"value":["Video Point Tracking","Point Tracking","Tracking","Spatial-Temporal Vision","Segment Anything Model"]},"TLDR":{"value":"Enhanced video point tracking via semantic-level tracking on the segmentation masks."},"abstract":{"value":"This paper tackles a challenge in learning the long-term point trajectories in videos, like the Tracking Any Point (TAP) task. Fundamentally, the estimation of point-level motions is hindered by the significant uncertainty inherent in comprehensive comparisons across the entire video frame. While existing models attempt to mitigate this issue by considering a regularized comparison space (e.g., the cost volumes), point-level motion remains highly noisy, often leading to failures on individual points. To tackle the issue, our key idea is to jointly track multiple points within a given semantic object: since points in an object tend to move together on average, individual noise trajectories can be effectively marginalized, subsequently obtaining fine-grained motion information. Specifically, we predict the object mask using point-prompted segmentation provided by Segment Anything Models (SAM) and enhance the performance of existing models through a systematic two-stage procedure: (a) estimating the average motion of points within the object mask (predicted by SAM) as the initial estimate, and (b) refining this estimate to achieve point-level tracking. In stage (b), we actively generate fine-grained features around the initial estimate, preserving high-frequency details for precise tracking. Consequently, our method not only overcomes the failure modes seen in existing state-of-the-art methods but also demonstrates superior precision in tracking results. For example, on the recent TAP-Vid benchmark, our method advances the state-of-the-art performance, achieving up to a 25% improvement in accuracy at the 1-pixel error threshold. Furthermore, we showcase the advantages of our method in two downstream tasks: video depth estimation and video frame interpolation, exploiting the point-wise correspondence in each task."},"primary_area":{"value":"representation learning for computer vision, audio, language, and other modalities"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"ICLR 2024 Conference Withdrawn Submission"},"venueid":{"value":"ICLR.cc/2024/Conference/Withdrawn_Submission"},"pdf":{"value":"/pdf/eb3f27a7895491aa05f8e288da0966edd516d46f.pdf"},"supplementary_material":{"value":"/attachment/b54317517988cba153e45abbb2974c9e1d295d68.pdf"},"_bibtex":{"value":"@misc{\npark2024instatap,\ntitle={Insta{TAP}: Instance Motion Estimation for Tracking Any Point},\nauthor={Seong Hyeon Park and Sukmin Yun and Paul Hongsuck Seo and Jinwoo Shin},\nyear={2024},\nurl={https://openreview.net/forum?id=hxAveMWogn}\n}"},"paperhash":{"value":"park|instatap_instance_motion_estimation_for_tracking_any_point"}},"id":"hxAveMWogn","signatures":["ICLR.cc/2024/Conference/Submission9415/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission9415/Authors"],"forum":"hxAveMWogn","number":9415,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission9415/-/Revision","ICLR.cc/2024/Conference/-/Withdrawn_Submission","ICLR.cc/2024/Conference/-/Edit"],"domain":"ICLR.cc/2024/Conference","tcdate":1695554477083,"cdate":1695554477083,"tmdate":1711385418597,"mdate":1711385418597,"odate":1697213872796,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"authors","order":3},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"pdf","order":7},{"name":"supplementary_material","order":10},{"name":"primary_area","order":11,"input":"select","value":"representation learning for computer vision, audio, language, and other modalities","description":null},{"name":"code_of_ethics","order":12,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"submission_guidelines","order":13,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"resubmission","order":14,"input":"radio"},{"name":"student_author","order":15,"input":"radio"},{"name":"anonymous_url","order":16,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"no_acknowledgement_section","order":17,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"large_language_models","order":18,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":19,"input":"textarea"},{"name":"venue"},{"name":"venueid"},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"hxAveMWogn"}}},"page":"/forum","query":{"id":"hxAveMWogn"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

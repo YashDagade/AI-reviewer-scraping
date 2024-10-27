@@ -1,0 +1,838 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>Forward Learning with Top-Down Feedback: Empirical and Analytical Characterization | OpenReview</title><meta name="description" content="&quot;Forward-only&quot; algorithms, which train neural networks while avoiding a backward pass, have recently gained attention as a way of solving the biologically unrealistic aspects of backpropagation. Here, we first address compelling challenges related to the &quot;forward-only&quot; rules, which include reducing the performance gap with backpropagation and providing an analytical understanding of their dynamics. To this end, we show that the forward-only algorithm with top-down feedback is well-approximated by an &quot;adaptive-feedback-alignment&quot; algorithm, and we analytically track its performance during learning in a prototype high-dimensional setting. Then, we compare different versions of forward-only algorithms, focusing on the Forward-Forward and PEPITA frameworks, and we show that they share the same learning principles. Overall, our work unveils the connections between three key neuro-inspired learning rules, providing a link between &quot;forward-only&quot; algorithms, i.e., Forward-Forward and PEPITA, and an approximation of backpropagation, i.e., Feedback Alignment."><meta property="og:title" content="Forward Learning with Top-Down Feedback: Empirical and Analytical..."><meta property="og:description" content="&quot;Forward-only&quot; algorithms, which train neural networks while avoiding a backward pass, have recently gained attention as a way of solving the biologically unrealistic aspects of backpropagation...."><meta property="og:type" content="article"><meta name="citation_title" content="Forward Learning with Top-Down Feedback: Empirical and Analytical Characterization"><meta name="citation_author" content="Ravi Francesco Srinivasan"><meta name="citation_author" content="Francesca Mignacco"><meta name="citation_author" content="Martino Sorbaro"><meta name="citation_author" content="Maria Refinetti"><meta name="citation_author" content="Avi Cooper"><meta name="citation_author" content="Gabriel Kreiman"><meta name="citation_author" content="Giorgia Dellaferrera"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=My7lkRNnL9"><meta name="citation_abstract" content="&quot;Forward-only&quot; algorithms, which train neural networks while avoiding a backward pass, have recently gained attention as a way of solving the biologically unrealistic aspects of backpropagation. Here, we first address compelling challenges related to the &quot;forward-only&quot; rules, which include reducing the performance gap with backpropagation and providing an analytical understanding of their dynamics. To this end, we show that the forward-only algorithm with top-down feedback is well-approximated by an &quot;adaptive-feedback-alignment&quot; algorithm, and we analytically track its performance during learning in a prototype high-dimensional setting. Then, we compare different versions of forward-only algorithms, focusing on the Forward-Forward and PEPITA frameworks, and we show that they share the same learning principles. Overall, our work unveils the connections between three key neuro-inspired learning rules, providing a link between &quot;forward-only&quot; algorithms, i.e., Forward-Forward and PEPITA, and an approximation of backpropagation, i.e., Feedback Alignment."><meta name="citation_conference_title" content="The Twelfth International Conference on Learning Representations"><meta name="next-head-count" content="27"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-msubsup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-script {
+  display: inline-block;
+  padding-right: .05em;
+  padding-left: .033em;
+}
+
+mjx-script > mjx-spacer {
+  display: block;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c210E.TEX-I::before {
+  padding: 0.694em 0.576em 0.011em 0;
+  content: "h";
+}
+
+mjx-c.mjx-c1D452.TEX-I::before {
+  padding: 0.442em 0.466em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c1D45F.TEX-I::before {
+  padding: 0.442em 0.451em 0.011em 0;
+  content: "r";
+}
+
+mjx-c.mjx-c2113::before {
+  padding: 0.705em 0.417em 0.02em 0;
+  content: "\2113";
+}
+
+mjx-c.mjx-c2212::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "\2212";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c1D439.TEX-I::before {
+  padding: 0.68em 0.749em 0 0;
+  content: "F";
+}
+
+mjx-c.mjx-c1D465.TEX-I::before {
+  padding: 0.442em 0.572em 0.011em 0;
+  content: "x";
+}
+
+mjx-c.mjx-c7C::before {
+  padding: 0.75em 0.278em 0.249em 0;
+  content: "|";
+}
+
+mjx-c.mjx-c226A::before {
+  padding: 0.568em 1em 0.067em 0;
+  content: "\226A";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DMy7lkRNnL9&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display:none"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">Forward Learning with Top-Down Feedback: Empirical and Analytical Characterization</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=My7lkRNnL9" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Ravi_Francesco_Srinivasan1" data-original-title="~Ravi_Francesco_Srinivasan1">Ravi Francesco Srinivasan</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Francesca_Mignacco1" data-original-title="~Francesca_Mignacco1">Francesca Mignacco</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Martino_Sorbaro1" data-original-title="~Martino_Sorbaro1">Martino Sorbaro</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Maria_Refinetti1" data-original-title="~Maria_Refinetti1">Maria Refinetti</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Avi_Cooper1" data-original-title="~Avi_Cooper1">Avi Cooper</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Gabriel_Kreiman1" data-original-title="~Gabriel_Kreiman1">Gabriel Kreiman</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Giorgia_Dellaferrera1" data-original-title="~Giorgia_Dellaferrera1">Giorgia Dellaferrera</a> <!-- --> </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>Published: 16 Jan 2024, Last Modified: 05 Mar 2024</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>ICLR 2024 poster</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=My7lkRNnL9">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40inproceedings%7B%0Asrinivasan2024forward%2C%0Atitle%3D%7BForward%20Learning%20with%20Top-Down%20Feedback%3A%20Empirical%20and%20Analytical%20Characterization%7D%2C%0Aauthor%3D%7BRavi%20Francesco%20Srinivasan%20and%20Francesca%20Mignacco%20and%20Martino%20Sorbaro%20and%20Maria%20Refinetti%20and%20Avi%20Cooper%20and%20Gabriel%20Kreiman%20and%20Giorgia%20Dellaferrera%7D%2C%0Abooktitle%3D%7BThe%20Twelfth%20International%20Conference%20on%20Learning%20Representations%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DMy7lkRNnL9%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics<!-- -->:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords<!-- -->:</strong> <span class="note-content-value">Forward-only learning, Biologically inspired learning, Artificial neural networks, Analytical characterization</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines<!-- -->:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">TL;DR<!-- -->:</strong> <span class="note-content-value">We discuss "forward-only" algorithms, provide an analytical characterization and test strategies to improve their performance.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract<!-- -->:</strong> <div class="note-content-value markdown-rendered"><p>"Forward-only" algorithms, which train neural networks while avoiding a backward pass, have recently gained attention as a way of solving the biologically unrealistic aspects of backpropagation. Here, we first address compelling challenges related to the "forward-only" rules, which include reducing the performance gap with backpropagation and providing an analytical understanding of their dynamics. To this end, we show that the forward-only algorithm with top-down feedback is well-approximated by an "adaptive-feedback-alignment" algorithm, and we analytically track its performance during learning in a prototype high-dimensional setting. Then, we compare different versions of forward-only algorithms, focusing on the Forward-Forward and PEPITA frameworks, and we show that they share the same learning principles. Overall, our work unveils the connections between three key neuro-inspired learning rules, providing a link between "forward-only" algorithms, i.e., Forward-Forward and PEPITA, and an approximation of backpropagation, i.e., Feedback Alignment.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url<!-- -->:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">Supplementary Material<!-- -->:</strong> <span class="note-content-value"><a href="/attachment?id=My7lkRNnL9&amp;name=supplementary_material" class="attachment-download-link" title="Download Supplementary Material" target="_blank"><span class="glyphicon glyphicon-download-alt " aria-hidden="true"></span> <!-- -->pdf</a></span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section<!-- -->:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area<!-- -->:</strong> <span class="note-content-value">applications to neuroscience &amp; cognitive science</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number<!-- -->:</strong> <span class="note-content-value">9371</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">15 / 15 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="EH0403XNJC"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=EH0403XNJC"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:53 (modified: 16 Feb 2024, 15:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=EH0403XNJC">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Accept (poster)</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="RGJuzGSuJu"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission9371 by Area Chair 9zKv</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=RGJuzGSuJu"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair 9zKv</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>05 Dec 2023, 23:52 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=RGJuzGSuJu">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>The paper focuses on forward-only learning algorithms, which are an alternative to backpropagation. The authors draw connections between forward-only algorithms, particularly PEPITA, and feedback alignment. The reviewers generally agree that the insights are useful and the paper is well written. However, they have raised concerns, e.g., about the limited scope of the empirical and theoretical evaluation. The authors have somewhat addressed these concerns, however, as with much of the ‘biologically-plausible’ neural network literature, the results are obtained using small networks on relatively simple datasets and do not completely match/outperform backpropagation.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><p>The paper explores a relatively restricted empirical setting. While the results of the paper are interesting, the empirical evaluation is not sufficiently significant to warrant a spotlight or oral.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>This paper is borderline, with two reviewers recommending acceptance and two reviewers recommending marginal rejection. The main weaknesses pointed out by the reviewers with lower scores pertain to the empirical evaluation. While I share their concerns, I believe that these evaluations are inline with previous works in the literature. Thus, given that the reviewers found the insights of the paper worthwhile, I would tend to favor acceptance.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="gUrBsPKV1n"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9371 by Reviewer sGVa</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=gUrBsPKV1n"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer sGVa</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Nov 2023, 02:13 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=gUrBsPKV1n">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>Forward-only learning algorithms are an alternative to backpropagation (BP), which are potentially more biologically plausible, more memory efficient, and more computationally efficient.
+Two of these forward-only learning algorithms are Forward-Forward (FF) and PEPITA, the Present the Error to Perturb the Input To modulate the Activity learning rule; both algorithms rely on two forward passes to learn, rather than a forward and a backward pass.
+However, the learning dynamics of these algorithms are not well understood, and both still include components that are biologically implausible.
+In this work, the authors offers an explanation of how PEPITA learns by connecting them to feedback alignment.
+They then use their insight to improve the performance of PEPITA by combining it with weight mirroring, a technique to improve performance of feedback alignment, as well as weight decay and activity normalization.
+Finally, they propose PEPITA-time-local, an alternative learning rule that improves the biological plausibility of PEPITA by keeping updates local in time (in addition to space), at the cost of some accuracy.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>This paper exposes a novel connection between feedback alignment and forward-only algorithms. This connection is particularly interesting because both type of algorithms have improving biological plausibility as a principal goal; exposing underlying relationships may mutually benefit researchers for both types of algorithms. In fact, the authors have already taken a step in this direction, by empirically showing that weight mirroring, a technique developed for feedback alignment, can also be used to improve the performance of PEPITA.</li>
+<li>As the authors also point out, while forward-only learning algorithms have gained traction in recent years, and are gradually catching up to the performance of backpropagation on increasingly complex tasks, theoretical understanding of their learning dynamics is mostly lacking; work that shed light on how forward-only learning works is very welcome.</li>
+<li>The experiments performed are extensive, and the results are convincing.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The theoretical analysis focuses only on shallow 2-layer networks, and I’m uncertain that the Adaptive Feedback rule can be easily extended to analyze deeper networks, as the error signal has to pass through multiple hidden layers either forwards (forward-only) or backwards (feedback alignment). This limits the applicability of the analysis, making it disjoint from the experimental results on multi-layer PEPITA networks.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li><p>Figure 3 shows the performance of PEPITA-Hebbian, PEPITA + weight decay, and PEPITA + weight mirroring on CIFAR-10. Do the same trends hold for MNIST and CIFAR-100?</p>
+</li>
+<li><p>I’m a bit confused on how much the PEPITA-Hebbian approximation impacts the accuracy of the model. Figure 3a shows that the impact is very small on CIFAR-10, maintaining over 50% accuracy on CIFAR-10 for 1, 2, and 3 hidden layers, but in Figure S1 the accuracy of a 1-layer PEPITA-TL model drops to around 40%. Could you explain why this is? If this is due to hyperparameter differences, how well would a non-TL PEPITA model compare in performance under the same hypersparameters/conditions as those used for Figure S1?</p>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="HvpwYBk22n"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=HvpwYBk22n"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 21:46</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for highlighting the strengths of our paper. Below, we provide detailed answers to the reviewer's concerns.</p>
+<hr>
+<h1>Weaknesses</h1>
+<ol>
+<li>The reviewer is right in observing that our theoretical analysis is limited to one-hidden layer networks. Our goal is to elucidate the alignment phenomenon initially observed in the paper introducing the PEPITA algorithm [Dellaferrera &amp; Kreiman, 2022], which considers one-hidden layer networks. Further work would be required to study the multi-layer case, but our approximation suggests that a perturbative approach could be useful in this direction. We stress that the analytical frameworks to study the dynamics of learning in deep networks are still very limited, and – to the best of our knowledge – tracking analytically the average performance of deep nets with non-linear activations is still an open problem even for networks trained with back-propagation. One possible preliminary step to elucidate the alignment phenomenon in the multi-layer case would be to consider deep linear networks. We added a comment in Sec. 7.</li>
+</ol>
+<hr>
+<h1>Questions</h1>
+<ol>
+<li><p>As shown in Table S1, the performance decreases for 3-hidden-layer networks for MNIST (95.07% accuracy) and CIFAR-100 (drops to random chance). For CIFAR-100 weight decay allows us to train the 3-hidden-layer network (23.13% accuracy). We run additional experiments to test PEPITA Hebbian in MNIST and CIFAR-100 with 1-, 2-, and 3-hidden layer networks and we observe less than 0.15% difference (statistically insignificant) in accuracy between PEPITA and PEPITA Hebbian.</p>
+</li>
+<li><p>In the work by [Dellaferrera and Kreiman, 2022], the authors show that the presynaptic term (<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.323em; margin-left: 0px;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi></mjx-texatom><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c2113"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>h</mi><mrow data-mjx-texclass="ORD"><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow><mrow data-mjx-texclass="ORD"><mi>e</mi><mi>r</mi><mi>r</mi></mrow></msubsup></math></mjx-assistive-mml></mjx-container>) can be replaced with the same term computer in the first forward pass (<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c2113"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>h</mi><mrow data-mjx-texclass="ORD"><mi>ℓ</mi><mo>−</mo><mn>1</mn></mrow></msub></math></mjx-assistive-mml></mjx-container>) without changing the performance. For this reason, we expected the Hebbian learning rule in eq. 8 to perform equivalently to the original learning rule, which is empirically the case. In the time local version, the updates are computed separately, meaning that the update computed during the second forward pass is operating on the weights that have already been updated in the first forward pass. We suspect that separating the Hebbian and anti-Hebbian updates changes the loss landscape, although we leave this analysis for further work. With the same choice of hyperparameters, standard PEPITA also reaches around 40% accuracy, due to the low learning rate. Though these parameters were chosen using a grid search for PEPITA-TL, we conclude that the hyperparameter choice is not sufficient to explain the performance gap.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="XuEV7cs5cQ"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Reviewer sGVa</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=XuEV7cs5cQ"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer sGVa</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>04 Dec 2023, 16:54 (modified: 15 Mar 2024, 00:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=XuEV7cs5cQ">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for the clarifications. I believe this is a strong paper and maintain my stance on acceptance.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="CAFQrSYUkW"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9371 by Reviewer QDBz</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=CAFQrSYUkW"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer QDBz</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>31 Oct 2023, 14:17 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=CAFQrSYUkW">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper connects several forward pass-only learning methods as biologically plausible alternatives to backprop, analyses their performance and error dynamics, and also proposes Hebbian and temporally local approximations for one of those methods.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>The paper is well-written and does a good job articulating its aims and contributions.</li>
+<li>The paper provides a theoretical link between several algorithms, and derives error dynamics (for a simple problem) for one of them. </li>
+<li>The Hebbian/anti-Hebbian approximation works as well as the PEPITA algorithm, which is a good sign for bio plausibility (of both PEPITA and FF, since they work similarly).</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>Performance on CIFAR10/100 of algorithms is lacking compared to backprop (although surprisingly much less so for CIFAR100). This performance gap would likely increase for larger networks.</li>
+<li>No experiments with convnets, and I haven't found a justification for that. Since cifar10/100 performance gets much better with introducing convolutions (for backprop), it'd be interesting to look at the performance gap there.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>If I understand correctly, PEPITA-TL differs from PEPITA-Hebbian by one feature: the anti-Hebbian error term is computed for the updated weights. Based on that, I have two questions:</p>
+<ol>
+<li>Would performance of both algorithms match if we reduce the learning rate of PEPITA-TL? Intuitively it should, since the anti-Hebbian error terms would match.</li>
+<li>Can we consider PEPITA-Hebbian temporally local since it's a long-term plasticity rule? Since the network is trained with two passes over the same input, the PEPITA-TL approximation adds the first Hebbian term immediately after the first forward pass, so 10s/100s of ms. This would be too short for long-term Hebbian changes (as far as I know), so in your model you can treat both parts of the update rule as if they happen for the same network state -- meaning that PEPITA-Hebbian would be temporally local. (I guess you can account for short-term plasticity as a result of the first forward pass (so non-Hebbian changes proportional to input activity only).)</li>
+</ol>
+<p>Small comments:</p>
+<ol>
+<li>Tab1 should have PEPITA-Hebbian performance too.</li>
+<li>The appendix can be included in the main pdf in this conference.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">8: accept, good paper</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="OzjZJVf7zn"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=OzjZJVf7zn"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 21:48</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for the positive comments on our work. We address the concerns and questions below.</p>
+<hr>
+<h1>Weaknesses</h1>
+<ol>
+<li><p>Generally, achieving superior outcomes compared to back-propagation in the field has proven challenging. Typically, we resort to utilizing approximations to back-propagation. For instance, DFA [Nokland 2016], among various examples, initially employed relatively shallow networks and exhibited poorer performance than back-propagation. It took a few years for the community to enhance it for deeper networks. We believe that our work provides the insights necessary to improve the performance of these types of algorithms.</p>
+</li>
+<li><p>In [Dellaferrera &amp; Kreiman, 2022], the authors show that the algorithm can work well on CNNs too. In this work, we focused on other aspects, in particular on the theoretical analysis, which can be performed on fully connected networks. We leave the extension of our results to future work.</p>
+</li>
+</ol>
+<hr>
+<h1>Questions</h1>
+<ol>
+<li><p>We have run experiments with PEPITA using the same hyperparameters as the best ones for PEPITA-TL. With this choice of hyperparameters, standard PEPITA also reaches around 40% accuracy, due to the low learning rate. Though these parameters were chosen using a grid search for PEPITA-TL, we conclude that the hyperparameter choice is not sufficient to explain the performance gap.</p>
+</li>
+<li><p>We thank the reviewer for the interesting insight. We provide an answer from two different perspectives. From the hardware implementation perspective, we say that a rule is temporally local if the updates are computed without the need to store any information in memory. This is the case for PEPITA-TL, which computes updates on the fly without any need to keep activations in memory. Instead, PEPITA-Hebbian needs to store the activations of the first forward pass and then use them for the update. From the biological perspective, we believe that the reviewer’s insight is very interesting: on the timescale of neural plasticity, we agree that PEPITA-Hebbian might be temporally local, which would also mean that PEPITA is.</p>
+</li>
+</ol>
+<p>Small comments:</p>
+<ol>
+<li>We agree with the reviewer, and we added PEPITA-Hebbian and PEPITA+WM in Table 1.</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="6izOUGwwKK"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Reviewer QDBz</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=6izOUGwwKK"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer QDBz</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>21 Nov 2023, 13:43</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for the response! Having looked at this and other responses/reviews, I keep my current score/recommendation of accept.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="RzQfnEwCrf"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9371 by Reviewer uKzr</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=RzQfnEwCrf"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer uKzr</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 02:53 (modified: 22 Nov 2023, 01:07)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=RzQfnEwCrf">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper analyzes the Present the Error to Perturb the Input To modulate the Activity (PEPITA) learning algorithm, showing its connection to Direct Feedback Alignment (DFA) as well as Forward-Forward (FF) algorithm with negative samples being the “modulated” samples in PEPITA. Some empirical experiments also study PEPITA on deeper networks and with several techniques.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><p>This paper studies the connections between several biologically more plausible algorithms, providing insights from empirical and analytical perspectives.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>I think this paper requires a clearer definition of the considered “forward-only” algorithms. In the abstract, it is defined as “avoiding a backward pass”. However, PEPITA, different from local FF, indeed requires a direct global error feedback to inputs. If PEPITA is considered as “forward-only”, is DFA also “forward-only”, as it shares the similar form of direct global error feedback without layer-by-layer BP? In the sense of “forward-only” algorithms, I don’t think PEPITA is parallel to FF with local learning.</p>
+</li>
+<li><p>In Table 1, why the considered rule has a much worse performance? It is unclear why we should consider it as it does not introduce additional properties over several algorithms while being worse. Additionally, what’s the detailed definition for “local” and “activity freezing”? For PEPITA, it requires global error feedback to inputs, and storage of activations of the first forward propagation until the second forward propagation ends. Why it is considered “local” and solving “activity freezing”? And why PEPITA outperforms DFA in these aspects?</p>
+</li>
+<li><p>In Section 3.1, the similarity to DFA only holds for the first layer. It is unclear for other layers (Eq. (4)).</p>
+</li>
+<li><p>In Section 4, the networks are still quite shallow and experimental results are quite poor. DFA can scale to large datasets and networks [1], and WM also scales to large-scale scenarios [2].</p>
+</li>
+<li><p>Some derivations are not strict and may be contradictory. For example, in Section 3 and Section 5, it is assumed for several times that <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi><mi>e</mi></math></mjx-assistive-mml></mjx-container> is much smaller than <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></mjx-assistive-mml></mjx-container> so it can be ignored. In Section 5, however, it is also assumed that the “modulated” samples can be used for negative samples in the FF framework. If the modulation is small enough, why can it formulate a valid negative sample? This largely reduces the reliability of the connection between PEPITA and FF.</p>
+</li>
+</ol>
+<p>Overall, I think there is no enough contribution in empirical or theoretical perspectives.</p>
+<p>[1] Direct feedback alignment scales to modern deep learning tasks and architectures. NeurIPS, 2020.</p>
+<p>[2] Deep learning without weight transport. NeurIPS, 2019.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>In Section 3.2, what’s the difference between the analysis and previous analyses for DFA?</p>
+</li>
+<li><p>In Section 5.1, what’s the connection of the derivation with contrastive Hebbian learning [1] or equilibrium propagation [2], which also takes the form of Hebbian and Anti-Hebbian phases?</p>
+</li>
+</ol>
+<p>[1] Equivalence of backpropagation and contrastive Hebbian learning in a layered network. Neural Computation, 2003.</p>
+<p>[2] Equilibrium propagation: bridging the gap between energy-based models and backpropagation. Frontiers in Computational Neuroscience, 2017.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="jWboRV9fRn"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=jWboRV9fRn"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 21:50</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for their insightful comments. The point-to-point answer is provided below.</p>
+<hr>
+<h1>Weaknesses</h1>
+<ol>
+<li><p>A key difference between DFA and PEPITA/FF is that DFA requires the computation of gradients of activation explicitly. This means that because the feedback is added after the non-linearity, an additional backward computation is needed. In FF and PEPITA, instead, the update only depends on activations computed during the forward pass. We also note that in [Hinton, 2022], the author mentions the possibility of negative samples constructed using top-down connections, which is the case for PEPITA. Moreover, we note that in forward learning algorithms, the error does not travel by itself throughout the network and that the networks continuously respond to inputs (original or modulated/negative), unlike in DFA where a forward pass is followed with a backward pass containing the error info.</p>
+</li>
+<li><p>We thank the reviewer for the questions. First, we want to clarify the difference between spatial and temporal locality. Spatial locality refers to rules that use only local information (unit activation). In [Nokland, 2016], the author mentions that the update is “almost local”. This is due to the fact that the feedback is added after the nonlinearity, and the update needs to compute the derivative of the activation, causing the update to be non-local (it would be local with linear activation). Instead, PEPITA does not require any computation that does not depend on local signals (unit activation). Temporal locality refers to rules that do not need to store the activations in memory, and are able to compute updates on only temporally-local information. This is the case for PEPITA-TL, which updates the weights on the fly. We note that PEPITA-TL is the only temporally-local rule in Table 1. Second, in DFA - similarly to BP - activity freezing is a consequence of alternating a forward pass (the network responds to an input, and the nodes are “active”) and a backward pass (the error information travels through the network from the top to the bottom layers, but the network does not process any inputs, thus the nodes are “inactive” or “frozen”). In PEPITA and in FF, the error never travels through the network “by itself” to drive the updates. The network always responds to an input in a forward fashion - the input is modulated through the error in PEPITA, the negative samples in FF. Last, we would like to note that this paper is not proposing the PEPITA algorithm, but rather an analytical characterization of the latter. Locality and activity freezing are explained thoroughly in the work by [Dellaferrera &amp; Kreiman, 2022].</p>
+</li>
+<li><p>As specified at the beginning of Sec. 3, we focus on two-layer networks for our theoretical results. Sec. 3.1 is aimed at providing an analytical understanding of the alignment phenomenon observed in the paper introducing the PEPITA algorithm [Dellaferrera &amp; Kreiman, 2022] that considered two-layer networks. Our approximation suggests that a perturbative approach could be insightful to understand the PEPITA learning rule in deeper networks. The analytical characterization of the dynamics of deep non-linear networks is to a large extent still an open problem even for networks trained with back-propagation and goes beyond the scope of our work. </p>
+</li>
+<li><p>We thank the reviewer for pointing out the work of [Launay et al 2020] and [Aktrout et al 2019], which we now cite. The reviewer raises valid points. In general, it has been hard to get better results than using back-propagation in the field. We usually refer to approximations to back-propagation. As one example of many, DFA [Nokland 2016] also started with relatively shallow networks and worse performance than back-propagation and it took a few years for the community to extend it to deeper networks [Launay et al 2020, as cited by the reviewer], and even in these deeper networks, back-propagation generally outperforms DFA (though DFA is a very reasonable approximation, [Laynay et al 2020]). Such approximations can still be interesting due to their biological plausibility, theoretical understanding of learning, and the possibility of implementing them in neuromorphic hardware.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="U0W7Wp07Kz"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=U0W7Wp07Kz"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 21:51</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><ol start="5">
+<li>We respectfully disagree with the reviewer’s point that the magnitude of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi><mi>e</mi></math></mjx-assistive-mml></mjx-container> impacts the connection between PEPITA and FF. First, we point out that the small magnitude of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi><mi>e</mi></math></mjx-assistive-mml></mjx-container> is not an assumption, but it is instead a result that we confirmed empirically. Indeed, the approximation of the PEPITA rule (eq. 6) can only hold if <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c226A"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mi>F</mi><mi>e</mi><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mo>≪</mo><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mi>x</mi><mo data-mjx-texclass="ORD" stretchy="false">|</mo></math></mjx-assistive-mml></mjx-container>. The latter is confirmed by Figure 2a and Figure S3: in this figure, we compare models trained with PEPITA versus identically-initialized models trained with AFA (eq.6). The almost identical training curve confirms that the approximation holds, and consequently that <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c226A"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c7C"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mi>F</mi><mi>e</mi><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mo>≪</mo><mo data-mjx-texclass="ORD" stretchy="false">|</mo><mi>x</mi><mo data-mjx-texclass="ORD" stretchy="false">|</mo></math></mjx-assistive-mml></mjx-container>. Having proved this, we use the same result (not assumption) for Section 5. The fact that despite the small magnitude the feedback can generate valid negative samples is proven by the empirical results we obtain when training networks (Table 2). To answer “why” this is possible, we present an analysis of the learning mechanism of PEPITA (Section 3), we show that our theory matches the empirical results (Figure 2A-B, Appendix D) and we further elucidate the dynamics of learning, and the alignment mechanism (Appendix E).</li>
+</ol>
+<hr>
+<h1>Questions</h1>
+<ol>
+<li><p>From a technical point of view, the main difference between the analysis of DFA in [Refinetti et al., 2021a] and our derivation in Sec. 3.2 is that our formalism requires an additional ODE for the dynamics of the adaptive feedback. The emergence of adaptive feedback as a natural order parameter governing the dynamics of learning is a theoretical confirmation of the experimental insight in [Dellaferrera &amp; Kreiman, 2022]. Moreover, our results suggest that a perturbative approach (which is not necessary for DFA) is insightful for the analysis of PEPITA.</p>
+</li>
+<li><p>We thank the reviewer for the interesting question. In both [Xie and Seung, 2003] (equation 2.6) and [Scellier and Bengiom 2017] (Section 2.4) we find very clear similarities with PEPITA-Hebbian in terms of the update rule. Moreover, both algorithms, as well as PEPITA, work on perturbations that are propagated through the network, which treats clean and perturbed signals differently (Hebbian and anti-Hebbian phases). The main difference stems from how the perturbation is propagated through the network: while PEPITA adds the perturbation to the input using a random feedback matrix (thus avoiding the weight transport problem), in both [Xie and Seung, 2003] and [Scellier and Bengiom 2017] the perturbation is fed to the output layer and propagated through weights symmetrical to the forward weights, which is an issue from the biological perspective.</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="yJm00wm2xQ"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Authors</h5></div><div class="heading"><h4><span>Official Comment by Reviewer uKzr</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=yJm00wm2xQ"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer uKzr</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 01:06</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank you for the response. Some of my questions are addressed, e.g., the comparison with DFA and the magnitude of <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D439 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi><mi>e</mi></math></mjx-assistive-mml></mjx-container>, and I raise my score to 5. I have some additional comments.</p>
+<ol>
+<li><p>In PEPITA, there is also a traveling of error from top to input, while DFA propagates errors to each layer. To what extent the error traveling you think is more acceptable? From the neuroscience perspective, three-factor learning rules with a top-down signal are valid and have been verified [1]. And considering biological spiking neural networks, errors from DFA can be combined with local eligibility traces [2] (the presynaptic activities and derivatives of the nonlinearity of postsynaptic neurons can be maintained in the trace), not necessarily breaking locality. On the other hand, a two stage of “clean” and “modulated” passes poses challenges for neural systems to distinguish the stage for update rules, and while PEPITA-TL is considered temporally local, it requires some temporal information to distinguish the stage for Hebbian or anti-Hebbian, so it is still not fully local.</p>
+</li>
+<li><p>If PEPITA-Hebbian mainly differs from previous Hebbian and anti-Hebbian methods considering the weight transport problem, there seems some previous works also consider this problem with random feedback [3].</p>
+</li>
+</ol>
+<p>[1] Control of synaptic plasticity in deep cortical networks. Nature Reviews Neuroscience, 2018</p>
+<p>[2] A solution to the learning dilemma for recurrent networks of spiking neurons. Nature Communications, 2020.</p>
+<p>[3] Contrastive Hebbian learning with random feedback weights. Neural Networks, 2019.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="ONdggE11tf"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Official Comment by Reviewer uKzr</h5></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=ONdggE11tf"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 21:12</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for the interesting questions and for raising the score. Here are our replies to the additional questions:</p>
+<ol>
+<li>We thank the reviewer for the references, which we are now citing. We do not have a clear answer on whether three-stage or two-stage algorithms are more consistent with plasticity in biological systems. Regarding DFA’s locality, we agree that DFA can be considered local in the case of spiking neural networks. The current work and a large number of discussions around approximations to backpropagation focus on non-spiking artificial neural networks. We thank the reviewer for suggesting [1], which we are now citing in our discussion section to explain a possible biological mechanism for PEPITA-TL. Indeed, in [Dellaferrera &amp; Kreiman, 2022], the authors speculate that the projection matrix can be linked to the cortico-thalamo-cortical loops throughout the neocortex, while the first forward pass is computed directly on the input (sensory pathway). Thus, different modulatory signals might be activated during the first and second forward passes. Specifically, the different modulatory signals might indicate whether the activity should be maximized or minimized in the case of PEPITA-TL. The literature supports the anatomical separation between pathways (a summary of which can be seen in Fig. 4 in [Lillicrap et al., 2020]). This view is compatible with the reviewer’s perspective on DFA and with the PEPITA update rule.</li>
+<li>We thank the reviewer for suggesting [3]. We agree with the reviewer about the similarity in Hebbian and anti-Hebbian terms between [3] and PEPITA, although the algorithm in [3] still suffers from the activity-freezing problem and the update-locking problem, similar to FA. Despite these differences, given that the update rules (not considering the feedback path) suggested by the authors in this and the previous comment have a high degree of similarity with PEPITA, we are now citing [Detorakis et al., 2019; Xie &amp; Seung, 2003;  Scellier &amp; Bengio, 2017] in Section 5.1.</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="MQTHAuclRi"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9371 by Reviewer knnT</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=MQTHAuclRi"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer knnT</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>25 Oct 2023, 08:52 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=MQTHAuclRi">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper provides further analysis of the PEPITA learning rule, a biologically-inspired "forward-only" approach to train neural networks by replacing the backward pass with another forward pass. In connects PEPITA theoretically to two other biologically-inspired approaches, namely an adaptive version of Feedback Alignment and Forward-Forward. Additionally, the paper explores how the initialization of the feedback weights and applying techniques like weight decay, activation normalization, and weight mirroring can improve PEPITA's performance. The experimental findings demonstrate minor improvements through normalization and weight mirroring.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Biologically-inspired and forward-only training approaches are a relevant and timely topic. </li>
+<li>It would be very useful to unify the multitude of different approaches into a common framework. By connecting three major biologically-inspired approaches, this paper takes an important step towards that goal. </li>
+<li>Given the still-remaining gap between backpropagation and forward-only approaches, analyzing and improving their performance is essential for their practical relevance.</li>
+<li>Section 4.2 gives a well-structured summary of the experimental results. It would have been nice, to include a discussion of the impact of weight decay, activation normalization, and weight mirroring</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>The experimental improvement and evaluation of PEPITA on their own offer only limited novelty. However, together with the analysis connecting PEPITA, FA, and Forward-Forward, this paper amounts to a considerable contribution.</li>
+<li>experimental evaluation:</li>
+<li>only small, fully-connected networks, not that suited to more complex vision datasets</li>
+<li>only image classification (MNIST, CIFAR10, CIFAR100)</li>
+<li>no experimental comparison to Forward-Forward</li>
+<li>only minor improvements in accuracy</li>
+<li>Minor Issues:</li>
+<li>Figures can be a bit hard to read</li>
+<li>in Fig 2 (especially 2b) the overlap of PEPITA and AFA is hard to see without zooming in</li>
+<li>Fig 3 would benefit from more contrasting colors</li>
+<li>the references to Figure 2c in the last paragraph of Section 3.2 seems to be mismatched with the actual order of subfigures in Figure 2</li>
+<li>Table 1, line 1 seems to have the wrong citation for FA</li>
+<li>Spelling:</li>
+<li>in contribution (vi) "analitically"</li>
+<li>in the last sentence of Section 1: "gpus" should probably be in uppercase, i.e. "GPUs"</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Which approach do the authors considers their primary contribution? Table 1 the authors refer to PEPITA-TL as "ours" yet this is only discussed briefly in Section 5.1 and left mostly to future work.</li>
+<li>Why are the combinations "weight-decay + normalization + WM" and "weight-decay + normalization + no WM" missing in Table 2? Can weight decay and activation normalization not be combined?</li>
+<li>In Figure 3c: shouldn't pre-mirroring increase the alignment (thus decreasing the angle) before the first epoch? Yet, in Figure 3c, all three lines seem to start at the same value.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">3: You are fairly confident in your assessment. It is possible that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work. Math/other details were not carefully checked.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="ygZdPW13L8"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Authors</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=My7lkRNnL9&amp;noteId=ygZdPW13L8"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>17 Nov 2023, 21:56 (modified: 20 Nov 2023, 11:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=ygZdPW13L8">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>We thank the reviewer for their insightful comments. The point-to-point answer is provided below.</p>
+<hr>
+<h1>Weaknesses</h1>
+<ol>
+<li>We thank the reviewer for appreciating the value of our theoretical results, beyond simple contributions in performance and accuracy.</li>
+</ol>
+<p>Experimental evaluation:</p>
+<ol start="2">
+<li><p>Our work extends previous work that impeded training deeper networks with the original PEPITA method, and so improves on the complexity of networks that PEPITA can work with. Overall, many local or biologically plausible training algorithms in present-day literature are not yet ready to be tested on challenging large-scale datasets and highly complex network architectures.</p>
+</li>
+<li><p>It is unfortunately common in the literature to use image classification tasks as the initial benchmark of new training algorithms. We share this choice with Hinton’s FF paper and others in the same area (e.g. [Ororbia and Mali, 2023]). We do think it would be interesting to extend this work to other types of tasks, particularly to time-dependent datasets, where a forward-only algorithm can be especially useful for analyzing incoming data in real-time. However, this is best treated in a separate paper, where we can focus on the specific needs of such a case.</p>
+</li>
+<li><p>At this time, we are not aware of any implementation of Forward-Forward which utilizes feedback connections to generate the negative samples, as proposed by [Hinton, 2022]. Given the significant difference, we decided not to compare PEPITA to Forward Forward with externally generated samples. Despite this, for completeness, we have added the results that FF achieves on MNIST as reported in [Hinton, 2022].</p>
+</li>
+<li><p>As was pointed out above by reviewer sGVa, the performance of forward-only algorithms has been catching up in recent years, but what is lacking is the theoretical understanding of their learning dynamics. Our aim is not yet to apply PEPITA to real-world tasks but to understand which tools may or may not lead to performance improvements, and why, in order to guide further development. In this respect, small improvements are also informative, and even negative results are valuable lessons.</p>
+</li>
+</ol>
+<p>Minor issues:</p>
+<p>6-7-8. We thank the reviewer for these suggestions, we are currently working to implement them in the paper.</p>
+<ol start="9">
+<li><p>We thank the reviewer for noticing this mismatch. We have now correctly referred to Fig.2d at the end of Sec. 3.2 </p>
+</li>
+<li><p>We thank the reviewer for noticing this. The table now reports Lillicrap 2016 instead.</p>
+</li>
+</ol>
+<p>Spelling:</p>
+<ol start="11">
+<li><p>We thank the reviewer for catching the typo. We have corrected this in the revised version of the manuscript.</p>
+</li>
+<li><p>We thank the reviewer for the suggestion. In the revised version you will now find “GPUs”.</p>
+</li>
+</ol>
+<hr>
+<h1>Questions</h1>
+<ol>
+<li><p>We thank the reviewer for the fair question. We consider our primary contribution the theoretical analysis of the nonintuitive learning dynamics of PEPITA, the study of training techniques that lead to improved performance, and the connections with FF and DFA. Overall, we believe that these different characterizations help us build a common framework to study forward-learning rules. The reason why we included PEPITA-TL in Table 1 is to have a complete comparison. Figure S1 shows that training with PEPITA-TL is possible, but we leave the study necessary to make its performance competitive for future work. Moreover, we have added PEPITA-Hebbian and PEPITA+WM in Table 1.</p>
+</li>
+<li><p>We thank the reviewer for the question. To find the best hyperparameters for training with activation normalization we run a grid search, which includes searching for the optimal value of weight decay. In all cases with normalization, the grid search returns no weight decay, for this reason, we did not include the combination of normalization and weight decay in the table.</p>
+</li>
+<li><p>We thank the reviewer for the question. The fact that at the start of the training, the angles look identical is due to the small learning rate for WM that the grid search has returned (Table S3). This causes pre-mirroring to have a small effect on the angle, although the effect is noticeable in terms of slowness (Table S2). For MNIST and CIFAR-100, the grid search returns higher learning rates for WM (Table S3), and the effect is more noticeable both in the angles (Figure S6) and in the slowness (Table S2).</p>
+</li>
+</ol>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9371/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> <!-- -->is a long-term project to advance science through improved peer review, with legal nonprofit status through<!-- --> <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the<!-- --> <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © <!-- -->2024<!-- --> OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" style="label:input;color:inherit;background:0;opacity:1;width:100%;grid-area:1 / 2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-activedescendant="" aria-describedby="react-select-feedback-subject-placeholder" value=""></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-935s4_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"Forward Learning with Top-Down Feedback: Empirical and Analytical Characterization"},"authors":{"value":["Ravi Francesco Srinivasan","Francesca Mignacco","Martino Sorbaro","Maria Refinetti","Avi Cooper","Gabriel Kreiman","Giorgia Dellaferrera"]},"authorids":{"value":["~Ravi_Francesco_Srinivasan1","~Francesca_Mignacco1","~Martino_Sorbaro1","~Maria_Refinetti1","~Avi_Cooper1","~Gabriel_Kreiman1","~Giorgia_Dellaferrera1"]},"keywords":{"value":["Forward-only learning","Biologically inspired learning","Artificial neural networks","Analytical characterization"]},"TLDR":{"value":"We discuss \"forward-only\" algorithms, provide an analytical characterization and test strategies to improve their performance."},"abstract":{"value":"\"Forward-only\" algorithms, which train neural networks while avoiding a backward pass, have recently gained attention as a way of solving the biologically unrealistic aspects of backpropagation. Here, we first address compelling challenges related to the \"forward-only\" rules, which include reducing the performance gap with backpropagation and providing an analytical understanding of their dynamics. To this end, we show that the forward-only algorithm with top-down feedback is well-approximated by an \"adaptive-feedback-alignment\" algorithm, and we analytically track its performance during learning in a prototype high-dimensional setting. Then, we compare different versions of forward-only algorithms, focusing on the Forward-Forward and PEPITA frameworks, and we show that they share the same learning principles. Overall, our work unveils the connections between three key neuro-inspired learning rules, providing a link between \"forward-only\" algorithms, i.e., Forward-Forward and PEPITA, and an approximation of backpropagation, i.e., Feedback Alignment."},"primary_area":{"value":"applications to neuroscience \u0026 cognitive science"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"ICLR 2024 poster"},"venueid":{"value":"ICLR.cc/2024/Conference"},"pdf":{"value":"/pdf/d2749ae05700db2eaae75a159874c2e229ae8222.pdf"},"supplementary_material":{"value":"/attachment/abae6fa98b6b5537144cb3e3d5c6a67165803088.pdf"},"_bibtex":{"value":"@inproceedings{\nsrinivasan2024forward,\ntitle={Forward Learning with Top-Down Feedback: Empirical and Analytical Characterization},\nauthor={Ravi Francesco Srinivasan and Francesca Mignacco and Martino Sorbaro and Maria Refinetti and Avi Cooper and Gabriel Kreiman and Giorgia Dellaferrera},\nbooktitle={The Twelfth International Conference on Learning Representations},\nyear={2024},\nurl={https://openreview.net/forum?id=My7lkRNnL9}\n}"},"paperhash":{"value":"srinivasan|forward_learning_with_topdown_feedback_empirical_and_analytical_characterization"}},"id":"My7lkRNnL9","forum":"My7lkRNnL9","signatures":["ICLR.cc/2024/Conference/Submission9371/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission9371/Authors"],"number":9371,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission9371/-/Revision","ICLR.cc/2024/Conference/Submission9371/-/Rebuttal_Revision","ICLR.cc/2024/Conference/-/Edit","ICLR.cc/2024/Conference/Submission9371/-/Camera_Ready_Revision"],"domain":"ICLR.cc/2024/Conference","tcdate":1695553023104,"cdate":1695553023104,"tmdate":1709661554509,"mdate":1709661554509,"pdate":1705411062967,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"supplementary_material","order":8},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"primary_area","order":9,"input":"select","value":"applications to neuroscience \u0026 cognitive science","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"My7lkRNnL9"}}},"page":"/forum","query":{"id":"My7lkRNnL9"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>

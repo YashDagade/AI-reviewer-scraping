@@ -1,0 +1,977 @@
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="manifest" href="/manifest.json"><meta property="og:image" content="https://openreview.net/images/openreview_logo_512.png"><meta property="og:site_name" content="OpenReview"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@openreviewnet"><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-GTB25PBMVL"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', 'G-GTB25PBMVL', {
+  page_location: location.origin + location.pathname + location.search,
+});</script><title>Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm Actions with Large Language Model | OpenReview</title><meta name="description" content="Foundation models have significantly advanced in various applications, including text-to-image generation, open-vocabulary segmentation, and natural language processing. This paper presents Instruct2Act, a framework that leverages Large Language Models (LLMs) to convert multi-modal instructions to sequential actions for robotic manipulation tasks. Specifically, Instruct2Act uses LLMs to generate Python programs that form a comprehensive perception, planning, and action loop for robotic tasks. It uses pre-defined APIs to access multiple foundation models, with the Segment Anything Model (SAM) identifying potential objects and CLIP semantically classifying them. This approach combines the strengths of foundation models and robotic actions to transform complex high-level instructions into precise policy codes. Our approach is adaptable and versatile, capable of handling various instruction modalities and input types, and meeting specific task requirements. We validated the practicality and efficiency of our approach on robotic tasks including different tabletop and 6 Degree of Freedom(DoF) manipulation scenarios in both simulation and real-world environments. Furthermore, our zero-shot method surpasses many state-of-the-art learning-based policies in several tasks. The code for our proposed approach is available at https://anonymous.4open.science/r/Instruct2Act, providing a solid benchmark for high-level robotic instruction tasks with diverse modality inputs."><meta property="og:title" content="Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm..."><meta property="og:description" content="Foundation models have significantly advanced in various applications, including text-to-image generation, open-vocabulary segmentation, and natural language processing. This paper presents..."><meta property="og:type" content="article"><meta name="citation_title" content="Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm Actions with Large Language Model"><meta name="citation_author" content="Siyuan Huang"><meta name="citation_author" content="Zhengkai Jiang"><meta name="citation_author" content="Hao Dong"><meta name="citation_author" content="Yu Qiao"><meta name="citation_author" content="Peng Gao"><meta name="citation_author" content="Hongsheng Li"><meta name="citation_online_date" content="2023/10/13"><meta name="citation_pdf_url" content="https://openreview.net/pdf?id=JWrl5pJCnl"><meta name="citation_abstract" content="Foundation models have significantly advanced in various applications, including text-to-image generation, open-vocabulary segmentation, and natural language processing. This paper presents Instruct2Act, a framework that leverages Large Language Models (LLMs) to convert multi-modal instructions to sequential actions for robotic manipulation tasks. Specifically, Instruct2Act uses LLMs to generate Python programs that form a comprehensive perception, planning, and action loop for robotic tasks. It uses pre-defined APIs to access multiple foundation models, with the Segment Anything Model (SAM) identifying potential objects and CLIP semantically classifying them. This approach combines the strengths of foundation models and robotic actions to transform complex high-level instructions into precise policy codes. Our approach is adaptable and versatile, capable of handling various instruction modalities and input types, and meeting specific task requirements. We validated the practicality and efficiency of our approach on robotic tasks including different tabletop and 6 Degree of Freedom(DoF) manipulation scenarios in both simulation and real-world environments. Furthermore, our zero-shot method surpasses many state-of-the-art learning-based policies in several tasks. The code for our proposed approach is available at https://anonymous.4open.science/r/Instruct2Act, providing a solid benchmark for high-level robotic instruction tasks with diverse modality inputs."><meta name="next-head-count" content="25"><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer=""></script><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link data-next-font="" rel="preconnect" href="/" crossorigin="anonymous"><link rel="preload" href="/_next/static/css/5e60a3c4201b8607.css" as="style"><link rel="stylesheet" href="/_next/static/css/5e60a3c4201b8607.css" data-n-g=""><link rel="preload" href="/_next/static/css/545c6765d7ad3ee1.css" as="style"><link rel="stylesheet" href="/_next/static/css/545c6765d7ad3ee1.css" data-n-p=""><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-687a04b35d886598.js" defer=""></script><script src="/_next/static/chunks/framework-fee8a7e75612eda8.js" defer=""></script><script src="/_next/static/chunks/main-0d06003898e9623c.js" defer=""></script><script src="/_next/static/chunks/pages/_app-c1bbc4c66abf8e46.js" defer=""></script><script src="/_next/static/chunks/3525-9c7206b83f10f223.js" defer=""></script><script src="/_next/static/chunks/4493-9c33892eb772b9f7.js" defer=""></script><script src="/_next/static/chunks/9894-d2ec34d1a43cd82a.js" defer=""></script><script src="/_next/static/chunks/3491-c2aa276046057e4d.js" defer=""></script><script src="/_next/static/chunks/5512-cb5c1e2a8619efb8.js" defer=""></script><script src="/_next/static/chunks/pages/forum-8344d82ae06da808.js" defer=""></script><script src="/_next/static/v1.13.3/_buildManifest.js" defer=""></script><script src="/_next/static/v1.13.3/_ssgManifest.js" defer=""></script><style data-href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QNAZ6VQ.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A99e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyAaBN9e.woff) format('woff')}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtvXOmHS91ixg0.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuHOmHS91ixg0.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttXOmHS91ixg0.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtunOmHS91ixg0.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevttnOmHS91ixg0.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtt3OmHS91ixg0.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:italic;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0ZIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevtuXOmHS91iw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aPdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a_du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aLdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a3du3mhPy1Fig.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aHdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5aDdu3mhPy1Fig.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Noto Sans';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5a7du3mhPy0.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-emotion="css b62m3t-container" data-s="">.css-b62m3t-container{position:relative;box-sizing:border-box;}</style><style data-emotion="css 7pg0cj-a11yText" data-s="">.css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}</style><style data-emotion="css 3cqphz-control" data-s="">.css-3cqphz-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:34px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:#fffaf4;border-color:hsl(0, 0%, 80%);border-radius:0;border-style:solid;border-width:1px;box-sizing:border-box;}.css-3cqphz-control:hover{border-color:hsl(0, 0%, 70%);}</style><style data-emotion="css 1uzcsaf" data-s="">.css-1uzcsaf{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:1px 4px;box-sizing:border-box;}</style><style data-emotion="css 1m6ztbo-placeholder" data-s="">.css-1m6ztbo-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:1px;margin-right:1px;box-sizing:border-box;}</style><style data-emotion="css 1ab7ooq" data-s="">.css-1ab7ooq{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:1px;padding-bottom:1px;padding-top:1px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.css-1ab7ooq:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}</style><style data-emotion="css 1wy0on6" data-s="">.css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}</style><style data-emotion="css qgckm3-indicatorSeparator" data-s="">.css-qgckm3-indicatorSeparator{-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;width:1px;background-color:hsl(0, 0%, 80%);margin-bottom:4px;margin-top:4px;box-sizing:border-box;}</style><style data-emotion="css 1qajzci-indicatorContainer" data-s="">.css-1qajzci-indicatorContainer{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-transition:color 150ms;transition:color 150ms;color:hsl(0, 0%, 80%);padding:4px;box-sizing:border-box;}.css-1qajzci-indicatorContainer:hover{color:hsl(0, 0%, 60%);}</style><style data-emotion="css 8mmkcg" data-s="">.css-8mmkcg{display:inline-block;fill:currentColor;line-height:1;stroke:currentColor;stroke-width:0;}</style><style data-emotion="css" data-s=""></style><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" async="" crossorigin="anonymous"></script><link as="script" rel="prefetch" href="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"><link as="script" rel="prefetch" href="/_next/static/chunks/4706-da70c858a1400ff6.js"><link as="script" rel="prefetch" href="/_next/static/chunks/1588-af250b67e76b43e3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/698-79359b54c03d0553.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"><link as="script" rel="prefetch" href="/_next/static/chunks/8979-11aefd17e72821c3.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/about-3f827c724a967c4d.js"><link as="script" rel="prefetch" href="/_next/static/chunks/9381-c84118f0e488fd52.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/venues-d0a8f51036303017.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/ui/safe.js" charset="UTF-8"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D436.TEX-I::before {
+  padding: 0.705em 0.76em 0.022em 0;
+  content: "C";
+}
+
+mjx-c.mjx-c1D461.TEX-I::before {
+  padding: 0.626em 0.361em 0.011em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c2212::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "\2212";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c1D438.TEX-I::before {
+  padding: 0.68em 0.764em 0 0;
+  content: "E";
+}
+
+mjx-c.mjx-c1D43B.TEX-I::before {
+  padding: 0.683em 0.888em 0 0;
+  content: "H";
+}
+</style></head><body><div id="__next"><nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand home push-link" href="/"><strong>OpenReview</strong>.net</a></div><div id="navbar" class="navbar-collapse collapse"><form class="navbar-form navbar-left profile-search" role="search"><div class="form-group has-feedback"><input type="text" name="term" class="form-control" placeholder="Search OpenReview..." autocomplete="off" autocorrect="off" value=""><span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span></div><input name="group" type="hidden" value="all"><input name="content" type="hidden" value="all"><input name="source" type="hidden" value="all"></form><ul class="nav navbar-nav navbar-right"><li id="user-menu"><a href="/login?redirect=%2Fforum%3Fid%3DJWrl5pJCnl&amp;noprompt=true">Login</a></li></ul></div></div></nav><div id="or-banner" class="banner"><div class="container"><div class="row"><div class="col-xs-12"><a title="Venue Homepage" href="/group?id=ICLR.cc/2024/Conference"><img class="icon" src="/images/arrow_left.svg" alt="back arrow">Go to <strong>ICLR 2024 Conference</strong> homepage</a></div></div></div></div><div id="flash-message-container" class="alert alert-danger fixed-overlay" role="alert" style="display: none;"><div class="container"><div class="row"><div class="col-xs-12"><div class="alert-content"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button></div></div></div></div></div><div class="container"><div class="row"><div class="col-xs-12"><main id="content" class="forum"><div class="forum-container"><div class="forum-note"><div class="forum-title mt-2 mb-2"><h2 class="citation_title">Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm Actions with Large Language Model</h2><div class="forum-content-link"><a class="citation_pdf_url" href="/pdf?id=JWrl5pJCnl" title="Download PDF" target="_blank" rel="noreferrer"><img src="/images/pdf_icon_blue.svg" alt="Download PDF"></a></div></div><div class="forum-authors mb-2"><h3><span><a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Siyuan_Huang4" data-original-title="~Siyuan_Huang4">Siyuan Huang</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Zhengkai_Jiang1" data-original-title="~Zhengkai_Jiang1">Zhengkai Jiang</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Hao_Dong3" data-original-title="~Hao_Dong3">Hao Dong</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Yu_Qiao1" data-original-title="~Yu_Qiao1">Yu Qiao</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Peng_Gao3" data-original-title="~Peng_Gao3">Peng Gao</a>, <a title="" data-toggle="tooltip" data-placement="top" href="/profile?id=~Hongsheng_Li3" data-original-title="~Hongsheng_Li3">Hongsheng Li</a>  </span></h3></div><div class="clearfix mb-1"><div class="forum-meta"><span class="date item"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>24 Sept 2023 (modified: 10 Feb 2024)</span><span class="item"><span class="glyphicon glyphicon-folder-open " aria-hidden="true"></span>Submitted to ICLR 2024</span><span class="readers item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone<br/>since 13 Oct 2023"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="item"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=JWrl5pJCnl">Revisions</a></span><span class="item"><span class="glyphicon glyphicon-bookmark " aria-hidden="true"></span><a href="#" data-target="#bibtex-modal" data-toggle="modal" data-bibtex="%40misc%7B%0Ahuang2024instructact%2C%0Atitle%3D%7BInstruct2Act%3A%20Mapping%20Multi-modality%20Instructions%20to%20Robotic%20Arm%20Actions%20with%20Large%20Language%20Model%7D%2C%0Aauthor%3D%7BSiyuan%20Huang%20and%20Zhengkai%20Jiang%20and%20Hao%20Dong%20and%20Yu%20Qiao%20and%20Peng%20Gao%20and%20Hongsheng%20Li%7D%2C%0Ayear%3D%7B2024%7D%2C%0Aurl%3D%7Bhttps%3A%2F%2Fopenreview.net%2Fforum%3Fid%3DJWrl5pJCnl%7D%0A%7D">BibTeX</a></span></div><div class="invitation-buttons"></div></div><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Supplementary Material:</strong> <span class="note-content-value"><a href="/attachment?id=JWrl5pJCnl&amp;name=supplementary_material" class="attachment-download-link" title="Download Supplementary Material" target="_blank"><span class="glyphicon glyphicon-download-alt " aria-hidden="true"></span> zip</a></span></div><div><strong class="note-content-field disable-tex-rendering">Primary Area:</strong> <span class="note-content-value">applications to robotics, autonomy, planning</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Ethics:</strong> <span class="note-content-value">I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.</span></div><div><strong class="note-content-field disable-tex-rendering">Keywords:</strong> <span class="note-content-value">large language models, robotic manipulation, code generation</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Guidelines:</strong> <span class="note-content-value">I certify that this submission complies with the submission instructions as described on <a rel="nofollow" href="https://iclr.cc/Conferences/2024/AuthorGuide">https://iclr.cc/Conferences/2024/AuthorGuide</a>.</span></div><div><strong class="note-content-field disable-tex-rendering">Abstract:</strong> <div class="note-content-value markdown-rendered"><p>Foundation models have significantly advanced in various applications, including text-to-image generation, open-vocabulary segmentation, and natural language processing. This paper presents Instruct2Act, a framework that leverages Large Language Models (LLMs) to convert multi-modal instructions to sequential actions for robotic manipulation tasks. Specifically, Instruct2Act uses LLMs to generate Python programs that form a comprehensive perception, planning, and action loop for robotic tasks. It uses pre-defined APIs to access multiple foundation models, with the Segment Anything Model (SAM) identifying potential objects and CLIP semantically classifying them. This approach combines the strengths of foundation models and robotic actions to transform complex high-level instructions into precise policy codes. Our approach is adaptable and versatile, capable of handling various instruction modalities and input types, and meeting specific task requirements. We validated the practicality and efficiency of our approach on robotic tasks including different tabletop and 6 Degree of Freedom(DoF) manipulation scenarios in both simulation and real-world environments. Furthermore, our zero-shot method surpasses many state-of-the-art learning-based policies in several tasks. The code for our proposed approach is available at <a href="https://anonymous.4open.science/r/Instruct2Act">https://anonymous.4open.science/r/Instruct2Act</a>, providing a solid benchmark for high-level robotic instruction tasks with diverse modality inputs.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Anonymous Url:</strong> <span class="note-content-value">I certify that there is no URL (e.g., github page) that could be used to find authors' identity.</span></div><div><strong class="note-content-field disable-tex-rendering">No Acknowledgement Section:</strong> <span class="note-content-value">I certify that there is no acknowledgement section in this submission for double blind review.</span></div><div><strong class="note-content-field disable-tex-rendering">Submission Number:</strong> <span class="note-content-value">9438</span></div></div></div><div class="filters-container mt-4"><form class="form-inline filter-controls"><div class="wrap"><div class="form-group expand"><div class="replies-filter invitations-filter css-b62m3t-container"><span id="react-select-invitations-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-invitations-filter-placeholder">Filter by reply type...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-invitations-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-invitations-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-invitations" type="hidden" value=""></div></div></div><div class="form-group expand"><div class="replies-filter css-b62m3t-container"><span id="react-select-signatures-filter-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="dropdown-select__control css-1tqhi6y-control"><div class="dropdown-select__value-container dropdown-select__value-container--is-multi css-1uzcsaf"><div class="dropdown-select__placeholder css-1m6ztbo-placeholder" id="react-select-signatures-filter-placeholder">Filter by author...</div><div class="dropdown-select__input-container css-1ab7ooq" data-value=""><input class="dropdown-select__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-signatures-filter-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-signatures-filter-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="dropdown-select__indicators css-1wy0on6"><span class="dropdown-select__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="dropdown-select__indicator dropdown-select__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div><div><input name="filter-signatures" type="hidden" value=""></div></div></div><div class="form-group expand"><input type="text" class="form-control" id="keyword-input" placeholder="Search keywords..." maxlength="100" value=""></div><div class="form-group no-expand"><select id="sort-dropdown" class="form-control"><option value="date-desc">Sort: Newest First</option><option value="date-asc">Sort: Oldest First</option></select></div><div class="form-group no-expand layout-buttons"><div class="btn-group btn-group-sm" role="group" aria-label="nesting level"><button type="button" class="btn btn-default "><img class="icon" src="/images/linear_icon.svg" alt="back arrow" data-toggle="tooltip" title="Linear discussion layout"><span class="sr-only">Linear</span></button><button type="button" class="btn btn-default active"><img class="icon" src="/images/threaded_icon.svg" alt="back arrow" data-toggle="tooltip" title="Threaded discussion layout"><span class="sr-only">Threaded</span></button><button type="button" class="btn btn-default "><img class="icon" src="/images/nested_icon.svg" alt="back arrow" data-toggle="tooltip" title="Nested discussion layout"><span class="sr-only">Nested</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="collapse level"><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Collapse content">−</span><span class="sr-only">Collapsed</span></button><button type="button" class="btn btn-default "><span data-toggle="tooltip" title="Partially expand content">＝</span><span class="sr-only">Default</span></button><button type="button" class="btn btn-default active"><span data-toggle="tooltip" title="Fully expand content">≡</span><span class="sr-only">Expanded</span></button></div><div class="btn-group btn-group-sm" role="group" aria-label="copy url"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="Copy filter URL" aria-hidden="true"></span><span class="sr-only">Copy link</span></button></div></div></div><div><label class="control-label icon-label"><span class="glyphicon glyphicon-eye-open " data-toggle="tooltip" data-placement="top" title="Visible to" aria-hidden="true"></span></label><div class="form-group readers-filter-container"><div class="btn-group btn-group-sm toggle-group readers-filter " role="group"><label class="btn btn-default  state-0" data-toggle="tooltip" title="Everyone"><input type="checkbox" name="readers-filter" value="everyone"> Everyone</label><label class="btn btn-default reset-btn"><input type="checkbox" name="reset" value="reset"> <span class="glyphicon glyphicon-remove " data-toggle="tooltip" data-placement="top" title="Reset" aria-hidden="true"></span></label></div></div><div class="form-group filtered-reply-count"><em class="control-label filter-count">12 / 12 replies shown</em></div></div></form></div><div class="invitations-container"><div class="invitation-buttons top-level-invitations"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div><div class="row forum-replies-container layout-default"><div class="col-xs-12"><div id="forum-replies"><div class="note  depth-odd" data-id="QFxKNJoQYM"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Paper Decision</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=QFxKNJoQYM"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 255, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Decision</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Program Chairs</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>16 Jan 2024, 06:55 (modified: 16 Feb 2024, 15:43)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=QFxKNJoQYM">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Decision:</strong> <span class="note-content-value">Reject</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="ol5UJ47kFq"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Meta Review of Submission9438 by Area Chair cC5g</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=ol5UJ47kFq"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Meta Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Area Chair cC5g</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>10 Dec 2023, 09:16 (modified: 16 Feb 2024, 15:31)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=ol5UJ47kFq">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Metareview:</strong> <div class="note-content-value markdown-rendered"><p>Synopsis: This paper presents a system to leverage LLMs and visual foundation models to perform tabletop manipulation tasks. The task prompt is used to generate python code using the LLM, which then interactively queries visual foundation models to perform the task.</p>
+<p>Strengths:</p>
+<ul>
+<li>Lots of empirical evaluations showing the performance on a variety of tasks</li>
+<li>The use of visual foundation models eliminates the need for engineered solutions</li>
+</ul>
+<p>Weaknesses:</p>
+<ul>
+<li>The paper does not convincingly articulate what is technically novel w.r.t. previous work, such as code-as-policies. The stated innovations seem minor, and the empirical results do not convince the reader that the stated innovations provide a significant boost.</li>
+<li>While the results include a few real world tasks, this is significantly fewer than the state of the art, again, including code-as-policies.</li>
+<li>The choice of using an oracular detector is questionable.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Higher Score:</strong> <div class="note-content-value markdown-rendered"><p>Having read the paper and the reviews in reasonable depth, I am not convinced by the stated innovations over the state of the art. The empirical evaluations (e.g., comparisons to CaP, use of oracular detectors, etc.) raise more questions, as in the author response stage. While the authors tried to perform a few additional experiments to allay these concerns, I do not think they were convincing.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Justification For Why Not Lower Score:</strong> <div class="note-content-value markdown-rendered"><p>N/A</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-odd" data-id="COvLA4Q4C5"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9438 by Reviewer F1ER</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=COvLA4Q4C5"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer F1ER</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Nov 2023, 07:02 (modified: 23 Nov 2023, 03:50)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=COvLA4Q4C5">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The paper looks at the problem of generating control programs for robotic control with the help of foundation models. Part of the functionality that can be leveraged in the program are based on visual (SAM) and visual-language (CLIP) foundation models. The programs themselves are obtained by prompting an LLM. The prompt is equipped with external libraries, function descriptions and example programs. The method is tested on benchmarks with text only instructions as well as text-visual instructions and performs competitively. Extensive ablation studies show the importance of individual elements of the prompt and how the choice of foundation models impacts performance. The model shows OOD capabilities, that cannot be achieved by prior methods.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li><p>Extensive ablation studies that showcase specific abilities of the model (types of OOD generalization), investigate the role of the foundation models and study the importance of the components of the prompt. </p>
+</li>
+<li><p>Removing the dependence of engineered perceptual models from the CaP method by using foundation models.</p>
+</li>
+<li><p>Slight improvements over CaP via the different prompting method.</p>
+</li>
+<li><p>The methods and results are presented in an understandable manner.</p>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li><p>Standard Errors: The VIMABench experiments were run over three random seeds for each meta-task but results are reported without any standard errors? In case of the textual prompts benchmarks its also not clear to me why no standard errors on results are reported?</p>
+</li>
+<li><p>Choice of baselines: For the VIMABench I find the choice of baselines not insightful. On the one hand the baselines make use of a large set of training trajectories, but on the other hand these methods train policies that choose low-level actions. The presented method chooses action primitives such as "PickAndPlace" but does not need much training data (apart from the examples). I think adapting CaP to the VIMA benchmark would be a more insightful baseline. </p>
+</li>
+<li><p>I think it makes sense in the comparison with CaP to compare using an oracle object detector, but one of the main novelties of the work is replacing the perceptual modules of CaP with foundation models. Therefore it would be interesting to see how this affects performance, i.e. just run the method on the CaP benchmark without the oracle.</p>
+</li>
+<li><p>Too much detail in related work: I think the related work section is too long and just a list of papers rather than helping to place the work in the research area. I would shorten it and move interesting results from the Appendix to the main paper.</p>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li><p>Paragraph 4.4: What does RR stand for? </p>
+</li>
+<li><p>Are the example programs in the prompt fixed for every task or do they depend on the task ?</p>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="TS3Z4vOUbp"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer F1ER</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=TS3Z4vOUbp"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 13:46 (modified: 22 Nov 2023, 14:00)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=TS3Z4vOUbp">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p><strong>Q1: Standard Errors: The VIMABench experiments were run over three random seeds for each meta-task but results are reported without any standard errors? In case of the textual prompts benchmarks its also not clear to me why no standard errors on results are reported?</strong></p>
+</blockquote>
+<p><strong>A1</strong>: We are grateful for the reviewer's insightful suggestion. We reported our method's performance with a success rate following the original VIMA paper, where the standard errors are missing as shown in Table 10 in [1]. To make a direct comparison, we also eliminated that item in our paper. One possible reason for this choice is that the SR is calculated with more than 100 tasks for each meta-task, where the average has already been taken. We are glad to provide the standard errors for these three random seeds.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>visual_manipulation</th>
+<th>Rotate</th>
+<th>scene_understanding</th>
+<th>pick_in_order_then_restore</th>
+<th>rearrange</th>
+<th>rearrange_then_restore</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L1</td>
+<td>0.0039</td>
+<td>~0</td>
+<td>0.0103</td>
+<td>0.0308</td>
+<td>0.0699</td>
+<td>0.0155</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>0.0067</td>
+<td>0.0194</td>
+<td>0.0124</td>
+<td>0.0476</td>
+<td>0.0492</td>
+<td>0.0168</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>0.0068</td>
+<td>0.031</td>
+<td>0.0144</td>
+<td>0.0039</td>
+<td>0.0413</td>
+<td>0.033573127</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Q2: Choice of baselines: For the VIMABench I find the choice of baselines not insightful.</strong></p>
+</blockquote>
+<p><strong>A2</strong>: To make a fair comparison with other methods on the VIMABench, we mainly follow the VIMA'a paper and use the experiment result from their table.</p>
+<blockquote>
+<p><strong>Q3:  I think adapting CaP to the VIMA benchmark would be a more insightful baseline.</strong></p>
+</blockquote>
+<p><strong>A3</strong>:  We thank the reviewer for this insightful suggestion. However, one problem with such adaption is that the CaP needs the ground-truth information of the target objects while VIMABench did not directly offer such information. To serve as a walkaround, we extract the GT masks from the simulator and use the center of the mask as the object position. We evaluate the CaP method on the single-step task visual_manipulation,  and multi-step task rearrange_then_restore, and the task requires both memory and saptional reasoning.  </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>visual_manipulation</th>
+<th>rearrange_then_restore</th>
+<th>manip_old_neighbours</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ours</td>
+<td>91.3</td>
+<td>72</td>
+<td>64</td>
+</tr>
+<tr>
+<td>CaP-Oracle</td>
+<td>100</td>
+<td>70</td>
+<td>40</td>
+</tr>
+</tbody></table>
+<p>As shown in Table, the CaP -Oracle could achieve 100% SR for the simple single-step task. However, it struggles when longer steps, e.g. longer code generation are required. When spatial reasoning, e.g, with directional reasoning and memory mechanism are required, its performance degrades a lot.</p>
+<blockquote>
+<p><strong>Q4: Too much detail in the related work.</strong></p>
+</blockquote>
+<p><strong>A4</strong>: We thank the reviewer very much for this suggestion. And we will reformulate the paper in the revised version.</p>
+<blockquote>
+<p><strong>Q5: What does the RR stand for?</strong></p>
+</blockquote>
+<p><strong>A5</strong>: We thank the reviewer for pointing out this unclearness. The RR stands for Rotate and Restore task, as described in the caption of Table 4.</p>
+<blockquote>
+<p><strong>Q6:Therefore it would be interesting to see how this affects performance, i.e. just run the method on the CaP benchmark without the oracle.</strong></p>
+</blockquote>
+<p><strong>A6:</strong> We thank the reviewer a lot for this insightful suggestion. We run our method on the CaP benchmark, and the results are shown below. Due to the simple environment setting, our model achieves consistent performance in the task pick_and_place and directional_corner. However, in the tasks where there exist multiple target objects, our method suffers a performance degradation. It is mainly due to the fact that the CLIP calculates the classification scores with the similarity matrix, when there is more than one target object, the classification is affected. At the same time, the task instruction generally did not contain the number information of target objects, thus the generated code sometimes only considers one object.</p>
+<p>Besides, we noticed a huge performance gap in the task put_in_line, which is defined as an unseen task in the CaP benchmarks. In our previous implementation, we did not include any information for this task. However, when we adapt some prompts on the line description as done in CaP, we witnessed a boost from 55 to 85.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>pick and place</th>
+<th>put in corner</th>
+<th>directional corner</th>
+<th>stack blocks</th>
+<th>put in line</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CaP</td>
+<td>88</td>
+<td>92</td>
+<td>72</td>
+<td>82</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Ours</td>
+<td>100</td>
+<td>85</td>
+<td>90</td>
+<td>85</td>
+<td>45</td>
+</tr>
+<tr>
+<td>Ours-Oracle</td>
+<td>100</td>
+<td>95</td>
+<td>90</td>
+<td>90</td>
+<td>55</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Q7: Are the example programs in the prompt fixed for every task or do they depend on the task ?</strong></p>
+</blockquote>
+<p><strong>A7:</strong> Yes. They are all the same for all tasks in the same benchmark. There are quite minor modifications for the cross-benchmarks setting, e.g. adding a depth parameter for RLBench.</p>
+<p>[1] Jiang, Yunfan, et al. "Vima: General robot manipulation with multimodal prompts." arXiv (2022).</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="kqT5ijGOkO"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Comment by Reviewer F1ER</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=kqT5ijGOkO"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer F1ER</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>23 Nov 2023, 03:49 (modified: 23 Nov 2023, 03:49)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=kqT5ijGOkO">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><p>Thank your for the detailed response and running the additional experiments. </p>
+<p>A1. Thank you, it seems that standard errors are not reported since they are too small. </p>
+<p>A3. I think this results strengthens the evidence that the approach improves over CaP.</p>
+<p>A6. I think this additional experiment adds value to the paper by showing that performance can largely be maintained even without the Oracle.</p>
+<p>All of my main concerns have been addressed. Accordingly I will adjust my score.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="A3gHHaLomn"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9438 by Reviewer KV7t</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=A3gHHaLomn"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer KV7t</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>01 Nov 2023, 02:12 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=A3gHHaLomn">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>The proposed methodology introduces a way to utilize existing off-the-shelf vision and language foundation models for solving robotic tasks. The framework can be conditioned on language and or visual input, and produces Python programs for completing the given task. Experiments in both simulation and the real world demonstrate that the proposed system can outperform baselines.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">4 excellent</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Well-written. The paper is very well-written and easy to follow. The figures very much aid in understanding the paper.</li>
+<li>Ablations. Ablations are conducted to better understand various design choices of the proposed methodology.</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>Unfair comparison to baselines.<ul>
+<li>CaP<ul>
+<li>The proposed work's claimed distinction with CaP is unclear. The authors write "Unlike existing methods such as CaP (Liang et al., 2022), which directly generates policy codes, our approach generates decision-making actions that can help reduce the error rate when performing complex tasks." But, the proposed methodology also uses LLMs to generate Python programs, so the distinction is unclear. Furthermore, about CaP, the authors write: "However, its capabilities are limited to what the perception APIs can provide, and it struggles with interpreting longer and more complex commands due to the high precision requirements of the code." This seems to be a limitation of the proposed methodology as well, which also relies on a finite number of available APIs. Hence, again, the distinction between the proposed methodology and CaP is unclear.</li>
+<li>Why is the oracle version of the proposed method used when comparing to CaP, instead of the non-oracle method? This seems to be an unfair comparison.</li>
+<li>Even then, the performance gap seems trivial. Is there any evidence to suggest that the gap in performance is non-trivial?</li>
+</ul>
+</li>
+<li>PerAct<ul>
+<li>The authors write: "For simple 3D tasks, such as stacking objects, we introduced an additional parameter to indicate the current occupancy. For more complex tasks, such as opening a drawer, we added some heuristic movements to ease the execution." PerAct was able to operate without such simplifying assumptions, which makes this comparison unfair. </li>
+<li>Even then, the performance gap is very small. How do we know this is a non-trivial gap in performance? Is there a trend of tasks / cases where the proposed methodology succeeds and PerAct fails? What is the intuition behind the proposed methodology outperforming PerAct, which was trained directly for the task at hand?</li>
+</ul>
+</li>
+<li>Decision Transformer<ul>
+<li>How was comparison to DT done, as DT doesn't take in language instructions?</li>
+<li>What is the intuition behind the page gap in performance between the proposed methodology and DT?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Simplistic Tasks.<ul>
+<li>The tasks considered for evaluation seem limited in complexity, e.g. are simply pick-and-place like tasks. These are tasks which can be very easily solved. More complex tasks have not been explored.</li>
+<li>Furthermore, as the "Generated Policy Code" in Figure 3 depicts, there is an API for pick-and-place, which the system simply calls upon. This simplifies the already simple problem quite a bit, by abstracting away the more difficult low-level control.</li>
+<li>Finally, a lot of processing / engineering is done to get the system to work (e.g. applying a gray threshold filter followed by a morphological closing operation, a morphological opening operation, Non-Maximum Suppression, etc.). If all of this engineering was required to get a simple task like pick-and-place to work (which is further simplified with the use of a pick-and-place API), then I find it difficult to see how the proposed methodology could be extended to more complex manipulation tasks, thereby limiting its utility.</li>
+</ul>
+</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ul>
+<li>"Although the language models may occasionally generate incomplete or incorrect code, such as missing brackets, punctuation, or mismatched cases, the Python Interpreter can detect these errors and prompt us to generate new code."<ul>
+<li>What is done in these situations? Is the LLM simply prompted a second time, with the hope that the output will not contain incomplete or incorrect code?</li>
+</ul>
+</li>
+<li>How much prompt engineering went into this when evaluation? Were the prompts the same across tasks, and across methods (ie when comparing to the baselines)?</li>
+<li>How computationally expensive / slow is the framework? Can the tasks be solved in real-time?</li>
+</ul>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">3: reject, not good enough</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="xlr6WBjJ2B"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer KV7t [1/2]</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=xlr6WBjJ2B"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 14:14</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p><strong>Q1: The authors write "Unlike existing methods such as CaP ...</strong></p>
+</blockquote>
+<p><strong>A1</strong>: We thank the reviewer for the valuable comment. This comment originates from the observation in Table 6 in the CaP paper. 
+The success rate (SR) for task 6 “Pick up the block to the &lt;direction&gt; of the &lt;receptacle-bowl&gt; and place it on the &lt;corner&gt;” is only 72 compared with 100 SR for the naive pick place task. We derive deep into the failure case and find two main failure causes:</p>
+<ol>
+<li>Code generation error. The generated codes from CaP could contain some basic errors. One observed failure case is misused (, like “diffs = (points[(:, 1)] - point[1]) ”, which causes SyntaxError.</li>
+<li>LLM Hallucinations. Although the CaP has implicitly taught the LLM about the geometric relationship through the prompt in-context examples, the LLM sometimes still gets confused about geometric reasoning.</li>
+</ol>
+<p>To enhance the original CaP [1], we utilized the Instruct2Act methods and added functions as class members in the original CaP classes, and provided function APIs information in the prompts as done in Instruct2Act. We then run 20 trials for task 6 and obtained 18/20, e.g. 90 SR, with 25% improvements.</p>
+<blockquote>
+<p><strong>Q2: the authors write: "However, its capabilities are limited to what the perception APIs can provide, and it struggles with interpreting longer and more complex commands due to the high precision requirements of the code." This seems to be a limitation of the proposed methodology as well, which also relies on a finite number of available APIs. Hence, again, the distinction between the proposed methodology and CaP is unclear.</strong></p>
+</blockquote>
+<p><strong>A2</strong>: We thank the reviewer for this valuable comment. The representation of "its capabilities are limited to what the perception APIs can provide" comes from the fact that the current version of CaP mainly derives object existence information directly from the simulator's system information with some pre-defined template. In contrast, our method employs visual foundational models to handle complex visual information more flexibly.</p>
+<blockquote>
+<p><strong>Q3: Why is the oracle version of the proposed method used when comparing to CaP, instead of the non-oracle method? This seems to be an unfair comparison.</strong></p>
+</blockquote>
+<p><strong>A3</strong>: We respectfully disagree with this comment. As stated before, the open-sourced CaP implementation is the version used in the simulation and it assumes that all <strong>object-related information could be accessed by the object's name and id information</strong>. To make a fair comparison, we also implemented an Instruct2Act-Oracle version, where we assume the object detection module returns the ground truth information.</p>
+<blockquote>
+<p><strong>Q4: Even then, the performance gap seems trivial. Is there any evidence to suggest that the gap in performance is non-trivial?</strong></p>
+</blockquote>
+<p><strong>A4</strong>: Our strengths are from two folders:</p>
+<ul>
+<li>Much less token consumption.  As shown in Table 1, our method consumes almost only 40% of tokens when both are evaluated on the CaP benchmarks.</li>
+<li>Fewer LLM Hallucinations with API style. It is evident in the Task Directional Corner, as shown in Table 16, where our method achieves 90 SR while CaP achieves 72 SR.</li>
+</ul>
+<blockquote>
+<p>**Q5: "PerAct was able to operate without such simplifying assumptions, which makes this comparison unfair." **</p>
+</blockquote>
+<p><strong>A5</strong>: We thank the reviewer a lot for pointing this out. Firstly, PerAct needs to be trained before testing. They already gain depth reasoning ability during the training. Then, we use a single camera for visual input, while PerAct needs two cameras to induce depth information. Furthermore, the proposed assumption is only a naive walkaround, which could be replaced by the naive projection to 3D space (as suggested by Reviewer V9hM) or directly estimated by other visual models which are invoked also in the API style. </p>
+<blockquote>
+<p><strong>Q6:  Is there a trend of tasks / cases where the proposed methodology succeeds and PerAct fails? What is the intuition behind the proposed methodology outperforming PerAct, which was trained directly for the task at hand?</strong> </p>
+</blockquote>
+<p><strong>A6</strong>: We thank the reviewer for this valuable comment. As shown in Table 15 in our appendix, our method succeeds more with the tasks requiring multiple target objects interaction and multi-step execution, such as push_buttons, we achieved 70 vs PerAct 48. One possible reason is the PerAct is trained with different tasks, some require single-step action, while some require multi-step multi-object interaction, and the learned policy struggles to generalize overall. In contrast, our method abstracts different types of tasks with API-style representation, making it more stable and easy to execute. Moreover, we used the source codes and provided weights in the PerAct webpage, and found that the PerAct is unable to handle the OOD instructions mentioned in the Table 6.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div><div class="note  depth-even" data-id="lTZrojEaF3"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="parent-title"><h5><span class="glyphicon glyphicon-share-alt " aria-hidden="true"></span> Replying to Response to Reviewer KV7t [1/2]</h5></div><div class="heading"><h4><strong>Response to Reviewer KV7t [2/2]</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=lTZrojEaF3"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 14:18</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p><strong>Q7: How was the comparison to DT done, as DT doesn't take in language instructions?</strong></p>
+</blockquote>
+<p><strong>A7</strong>: We follow the evaluation pipeline stated in VIMA[1], where DT's initial reward prompt with the VIMA's multimodal task prompt embeddings. </p>
+<p>[1] Jiang, Yunfan, et al. "Vima: General robot manipulation with multimodal prompts." arXiv (2022).</p>
+<blockquote>
+<p><strong>Q8: Simplistic tasks with a lot of processing work.</strong></p>
+</blockquote>
+<p><strong>A8</strong>: This simple action pattern is mainly constrained by the VIMABench simulator, where most tasks are intrinsically the pick-and-place action sequences. However, we also evaluated our method in RLBench, where more complex tasks like opening the drawer and closing jar are used. And we respectfully disagree with the reviewer on the processing/engineering part. Firstly, most of the processing modules mentioned in this paper are very commonly used in CV or the robotic community. Secondly,  we kept the same processing pipeline for all three evaluation benchmarks and found with this simple pipeline, we could achieve promising and robust performance. </p>
+<blockquote>
+<p><strong>Q9: "Although the language models may occasionally generate incomplete or incorrect code, such as missing brackets, punctuation, or mismatched cases, the Python Interpreter can detect these errors and prompt us to generate new code."What is done in these situations?</strong></p>
+</blockquote>
+<p><strong>A9</strong>: We thank the reviewer a lot for pointing out this unclearness. In our implementation, we append the last-round generated code lines <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.045em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mrow data-mjx-texclass="ORD"><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></math></mjx-assistive-mml></mjx-container> with the errors <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D438 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.026em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>E</mi><mrow data-mjx-texclass="ORD"><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></math></mjx-assistive-mml></mjx-container> from the Python Interpreter to construct history information <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container>. This <mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 121.3%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container> with the task instruction, original in-context examples will be sent to LLM to prompt the LLM to generate the improved code lines with the knowledge of historical errors.</p>
+<blockquote>
+<p><strong>Q10: Were the prompts the same across tasks, and across methods (ie when comparing to the baselines)?</strong></p>
+</blockquote>
+<p><strong>A10</strong>:  Yes, we use the same prompts when evaluated across tasks in the same benchmark. </p>
+<blockquote>
+<p><strong>Q11: How computationally expensive/slow is the framework?</strong> </p>
+</blockquote>
+<p><strong>A11</strong>: When tested on a single NVIDIA RTX 3090Ti, FastSAM takes about 50ms, CLIP operation takes about 40ms, and other general operations take 10ms in total. However, we have to admit that the connection to OpenAI could not be that stable sometimes.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="L4ACqWaj8p"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9438 by Reviewer UX8k</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=L4ACqWaj8p"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer UX8k</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 10:21 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=L4ACqWaj8p">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This paper presents Instruct2Act, a framework that leverages Large Language Models (LLMs) to convert multi-modal instructions to sequential actions for robotic manipulation tasks. It uses pre-defined APIs to access multiple foundation models. Its approach is validated in both simulation and real-world experiments.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">3 good</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Instuct2Act represents a whole pipeline from utilizing multimodal instructions to actions. This is meaningful in embodied ai domain.</p>
+</li>
+<li><p>It can handle a diverse range of task types.</p>
+</li>
+<li><p>This paper includes suckers and gripper in simulations, and conducts real-world experiments.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li>   The embodied ai plus LLM develops too fast. It seems that this paper a little bit lacks of novelty. Instruct2Act seems like the combination of VIMA and CaP.</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>   I think the author should add GPT-4 api and Codellama in ablation? </p>
+</li>
+<li><p>What’s the main improvement of Instruct2act? Could the authors list some difference between Instruct2act and VIMA, except for using foundation model to detect the objects?</p>
+</li>
+<li><p>   For the franka manipulation, as the paper mentioned: 'Our method is presently limited by the basic action primitives, such as Pick and Place.' So, the franka-based tasks also uses the action primitives?</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Details Of Ethics Concerns:</strong> <div class="note-content-value markdown-rendered"><p>No ethic concerns.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">6: marginally above the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="LIgwQhiQjA"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer UX8k</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=LIgwQhiQjA"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 14:20</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p><strong>Q1: I think the author should add GPT-4 api and Codellama in ablation.</strong></p>
+</blockquote>
+<p><strong>A1</strong>: We greatly thank the reviewer for this valuable suggestion. We add the comparison with GPT-4 API and Codellama as below. Since CodeLLama has a more limited token length, we removed some unrelated function definitions and in-context examples. Same as Table 5, we chose Visual Manipulation (VM) and reported the success rate with 40 runs. Besides, we inspect the error sources due to LLM's incorrect code generation with the case number as described in Appendix A.1. Note that all these LLMs are prompted again without historical information when Python interpreter raises error information. Besides, we test the robustness of these LLMs with the OOD instructions as described in Table, such as appending  ”Cancel the task, stop!” at the end of the original instruction.</p>
+<table>
+<thead>
+<tr>
+<th>LLM</th>
+<th>SR</th>
+<th>Syntax error</th>
+<th>Attributes hallucination</th>
+<th>SR OOD-Instruction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLama-Adapter</td>
+<td>85.5</td>
+<td>3</td>
+<td>2</td>
+<td>20</td>
+</tr>
+<tr>
+<td>GPT-3.5-Default</td>
+<td>92.5</td>
+<td>1</td>
+<td>1</td>
+<td>90</td>
+</tr>
+<tr>
+<td>CodeLLama-13B</td>
+<td>95</td>
+<td>0</td>
+<td>1</td>
+<td>45</td>
+</tr>
+<tr>
+<td>GPT-4</td>
+<td>100</td>
+<td>0</td>
+<td>0</td>
+<td>100</td>
+</tr>
+</tbody></table>
+<p>As shown in the table above, with a stronger LLM, the LLM code generation quality is getting better. As a result, the final performance is getting stronger. And one thing to note is that, since our task could be represented with executable policy python code generation, which directly fails in the strength of CodeLLama, CodeLLama-13B even achieves better performance than GPT-3.5.
+However, when tested with OOD instructions, only GPT-3.5 and GPT-4.0 demonstrate robustness.</p>
+<blockquote>
+<p><strong>Q2:  What’s the main improvement of Instruct2act? Could the authors list some difference between Instruct2act and VIMA, except for using foundation model to detect the objects?</strong></p>
+</blockquote>
+<p><strong>A2</strong>: We extend our appreciation to the Reviewer for their astute observation. In response, we would like to formulate the differences except for the visual foundation model usage as follows:</p>
+<ul>
+<li><p><strong>Training Independence</strong>: Notably, our Instruct2Act operates devoid of any training phase. This stands in stark contrast to VIMA, which necessitates an extensive 650K training trajectories and a robust cluster node infrastructure for its training process.</p>
+</li>
+<li><p><strong>Flexibility in Task Expansion</strong>: In scenarios demanding solutions for novel tasks, Instruct2Act offers inherent scalability. The model can be effortlessly augmented by integrating the requisite function definitions in the python file and supplementing API directives in the prompt. Conversely, VIMA mandates either finetuning or a comprehensive re-training.</p>
+</li>
+<li><p><strong>Out-of-Distribution (OOD) Generalization</strong>: Capitalizing on the capabilities of the LLM, Instruct2Act exhibits commendable adeptness in managing OOD instructional inputs. For instance, when the directive “90 degrees” is substituted with “0.5 radians”, Instruct2Act demonstrates impeccable reasoning prowess to deduce accurate angular values for rotation-oriented tasks, a feat where VIMA-200M conspicuously falls short. Additionally, when the policy is evaluated against alternative benchmarks, such as RLBench, Instruct2Act accomplishes tasks with only minimal alterations. In similar conditions, VIMA-200M, fails to produce meaningful outputs.</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>Q3:  For the franka manipulation, as the paper mentioned: 'Our method is presently limited by the basic action primitives, such as Pick and Place.' So, the franka-based tasks also uses the action primitives?</strong></p>
+</blockquote>
+<p><strong>A3</strong>: We thank the reviewer for pointing out this unclearness. The limitation statement of the action primitive is mainly raised by the VIMA simulator. In the evaluation tasks in RLBench, such as opening the drawer, action composing locating, adjusting orientation, and closing the gripper is constructed to grasp the drawer's handler is constructed.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div></div></div><div class="note  depth-odd" data-id="oNACfe2nfm"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><span>Official Review of Submission9438 by Reviewer V9hM</span></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=oNACfe2nfm"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(255, 187, 187); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Review</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Reviewer V9hM</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>30 Oct 2023, 02:45 (modified: 10 Nov 2023, 12:26)</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span><span class="revisions"><span class="glyphicon glyphicon-duplicate " aria-hidden="true"></span><a href="/revisions?id=oNACfe2nfm">Revisions</a></span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Summary:</strong> <div class="note-content-value markdown-rendered"><p>This study targets the challenge of robotic manipulation tasks utilizing a Large Language Model (LLM) guided by multi-modal instructions. The efficacy of this approach has been tested with various instructions across different benchmarks including VIMABench and the CaP benchmark.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Soundness:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Presentation:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Contribution:</strong> <span class="note-content-value">2 fair</span></div><div><strong class="note-content-field disable-tex-rendering">Strengths:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>This system conducts experiments on diverse benchmarks such as VIMABench and the CaP benchmark.</p>
+</li>
+<li><p>Detailed ablation studies are also provided, highlighting the efficacy of 'Library API Full Examples' and different segmentation methodologies.</p>
+</li>
+</ol>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Weaknesses:</strong> <div class="note-content-value markdown-rendered"><ol>
+<li><p>Important related work RT-2 [1] is missing, likely because it is too recent to be included and discussed. </p>
+</li>
+<li><p>The improvement in performance is not robust. Figure 5 showcases results from evaluations on VIMABench. However, the baseline VIMA-200 performs slightly better than the suggested approach across all tasks. Although the authors argue that VIMA requires large-scale pre-training, their proposed method also depends on large-scale pre-trained foundation models, such as SAM. It would be beneficial for the authors to demonstrate performance gains on tasks where VIMA has not been trained. Furthermore, the performance gain of 3% over PerAct and 1% over CaP in Table 1, is also not significant. </p>
+</li>
+<li><p>Although employing cursor clicks to create point prompts and guide SAM’s segmentation is clever, applying this approach for the Pick and Place task seems unnecessary. If you have the camera extrinsics, you can easily obtain the 3D location of the click by projecting from the image space to the 3D space, given the depth or known height. In this case, there's no need for SAM. In fact, other example tasks should be selected to better highlight the advantages of the proposed method.</p>
+</li>
+</ol>
+<p>[1] Brohan, A., Brown, N., Carbajal, J., Chebotar, Y., Chen, X., Choromanski, K., ... &amp; Zitkovich, B. (2023). Rt-2: Vision-language-action models transfer web knowledge to robotic control. arXiv preprint arXiv:2307.15818.</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Questions:</strong> <div class="note-content-value markdown-rendered"><p>This work mentions the utilization of two types of LLMs: text-davinci-003 and LLaMA-Adapter. Could you provide an explanation on the performance differences between these two?</p>
+</div></div><div><strong class="note-content-field disable-tex-rendering">Flag For Ethics Review:</strong> <span class="note-content-value">No ethics review needed.</span></div><div><strong class="note-content-field disable-tex-rendering">Rating:</strong> <span class="note-content-value">5: marginally below the acceptance threshold</span></div><div><strong class="note-content-field disable-tex-rendering">Confidence:</strong> <span class="note-content-value">4: You are confident in your assessment, but not absolutely certain. It is unlikely, but not impossible, that you did not understand some parts of the submission or that you are unfamiliar with some pieces of related work.</span></div><div><strong class="note-content-field disable-tex-rendering">Code Of Conduct:</strong> <span class="note-content-value">Yes</span></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div><div class="note-replies"><div class="note  depth-even" data-id="SrY6zwwp5h"><div class="btn-group-vertical btn-group-xs collapse-controls-v" role="group" aria-label="Collapse controls"><button type="button" class="btn btn-default ">−</button><button type="button" class="btn btn-default middle ">＝</button><button type="button" class="btn btn-default active">≡</button></div><div class="heading"><h4><strong>Response to Reviewer V9hM</strong></h4><button type="button" class="btn btn-xs permalink-btn"><a href="https://openreview.net/forum?id=JWrl5pJCnl&amp;noteId=SrY6zwwp5h"><span class="glyphicon glyphicon-link " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Copy reply URL"></span></a></button></div><div class="subheading"><span class="invitation highlight" data-toggle="tooltip" data-placement="top" title="" style="background-color: rgb(187, 187, 255); color: rgb(44, 58, 74);" data-original-title="Reply type">Official Comment</span><span class="signatures"><span class="glyphicon glyphicon-pencil " data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" data-original-title="Reply Author"></span><span>Authors</span></span><span class="created-date" data-toggle="tooltip" data-placement="top" title="" data-original-title="Date created"><span class="glyphicon glyphicon-calendar " aria-hidden="true"></span>22 Nov 2023, 14:24</span><span class="readers" data-toggle="tooltip" data-placement="top" title="" data-original-title="Visible to <br/>everyone"><span class="glyphicon glyphicon-eye-open " aria-hidden="true"></span>Everyone</span></div><div class="note-content-container "><div class="note-content"><div><strong class="note-content-field disable-tex-rendering">Comment:</strong> <div class="note-content-value markdown-rendered"><blockquote>
+<p><strong>Q1: Important related work RT-2 [1] is missing, likely because it is too recent to be included and discussed.</strong></p>
+</blockquote>
+<p><strong>A1</strong>: We thank the reviewer for this valuable suggestion. RT-2[1] proposes a vision-language-action model that learns from both web and robotics data. In contrast, our method uses LLM to generate logic policy codes, and execute the robotic tasks in a training-free.</p>
+<blockquote>
+<p><strong>Q2: However, the baseline VIMA-200 performs slightly better than the suggested approach across all tasks. Although the authors argue that VIMA requires large-scale pre-training, their proposed method also depends on large-scale pre-trained foundation models, such as SAM. It would be beneficial for the authors to demonstrate performance gains on tasks where VIMA has not been trained.</strong></p>
+</blockquote>
+<p><strong>A2</strong>:  Thank you for your insightful feedback. </p>
+<p>Firstly, regarding the performance comparison with VIMA-200, we agree that the overall performance difference might not be substantial in the tasks evaluated. However, the primary advantage of our method lies in its adaptability, versatility, and training-free. As shown in Table 6 of the main paper, VIMA fails to handle the OOD instructions often, even with 0% SR for Human Intervention. Besides, we have evaluated our method with the (almost) same prompts across different benchmarks, e.g. RLBench, VIMABench and CaP. However, VIMA failed to output reasonable actions when trained in VIMABench while tested in RLBench.</p>
+<p>Secondly, we agree that our approach, like VIMA, depends on pre-trained foundation models. However, VIMA requires large-scale pre-training for robotic-specific tasks. Our approach leverages general pre-trained vision foundation models that are not task-specific. This makes our method more scalable and adaptable.</p>
+<blockquote>
+<p><strong>Q3: Furthermore, the performance gain of 3% over PerAct and 1% over CaP in Table 1, is also not significant.</strong></p>
+</blockquote>
+<p><strong>A3</strong>: Regarding the performance gains over PerAct and CaP, we would like to point out that CaP consumes almost 2.5 times tokens to execute tasks. And they suffer more from the LLM's hallucinations when tasks require strong spatial reasoning. As for PerAct, it needs training on the RLBench, and is unable to handle OOD instructions and to transfer to new tasks, even new benchmarks.</p>
+<blockquote>
+<p><strong>Q4: Although employing cursor clicks to create point prompts and guide SAM’s segmentation is clever, applying this approach for the Pick and Place task seems unnecessary. If you have the camera extrinsics, you can easily obtain the 3D location of the click by projecting from the image space to the 3D space, given the depth or known height. In this case, there's no need for SAM. In fact, other example tasks should be selected to better highlight the advantages of the proposed method.</strong></p>
+</blockquote>
+<p><strong>A4</strong>: As for the use of cursor clicks in the Pick and Place task, we agree that if camera extrinsics and depth information are known, the 3D location can be computed directly.  However, the strength of our approach is its ability to operate effectively even when such information (the click or extrinsic) is not available or reliable, which is often the case in real-world scenarios. </p>
+<p>Additionally, we recognize that objects in the real world are not always uniformly distributed or symmetrical, and the clicked location might be on the edge of the object, which is not suitable for robot grasping. In these cases, if we first use the click to mark the target object, then use the SAM model for semantic segmentation to capture the complete object information, we can determine a more suitable grasping position through simple post-processing.</p>
+<p>Lastly, we appreciate your suggestion to select different example tasks to better illustrate the advantages of our method. We plan to conduct additional experiments on tasks where the benefits of our approach are more evident.</p>
+</div></div></div></div><div class="invitations-container mt-2"><div class="invitation-buttons"><span class="hint">Add:</span><button type="button" class="btn btn-xs " data-id="ICLR.cc/2024/Conference/Submission9438/-/Public_Comment">Public Comment</button></div></div></div></div></div></div></div></div></div></main></div></div></div><footer class="sitemap"><div class="container"><div class="row hidden-xs"><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-sm-4"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div><div class="row visible-xs-block"><div class="col-xs-6"><ul class="list-unstyled"><li><a href="/about">About OpenReview</a></li><li><a href="/group?id=OpenReview.net/Support">Hosting a Venue</a></li><li><a href="/venues">All Venues</a></li><li><a href="/sponsors">Sponsors</a></li><li><a class="join-the-team" href="https://codeforscience.org/jobs?job=OpenReview-Developer" target="_blank" rel="noopener noreferrer"><strong>Join the Team</strong></a></li></ul></div><div class="col-xs-6"><ul class="list-unstyled"><li><a href="https://docs.openreview.net/getting-started/frequently-asked-questions">Frequently Asked Questions</a></li><li><a href="/contact">Contact</a></li><li><a href="#" data-toggle="modal" data-target="#feedback-modal">Feedback</a></li><li><a href="/legal/terms">Terms of Use</a></li><li><a href="/legal/privacy">Privacy Policy</a></li></ul></div></div></div></footer><footer class="sponsor"><div class="container"><div class="row"><div class="col-sm-10 col-sm-offset-1"><p class="text-center"><a href="/about" target="_blank">OpenReview</a> is a long-term project to advance science through improved peer review, with legal nonprofit status through <a href="https://codeforscience.org/" target="_blank" rel="noopener noreferrer">Code for Science &amp; Society</a>. We gratefully acknowledge the support of the <a href="/sponsors" target="_blank">OpenReview Sponsors</a>. © 2024 OpenReview</p></div></div></div></footer><div id="feedback-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">Send Feedback</h3></div><div class="modal-body"><p><span>Enter your feedback below and we'll get back to you as soon as possible. To submit a bug report or feature request, you can use the official OpenReview GitHub repository:</span><br><a href="https://github.com/openreview/openreview/issues/new/choose" target="_blank" rel="noreferrer">Report an issue</a></p><form><div class="form-group"><input id="feedback-from" type="text" name="from" class="form-control" placeholder="Email" value=""></div><div class="form-group"><div class=" css-b62m3t-container"><span id="react-select-feedback-subject-live-region" class="css-7pg0cj-a11yText"></span><span aria-live="polite" aria-atomic="false" aria-relevant="additions text" role="log" class="css-7pg0cj-a11yText"></span><div class="feedback-dropdown__control css-3cqphz-control"><div class="feedback-dropdown__value-container css-1uzcsaf"><div class="feedback-dropdown__placeholder css-1m6ztbo-placeholder" id="react-select-feedback-subject-placeholder">Select a topic or type what you need help with</div><div class="feedback-dropdown__input-container css-1ab7ooq" data-value=""><input class="feedback-dropdown__input" autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-feedback-subject-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" aria-expanded="false" aria-haspopup="true" role="combobox" aria-describedby="react-select-feedback-subject-placeholder" value="" style="color: inherit; background: 0px center; opacity: 1; width: 100%; grid-area: 1 / 2; font: inherit; min-width: 2px; border: 0px; margin: 0px; outline: 0px; padding: 0px;"></div></div><div class="feedback-dropdown__indicators css-1wy0on6"><span class="feedback-dropdown__indicator-separator css-qgckm3-indicatorSeparator"></span><div class="feedback-dropdown__indicator feedback-dropdown__dropdown-indicator css-1qajzci-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-8mmkcg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div></div></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"></div><div class="form-group"><textarea id="feedback-message" name="message" class="form-control feedback-input" rows="5" placeholder="Message"></textarea></div></form><div><div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-gqzme_response"></div></div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" disabled="">Send</button></div></div></div></div><div id="bibtex-modal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog "><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h3 class="modal-title">BibTeX Record</h3></div><div class="modal-body"><pre class="bibtex-content"></pre><em class="instructions">Click anywhere on the box above to highlight complete record</em></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Done</button></div></div></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"forumNote":{"content":{"title":{"value":"Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm Actions with Large Language Model"},"authors":{"value":["Siyuan Huang","Zhengkai Jiang","Hao Dong","Yu Qiao","Peng Gao","Hongsheng Li"]},"authorids":{"value":["~Siyuan_Huang4","~Zhengkai_Jiang1","~Hao_Dong3","~Yu_Qiao1","~Peng_Gao3","~Hongsheng_Li3"]},"keywords":{"value":["large language models","robotic manipulation","code generation"]},"abstract":{"value":"Foundation models have significantly advanced in various applications, including text-to-image generation, open-vocabulary segmentation, and natural language processing. This paper presents Instruct2Act, a framework that leverages Large Language Models (LLMs) to convert multi-modal instructions to sequential actions for robotic manipulation tasks. Specifically, Instruct2Act uses LLMs to generate Python programs that form a comprehensive perception, planning, and action loop for robotic tasks. It uses pre-defined APIs to access multiple foundation models, with the Segment Anything Model (SAM) identifying potential objects and CLIP semantically classifying them. This approach combines the strengths of foundation models and robotic actions to transform complex high-level instructions into precise policy codes. Our approach is adaptable and versatile, capable of handling various instruction modalities and input types, and meeting specific task requirements. We validated the practicality and efficiency of our approach on robotic tasks including different tabletop and 6 Degree of Freedom(DoF) manipulation scenarios in both simulation and real-world environments. Furthermore, our zero-shot method surpasses many state-of-the-art learning-based policies in several tasks. The code for our proposed approach is available at https://anonymous.4open.science/r/Instruct2Act, providing a solid benchmark for high-level robotic instruction tasks with diverse modality inputs."},"primary_area":{"value":"applications to robotics, autonomy, planning"},"code_of_ethics":{"value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics."},"submission_guidelines":{"value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide."},"anonymous_url":{"value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity."},"no_acknowledgement_section":{"value":"I certify that there is no acknowledgement section in this submission for double blind review."},"venue":{"value":"Submitted to ICLR 2024"},"venueid":{"value":"ICLR.cc/2024/Conference/Rejected_Submission"},"pdf":{"value":"/pdf/c8f56e50e3811de463ee5349748017334e72136c.pdf"},"supplementary_material":{"value":"/attachment/c55a33f139b9ab8fa1ed5eef8fc6fc7204cf88a2.zip"},"_bibtex":{"value":"@misc{\nhuang2024instructact,\ntitle={Instruct2Act: Mapping Multi-modality Instructions to Robotic Arm Actions with Large Language Model},\nauthor={Siyuan Huang and Zhengkai Jiang and Hao Dong and Yu Qiao and Peng Gao and Hongsheng Li},\nyear={2024},\nurl={https://openreview.net/forum?id=JWrl5pJCnl}\n}"},"paperhash":{"value":"huang|instruct2act_mapping_multimodality_instructions_to_robotic_arm_actions_with_large_language_model"}},"id":"JWrl5pJCnl","forum":"JWrl5pJCnl","signatures":["ICLR.cc/2024/Conference/Submission9438/Authors"],"readers":["everyone"],"writers":["ICLR.cc/2024/Conference","ICLR.cc/2024/Conference/Submission9438/Authors"],"number":9438,"odate":1697213872796,"invitations":["ICLR.cc/2024/Conference/-/Submission","ICLR.cc/2024/Conference/-/Post_Submission","ICLR.cc/2024/Conference/Submission9438/-/Revision","ICLR.cc/2024/Conference/-/Edit"],"domain":"ICLR.cc/2024/Conference","tcdate":1695555248669,"cdate":1695555248669,"tmdate":1707625775282,"mdate":1707625775282,"version":2,"details":{"writable":false,"presentation":[{"name":"title","order":1},{"name":"supplementary_material","order":1},{"name":"primary_area","order":2,"input":"select","value":"applications to robotics, autonomy, planning","description":null},{"name":"authors","order":3},{"name":"code_of_ethics","order":3,"input":"checkbox","value":"I acknowledge that I and all co-authors of this work have read and commit to adhering to the ICLR Code of Ethics.","description":null},{"name":"authorids","order":4},{"name":"keywords","order":4},{"name":"submission_guidelines","order":4,"input":"checkbox","value":"I certify that this submission complies with the submission instructions as described on https://iclr.cc/Conferences/2024/AuthorGuide.","description":null},{"name":"TLDR","order":5,"fieldName":"TL;DR"},{"name":"resubmission","order":5,"input":"radio"},{"name":"abstract","order":6,"input":"textarea","markdown":true},{"name":"student_author","order":6,"input":"radio"},{"name":"pdf","order":7},{"name":"anonymous_url","order":7,"input":"checkbox","value":"I certify that there is no URL (e.g., github page) that could be used to find authors' identity.","description":null},{"name":"no_acknowledgement_section","order":8,"input":"checkbox","value":"I certify that there is no acknowledgement section in this submission for double blind review.","description":null},{"name":"large_language_models","order":9,"input":"checkbox"},{"name":"other_comments_on_LLMs","order":10,"input":"textarea"},{"name":"venue","hidden":true},{"name":"venueid","hidden":true},{"name":"_bibtex","input":"textarea"},{"name":"other_comments"}]},"apiVersion":2},"query":{"id":"JWrl5pJCnl"}}},"page":"/forum","query":{"id":"JWrl5pJCnl"},"buildId":"v1.13.3","isFallback":false,"isExperimentalCompile":false,"gip":true,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer><script src="/_next/static/chunks/4706-da70c858a1400ff6.js"></script><script src="/_next/static/chunks/1588-af250b67e76b43e3.js"></script><script src="/_next/static/chunks/698-79359b54c03d0553.js"></script><script src="/_next/static/chunks/pages/profile-ab584f7f2f069eb9.js"></script><script src="/_next/static/chunks/9381-c84118f0e488fd52.js"></script><script src="/_next/static/chunks/pages/group-8b07fe79feb2205a.js"></script><script src="/_next/static/chunks/pages/index-0e5fffa225397ca8.js"></script><script src="/_next/static/chunks/pages/login-59fc3bd40fdd7401.js"></script><script src="/_next/static/chunks/8979-11aefd17e72821c3.js"></script><script src="/_next/static/chunks/pages/revisions-ad09f37429452d44.js"></script><script src="/_next/static/chunks/pages/about-3f827c724a967c4d.js"></script><script src="/_next/static/chunks/pages/venues-d0a8f51036303017.js"></script><script src="/_next/static/chunks/pages/contact-571c1ab5eb47d6fb.js"></script><script src="/_next/static/chunks/pages/sponsors-977c38f7a0d19ecc.js"></script><script src="/_next/static/chunks/pages/legal/terms-6af6d8b0d7eca19b.js"></script><script src="/_next/static/chunks/pages/legal/privacy-d65b6837c0a085d9.js"></script></body></html>
