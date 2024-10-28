@@ -5,13 +5,13 @@ import re
 import time
 import logging
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
+import glob
 
 # Configure Logging
 logging.basicConfig(
@@ -30,10 +30,10 @@ logging.getLogger().addHandler(console)
 
 # Constants
 BASE_URL = "https://openreview.net"
-BASE_DOWNLOAD_DIR = "data/iclr"  # Base directory for all years
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; DataScraper/1.0; +https://yourdomain.com/)"
 }
+BASE_DOWNLOAD_DIR = "data/iclr"  # Base directory for all years
 
 def setup_selenium():
     """Sets up Selenium with headless Chrome."""
@@ -51,7 +51,7 @@ def setup_selenium():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
-def fetch_html(driver, url, timeout=20):
+def fetch_html(driver, url, timeout=30):
     """Fetches the fully rendered HTML content of a given URL using Selenium."""
     try:
         logging.info(f"Fetching URL: {url}")
@@ -190,31 +190,30 @@ def process_papers_parallel_scrape(papers, max_workers=4):
                 driver.quit()
 
 def main():
-    """Main function to orchestrate scraping."""
-    # List all URL files per year
-    url_files = glob.glob(os.path.join(BASE_DOWNLOAD_DIR, "iclr_*_paper_urls.txt"))
+    """Main function to orchestrate scraping of HTML and PDFs."""
+    # Identify all _paper_urls.txt files in the current directory
+    url_files = glob.glob("*_paper_urls.txt")
+    
+    if not url_files:
+        logging.error("No URL files found. Please run get_links.py first.")
+        return
+    
     all_papers = []
-
+    
     for url_file in url_files:
-        # Extract year from filename
-        year_match = re.search(r"iclr_(\d{4})_paper_urls\.txt", os.path.basename(url_file))
-        if year_match:
-            year = year_match.group(1)
-        else:
-            logging.warning(f"Could not determine year from filename {url_file}. Skipping.")
+        year_match = re.match(r"(\d{4})_paper_urls\.txt", url_file)
+        if not year_match:
+            logging.warning(f"Filename {url_file} does not match expected pattern. Skipping.")
             continue
+        year = year_match.group(1)
         
-        # Read URLs from the file
         try:
-            with open(url_file, "r", encoding="utf-8") as f:
+            with open(url_file, "r") as f:
                 urls = [line.strip() for line in f if line.strip()]
-            logging.info(f"Loaded {len(urls)} URLs from {url_file} for year {year}.")
+            logging.info(f"Loaded {len(urls)} URLs from {url_file}")
+            all_papers.extend([(year, url) for url in urls])
         except Exception as e:
-            logging.error(f"Error reading URLs from {url_file}: {e}")
-            continue
-        
-        # Append to all_papers list
-        all_papers.extend([(year, url) for url in urls])
+            logging.error(f"Error reading file {url_file}: {e}")
     
     logging.info(f"Total papers to scrape: {len(all_papers)}")
     
