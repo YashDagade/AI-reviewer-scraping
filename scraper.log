@@ -2206,3 +2206,371 @@
 2024-10-27 01:25:39,014 - INFO - Saved reviewer responses to 5t57omGVMw_responses.md
 2024-10-27 01:25:39,014 - INFO - Completed parsing for paper ID: 5t57omGVMw
 2024-10-27 01:25:39,021 - INFO - Aggregated CSV saved to data/iclr_2024/decisions_and_scores.csv
+2024-10-27 01:46:35,959 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:36,089 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:36,174 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:36,243 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:41,156 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:41,236 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:41,401 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:41,474 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:41,976 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:41,977 - INFO - Starting scraping for paper: https://openreview.net/forum?id=IdibrApfps
+2024-10-27 01:46:41,985 - INFO - Fetching URL: https://openreview.net/forum?id=IdibrApfps
+2024-10-27 01:46:42,076 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:42,158 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:42,234 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:42,758 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:42,759 - INFO - Starting scraping for paper: https://openreview.net/forum?id=3SJE1WLB4M
+2024-10-27 01:46:42,770 - INFO - Fetching URL: https://openreview.net/forum?id=3SJE1WLB4M
+2024-10-27 01:46:42,880 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:42,981 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:43,058 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:43,561 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:43,563 - INFO - Starting scraping for paper: https://openreview.net/forum?id=lyoOWX0e0O
+2024-10-27 01:46:43,574 - INFO - Fetching URL: https://openreview.net/forum?id=lyoOWX0e0O
+2024-10-27 01:46:43,734 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:43,897 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:44,065 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:44,566 - INFO - Starting scraping for paper: https://openreview.net/forum?id=aN4Jf6Cx69
+2024-10-27 01:46:44,566 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:44,570 - INFO - Fetching URL: https://openreview.net/forum?id=aN4Jf6Cx69
+2024-10-27 01:46:44,717 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:44,905 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:45,075 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:45,629 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:45,629 - INFO - Starting scraping for paper: https://openreview.net/forum?id=BXYZvcgVUv
+2024-10-27 01:46:45,637 - INFO - Fetching URL: https://openreview.net/forum?id=BXYZvcgVUv
+2024-10-27 01:46:45,741 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:45,819 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:45,885 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:46,186 - INFO - Successfully fetched URL: https://openreview.net/forum?id=3SJE1WLB4M
+2024-10-27 01:46:46,196 - INFO - Saved HTML to data/iclr_2024/HTML/3SJE1WLB4M.html
+2024-10-27 01:46:46,401 - INFO - Starting scraping for paper: https://openreview.net/forum?id=kIZcruKmBg
+2024-10-27 01:46:46,401 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:46,456 - INFO - Downloading PDF: https://openreview.net/pdf?id=3SJE1WLB4M
+2024-10-27 01:46:46,456 - INFO - Fetching URL: https://openreview.net/forum?id=kIZcruKmBg
+2024-10-27 01:46:46,582 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:46,662 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:46,740 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:47,221 - INFO - Downloaded PDF to data/iclr_2024/PDF/3SJE1WLB4M.pdf
+2024-10-27 01:46:47,224 - INFO - Successfully scraped paper: 3SJE1WLB4M
+2024-10-27 01:46:47,594 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:47,594 - INFO - Starting scraping for paper: https://openreview.net/forum?id=GzNaCp6Vcg
+2024-10-27 01:46:47,606 - INFO - Fetching URL: https://openreview.net/forum?id=GzNaCp6Vcg
+2024-10-27 01:46:47,751 - INFO - Successfully fetched URL: https://openreview.net/forum?id=aN4Jf6Cx69
+2024-10-27 01:46:47,755 - INFO - Saved HTML to data/iclr_2024/HTML/aN4Jf6Cx69.html
+2024-10-27 01:46:47,788 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:47,814 - INFO - Downloading PDF: https://openreview.net/pdf?id=aN4Jf6Cx69
+2024-10-27 01:46:47,893 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:48,004 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:48,597 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:48,598 - INFO - Starting scraping for paper: https://openreview.net/forum?id=RzNlECeoOB
+2024-10-27 01:46:48,613 - INFO - Fetching URL: https://openreview.net/forum?id=RzNlECeoOB
+2024-10-27 01:46:48,739 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:48,770 - INFO - Downloaded PDF to data/iclr_2024/PDF/aN4Jf6Cx69.pdf
+2024-10-27 01:46:48,772 - INFO - Successfully scraped paper: aN4Jf6Cx69
+2024-10-27 01:46:48,908 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:49,216 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:49,826 - INFO - Successfully fetched URL: https://openreview.net/forum?id=kIZcruKmBg
+2024-10-27 01:46:49,885 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:49,885 - INFO - Starting scraping for paper: https://openreview.net/forum?id=2DJMtdfgfH
+2024-10-27 01:46:49,892 - INFO - Saved HTML to data/iclr_2024/HTML/kIZcruKmBg.html
+2024-10-27 01:46:49,914 - INFO - Fetching URL: https://openreview.net/forum?id=2DJMtdfgfH
+2024-10-27 01:46:50,328 - INFO - Downloading PDF: https://openreview.net/pdf?id=kIZcruKmBg
+2024-10-27 01:46:50,425 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:50,504 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:50,576 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:50,993 - INFO - Successfully fetched URL: https://openreview.net/forum?id=GzNaCp6Vcg
+2024-10-27 01:46:50,994 - INFO - Saved HTML to data/iclr_2024/HTML/GzNaCp6Vcg.html
+2024-10-27 01:46:51,123 - INFO - Downloading PDF: https://openreview.net/pdf?id=GzNaCp6Vcg
+2024-10-27 01:46:51,132 - INFO - Downloaded PDF to data/iclr_2024/PDF/kIZcruKmBg.pdf
+2024-10-27 01:46:51,141 - INFO - Successfully scraped paper: kIZcruKmBg
+2024-10-27 01:46:51,263 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:51,263 - INFO - Starting scraping for paper: https://openreview.net/forum?id=buC4E91xZE
+2024-10-27 01:46:51,274 - INFO - Fetching URL: https://openreview.net/forum?id=buC4E91xZE
+2024-10-27 01:46:51,387 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:51,456 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:51,533 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:52,334 - INFO - Successfully fetched URL: https://openreview.net/forum?id=RzNlECeoOB
+2024-10-27 01:46:52,336 - INFO - Starting scraping for paper: https://openreview.net/forum?id=OpWg0ldkcB
+2024-10-27 01:46:52,337 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:52,343 - INFO - Fetching URL: https://openreview.net/forum?id=OpWg0ldkcB
+2024-10-27 01:46:52,353 - INFO - Saved HTML to data/iclr_2024/HTML/RzNlECeoOB.html
+2024-10-27 01:46:52,508 - INFO - Downloading PDF: https://openreview.net/pdf?id=RzNlECeoOB
+2024-10-27 01:46:52,584 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:52,599 - INFO - Downloaded PDF to data/iclr_2024/PDF/GzNaCp6Vcg.pdf
+2024-10-27 01:46:52,601 - INFO - Successfully scraped paper: GzNaCp6Vcg
+2024-10-27 01:46:52,739 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:52,909 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:53,712 - INFO - Downloaded PDF to data/iclr_2024/PDF/RzNlECeoOB.pdf
+2024-10-27 01:46:53,713 - INFO - Successfully scraped paper: RzNlECeoOB
+2024-10-27 01:46:53,917 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:53,917 - INFO - Starting scraping for paper: https://openreview.net/forum?id=ApjY32f3Xr
+2024-10-27 01:46:53,923 - INFO - Fetching URL: https://openreview.net/forum?id=ApjY32f3Xr
+2024-10-27 01:46:54,051 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:54,156 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:54,296 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:54,520 - INFO - Successfully fetched URL: https://openreview.net/forum?id=buC4E91xZE
+2024-10-27 01:46:54,523 - INFO - Saved HTML to data/iclr_2024/HTML/buC4E91xZE.html
+2024-10-27 01:46:54,968 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:54,978 - INFO - Starting scraping for paper: https://openreview.net/forum?id=hcXfzlmg7Y
+2024-10-27 01:46:55,133 - INFO - Fetching URL: https://openreview.net/forum?id=hcXfzlmg7Y
+2024-10-27 01:46:55,197 - INFO - Downloading PDF: https://openreview.net/pdf?id=buC4E91xZE
+2024-10-27 01:46:55,280 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:55,573 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:55,780 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:56,625 - INFO - ====== WebDriver manager ======
+2024-10-27 01:46:56,929 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:57,171 - INFO - Get LATEST chromedriver version for google-chrome
+2024-10-27 01:46:57,642 - INFO - Driver [/Users/yd211/.wdm/drivers/chromedriver/mac64/130.0.6723.69/chromedriver-mac-arm64/chromedriver] found in cache
+2024-10-27 01:46:58,816 - INFO - Successfully fetched URL: https://openreview.net/forum?id=ApjY32f3Xr
+2024-10-27 01:46:58,818 - INFO - Saved HTML to data/iclr_2024/HTML/ApjY32f3Xr.html
+2024-10-27 01:46:58,869 - INFO - Downloading PDF: https://openreview.net/pdf?id=ApjY32f3Xr
+2024-10-27 01:47:00,460 - INFO - Downloaded PDF to data/iclr_2024/PDF/ApjY32f3Xr.pdf
+2024-10-27 01:47:00,461 - INFO - Successfully scraped paper: ApjY32f3Xr
+2024-10-27 01:47:00,462 - INFO - Starting scraping for paper: https://openreview.net/forum?id=OkHHJcMroY
+2024-10-27 01:47:00,462 - INFO - Fetching URL: https://openreview.net/forum?id=OkHHJcMroY
+2024-10-27 01:47:02,711 - ERROR - Timeout while loading https://openreview.net/forum?id=IdibrApfps
+2024-10-27 01:47:02,712 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=IdibrApfps. Skipping.
+2024-10-27 01:47:02,712 - INFO - Starting scraping for paper: https://openreview.net/forum?id=uNrFpDPMyo
+2024-10-27 01:47:02,714 - INFO - Fetching URL: https://openreview.net/forum?id=uNrFpDPMyo
+2024-10-27 01:47:04,700 - ERROR - Timeout while loading https://openreview.net/forum?id=lyoOWX0e0O
+2024-10-27 01:47:04,702 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=lyoOWX0e0O. Skipping.
+2024-10-27 01:47:04,792 - INFO - Successfully fetched URL: https://openreview.net/forum?id=OkHHJcMroY
+2024-10-27 01:47:04,798 - INFO - Saved HTML to data/iclr_2024/HTML/OkHHJcMroY.html
+2024-10-27 01:47:04,967 - INFO - Downloading PDF: https://openreview.net/pdf?id=OkHHJcMroY
+2024-10-27 01:47:06,052 - INFO - Downloaded PDF to data/iclr_2024/PDF/OkHHJcMroY.pdf
+2024-10-27 01:47:06,053 - INFO - Successfully scraped paper: OkHHJcMroY
+2024-10-27 01:47:06,705 - INFO - Successfully fetched URL: https://openreview.net/forum?id=uNrFpDPMyo
+2024-10-27 01:47:06,710 - INFO - Saved HTML to data/iclr_2024/HTML/uNrFpDPMyo.html
+2024-10-27 01:47:06,768 - ERROR - Timeout while loading https://openreview.net/forum?id=BXYZvcgVUv
+2024-10-27 01:47:06,800 - INFO - Downloading PDF: https://openreview.net/pdf?id=uNrFpDPMyo
+2024-10-27 01:47:06,801 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=BXYZvcgVUv. Skipping.
+2024-10-27 01:47:08,136 - INFO - Downloaded PDF to data/iclr_2024/PDF/uNrFpDPMyo.pdf
+2024-10-27 01:47:08,138 - INFO - Successfully scraped paper: uNrFpDPMyo
+2024-10-27 01:47:10,859 - ERROR - Timeout while loading https://openreview.net/forum?id=2DJMtdfgfH
+2024-10-27 01:47:10,859 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=2DJMtdfgfH. Skipping.
+2024-10-27 01:47:13,395 - ERROR - Timeout while loading https://openreview.net/forum?id=OpWg0ldkcB
+2024-10-27 01:47:13,398 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=OpWg0ldkcB. Skipping.
+2024-10-27 01:47:15,963 - ERROR - Timeout while loading https://openreview.net/forum?id=hcXfzlmg7Y
+2024-10-27 01:47:15,967 - WARNING - Failed to retrieve HTML for https://openreview.net/forum?id=hcXfzlmg7Y. Skipping.
+2024-10-27 01:47:22,502 - INFO - Downloaded PDF to data/iclr_2024/PDF/buC4E91xZE.pdf
+2024-10-27 01:47:22,505 - INFO - Successfully scraped paper: buC4E91xZE
+2024-10-27 01:47:23,202 - INFO - Saved Markdown to data/iclr_2024/Markdown/buC4E91xZE_metadata.md
+2024-10-27 01:47:23,202 - INFO - Saved metadata to buC4E91xZE_metadata.md
+2024-10-27 01:47:23,203 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/buC4E91xZE.pdf
+2024-10-27 01:47:33,214 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/buC4E91xZE.pdf
+2024-10-27 01:47:33,215 - INFO - Saved Markdown to data/iclr_2024/Markdown/buC4E91xZE_sections.md
+2024-10-27 01:47:34,159 - INFO - Saved Markdown to data/iclr_2024/Markdown/buC4E91xZE_responses.md
+2024-10-27 01:47:34,159 - INFO - Saved reviewer responses to buC4E91xZE_responses.md
+2024-10-27 01:47:34,160 - INFO - Completed parsing for paper ID: buC4E91xZE
+2024-10-27 01:47:34,237 - INFO - Saved Markdown to data/iclr_2024/Markdown/RzNlECeoOB_metadata.md
+2024-10-27 01:47:34,237 - INFO - Saved metadata to RzNlECeoOB_metadata.md
+2024-10-27 01:47:34,238 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/RzNlECeoOB.pdf
+2024-10-27 01:47:42,376 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/RzNlECeoOB.pdf
+2024-10-27 01:47:42,378 - INFO - Saved Markdown to data/iclr_2024/Markdown/RzNlECeoOB_sections.md
+2024-10-27 01:47:42,753 - INFO - Saved Markdown to data/iclr_2024/Markdown/RzNlECeoOB_responses.md
+2024-10-27 01:47:42,753 - INFO - Saved reviewer responses to RzNlECeoOB_responses.md
+2024-10-27 01:47:42,754 - INFO - Completed parsing for paper ID: RzNlECeoOB
+2024-10-27 01:47:42,789 - INFO - Saved Markdown to data/iclr_2024/Markdown/fMX07g3prp_metadata.md
+2024-10-27 01:47:42,789 - INFO - Saved metadata to fMX07g3prp_metadata.md
+2024-10-27 01:47:42,789 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/fMX07g3prp.pdf
+2024-10-27 01:47:49,034 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/fMX07g3prp.pdf
+2024-10-27 01:47:49,035 - INFO - Saved Markdown to data/iclr_2024/Markdown/fMX07g3prp_sections.md
+2024-10-27 01:47:49,097 - INFO - Saved Markdown to data/iclr_2024/Markdown/fMX07g3prp_responses.md
+2024-10-27 01:47:49,098 - INFO - Saved reviewer responses to fMX07g3prp_responses.md
+2024-10-27 01:47:49,098 - INFO - Completed parsing for paper ID: fMX07g3prp
+2024-10-27 01:47:49,158 - INFO - Saved Markdown to data/iclr_2024/Markdown/gtkFw6sZGS_metadata.md
+2024-10-27 01:47:49,158 - INFO - Saved metadata to gtkFw6sZGS_metadata.md
+2024-10-27 01:47:49,159 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/gtkFw6sZGS.pdf
+2024-10-27 01:47:54,633 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/gtkFw6sZGS.pdf
+2024-10-27 01:47:54,634 - INFO - Saved Markdown to data/iclr_2024/Markdown/gtkFw6sZGS_sections.md
+2024-10-27 01:47:54,897 - INFO - Saved Markdown to data/iclr_2024/Markdown/gtkFw6sZGS_responses.md
+2024-10-27 01:47:54,898 - INFO - Saved reviewer responses to gtkFw6sZGS_responses.md
+2024-10-27 01:47:54,898 - INFO - Completed parsing for paper ID: gtkFw6sZGS
+2024-10-27 01:47:54,960 - INFO - Saved Markdown to data/iclr_2024/Markdown/M6XWoEdmwf_metadata.md
+2024-10-27 01:47:54,960 - INFO - Saved metadata to M6XWoEdmwf_metadata.md
+2024-10-27 01:47:54,961 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/M6XWoEdmwf.pdf
+2024-10-27 01:48:21,004 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/M6XWoEdmwf.pdf
+2024-10-27 01:48:21,006 - INFO - Saved Markdown to data/iclr_2024/Markdown/M6XWoEdmwf_sections.md
+2024-10-27 01:48:21,185 - INFO - Saved Markdown to data/iclr_2024/Markdown/M6XWoEdmwf_responses.md
+2024-10-27 01:48:21,186 - INFO - Saved reviewer responses to M6XWoEdmwf_responses.md
+2024-10-27 01:48:21,186 - INFO - Completed parsing for paper ID: M6XWoEdmwf
+2024-10-27 01:48:21,230 - INFO - Saved Markdown to data/iclr_2024/Markdown/KS8mIvetg2_metadata.md
+2024-10-27 01:48:21,230 - INFO - Saved metadata to KS8mIvetg2_metadata.md
+2024-10-27 01:48:21,230 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/KS8mIvetg2.pdf
+2024-10-27 01:48:23,987 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/KS8mIvetg2.pdf
+2024-10-27 01:48:23,988 - INFO - Saved Markdown to data/iclr_2024/Markdown/KS8mIvetg2_sections.md
+2024-10-27 01:48:24,084 - INFO - Saved Markdown to data/iclr_2024/Markdown/KS8mIvetg2_responses.md
+2024-10-27 01:48:24,084 - INFO - Saved reviewer responses to KS8mIvetg2_responses.md
+2024-10-27 01:48:24,085 - INFO - Completed parsing for paper ID: KS8mIvetg2
+2024-10-27 01:48:24,116 - INFO - Saved Markdown to data/iclr_2024/Markdown/hxAveMWogn_metadata.md
+2024-10-27 01:48:24,116 - INFO - Saved metadata to hxAveMWogn_metadata.md
+2024-10-27 01:48:24,117 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/hxAveMWogn.pdf
+2024-10-27 01:48:26,827 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/hxAveMWogn.pdf
+2024-10-27 01:48:26,828 - INFO - Saved Markdown to data/iclr_2024/Markdown/hxAveMWogn_sections.md
+2024-10-27 01:48:26,875 - INFO - Saved Markdown to data/iclr_2024/Markdown/hxAveMWogn_responses.md
+2024-10-27 01:48:26,876 - INFO - Saved reviewer responses to hxAveMWogn_responses.md
+2024-10-27 01:48:26,876 - INFO - Completed parsing for paper ID: hxAveMWogn
+2024-10-27 01:48:26,947 - INFO - Saved Markdown to data/iclr_2024/Markdown/AZGIwqCyYY_metadata.md
+2024-10-27 01:48:26,948 - INFO - Saved metadata to AZGIwqCyYY_metadata.md
+2024-10-27 01:48:26,948 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/AZGIwqCyYY.pdf
+2024-10-27 01:48:44,602 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/AZGIwqCyYY.pdf
+2024-10-27 01:48:44,603 - INFO - Saved Markdown to data/iclr_2024/Markdown/AZGIwqCyYY_sections.md
+2024-10-27 01:48:44,828 - INFO - Saved Markdown to data/iclr_2024/Markdown/AZGIwqCyYY_responses.md
+2024-10-27 01:48:44,829 - INFO - Saved reviewer responses to AZGIwqCyYY_responses.md
+2024-10-27 01:48:44,829 - INFO - Completed parsing for paper ID: AZGIwqCyYY
+2024-10-27 01:48:44,872 - INFO - Saved Markdown to data/iclr_2024/Markdown/RvUVMjfp8i_metadata.md
+2024-10-27 01:48:44,872 - INFO - Saved metadata to RvUVMjfp8i_metadata.md
+2024-10-27 01:48:44,873 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/RvUVMjfp8i.pdf
+2024-10-27 01:48:49,816 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/RvUVMjfp8i.pdf
+2024-10-27 01:48:49,818 - INFO - Saved Markdown to data/iclr_2024/Markdown/RvUVMjfp8i_sections.md
+2024-10-27 01:48:49,901 - INFO - Saved Markdown to data/iclr_2024/Markdown/RvUVMjfp8i_responses.md
+2024-10-27 01:48:49,901 - INFO - Saved reviewer responses to RvUVMjfp8i_responses.md
+2024-10-27 01:48:49,901 - INFO - Completed parsing for paper ID: RvUVMjfp8i
+2024-10-27 01:48:49,962 - INFO - Saved Markdown to data/iclr_2024/Markdown/gYcft1HIaU_metadata.md
+2024-10-27 01:48:49,962 - INFO - Saved metadata to gYcft1HIaU_metadata.md
+2024-10-27 01:48:49,963 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/gYcft1HIaU.pdf
+2024-10-27 01:48:52,464 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/gYcft1HIaU.pdf
+2024-10-27 01:48:52,465 - INFO - Saved Markdown to data/iclr_2024/Markdown/gYcft1HIaU_sections.md
+2024-10-27 01:48:52,812 - INFO - Saved Markdown to data/iclr_2024/Markdown/gYcft1HIaU_responses.md
+2024-10-27 01:48:52,812 - INFO - Saved reviewer responses to gYcft1HIaU_responses.md
+2024-10-27 01:48:52,813 - INFO - Completed parsing for paper ID: gYcft1HIaU
+2024-10-27 01:48:52,956 - INFO - Saved Markdown to data/iclr_2024/Markdown/OkHHJcMroY_metadata.md
+2024-10-27 01:48:52,956 - INFO - Saved metadata to OkHHJcMroY_metadata.md
+2024-10-27 01:48:52,957 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/OkHHJcMroY.pdf
+2024-10-27 01:48:56,123 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/OkHHJcMroY.pdf
+2024-10-27 01:48:56,124 - INFO - Saved Markdown to data/iclr_2024/Markdown/OkHHJcMroY_sections.md
+2024-10-27 01:48:56,981 - INFO - Saved Markdown to data/iclr_2024/Markdown/OkHHJcMroY_responses.md
+2024-10-27 01:48:56,981 - INFO - Saved reviewer responses to OkHHJcMroY_responses.md
+2024-10-27 01:48:56,982 - INFO - Completed parsing for paper ID: OkHHJcMroY
+2024-10-27 01:48:57,040 - INFO - Saved Markdown to data/iclr_2024/Markdown/JWrl5pJCnl_metadata.md
+2024-10-27 01:48:57,041 - INFO - Saved metadata to JWrl5pJCnl_metadata.md
+2024-10-27 01:48:57,041 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/JWrl5pJCnl.pdf
+2024-10-27 01:49:02,268 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/JWrl5pJCnl.pdf
+2024-10-27 01:49:02,269 - INFO - Saved Markdown to data/iclr_2024/Markdown/JWrl5pJCnl_sections.md
+2024-10-27 01:49:02,517 - INFO - Saved Markdown to data/iclr_2024/Markdown/JWrl5pJCnl_responses.md
+2024-10-27 01:49:02,518 - INFO - Saved reviewer responses to JWrl5pJCnl_responses.md
+2024-10-27 01:49:02,518 - INFO - Completed parsing for paper ID: JWrl5pJCnl
+2024-10-27 01:49:02,636 - INFO - Saved Markdown to data/iclr_2024/Markdown/n9xeGcI4Yg_metadata.md
+2024-10-27 01:49:02,636 - INFO - Saved metadata to n9xeGcI4Yg_metadata.md
+2024-10-27 01:49:02,637 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/n9xeGcI4Yg.pdf
+2024-10-27 01:49:06,237 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/n9xeGcI4Yg.pdf
+2024-10-27 01:49:06,238 - INFO - Saved Markdown to data/iclr_2024/Markdown/n9xeGcI4Yg_sections.md
+2024-10-27 01:49:06,857 - INFO - Saved Markdown to data/iclr_2024/Markdown/n9xeGcI4Yg_responses.md
+2024-10-27 01:49:06,857 - INFO - Saved reviewer responses to n9xeGcI4Yg_responses.md
+2024-10-27 01:49:06,857 - INFO - Completed parsing for paper ID: n9xeGcI4Yg
+2024-10-27 01:49:06,903 - INFO - Saved Markdown to data/iclr_2024/Markdown/aN4Jf6Cx69_metadata.md
+2024-10-27 01:49:06,904 - INFO - Saved metadata to aN4Jf6Cx69_metadata.md
+2024-10-27 01:49:06,904 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/aN4Jf6Cx69.pdf
+2024-10-27 01:49:20,467 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/aN4Jf6Cx69.pdf
+2024-10-27 01:49:20,469 - INFO - Saved Markdown to data/iclr_2024/Markdown/aN4Jf6Cx69_sections.md
+2024-10-27 01:49:20,551 - INFO - Saved Markdown to data/iclr_2024/Markdown/aN4Jf6Cx69_responses.md
+2024-10-27 01:49:20,551 - INFO - Saved reviewer responses to aN4Jf6Cx69_responses.md
+2024-10-27 01:49:20,551 - INFO - Completed parsing for paper ID: aN4Jf6Cx69
+2024-10-27 01:49:20,599 - INFO - Saved Markdown to data/iclr_2024/Markdown/ApjY32f3Xr_metadata.md
+2024-10-27 01:49:20,600 - INFO - Saved metadata to ApjY32f3Xr_metadata.md
+2024-10-27 01:49:20,600 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/ApjY32f3Xr.pdf
+2024-10-27 01:49:24,071 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/ApjY32f3Xr.pdf
+2024-10-27 01:49:24,072 - INFO - Saved Markdown to data/iclr_2024/Markdown/ApjY32f3Xr_sections.md
+2024-10-27 01:49:24,225 - INFO - Saved Markdown to data/iclr_2024/Markdown/ApjY32f3Xr_responses.md
+2024-10-27 01:49:24,226 - INFO - Saved reviewer responses to ApjY32f3Xr_responses.md
+2024-10-27 01:49:24,226 - INFO - Completed parsing for paper ID: ApjY32f3Xr
+2024-10-27 01:49:24,287 - INFO - Saved Markdown to data/iclr_2024/Markdown/miGpIhquyB_metadata.md
+2024-10-27 01:49:24,287 - INFO - Saved metadata to miGpIhquyB_metadata.md
+2024-10-27 01:49:24,288 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/miGpIhquyB.pdf
+2024-10-27 01:49:31,430 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/miGpIhquyB.pdf
+2024-10-27 01:49:31,432 - INFO - Saved Markdown to data/iclr_2024/Markdown/miGpIhquyB_sections.md
+2024-10-27 01:49:31,579 - INFO - Saved Markdown to data/iclr_2024/Markdown/miGpIhquyB_responses.md
+2024-10-27 01:49:31,579 - INFO - Saved reviewer responses to miGpIhquyB_responses.md
+2024-10-27 01:49:31,579 - INFO - Completed parsing for paper ID: miGpIhquyB
+2024-10-27 01:49:31,644 - INFO - Saved Markdown to data/iclr_2024/Markdown/3SJE1WLB4M_metadata.md
+2024-10-27 01:49:31,644 - INFO - Saved metadata to 3SJE1WLB4M_metadata.md
+2024-10-27 01:49:31,644 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/3SJE1WLB4M.pdf
+2024-10-27 01:49:46,393 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/3SJE1WLB4M.pdf
+2024-10-27 01:49:46,394 - INFO - Saved Markdown to data/iclr_2024/Markdown/3SJE1WLB4M_sections.md
+2024-10-27 01:49:46,637 - INFO - Saved Markdown to data/iclr_2024/Markdown/3SJE1WLB4M_responses.md
+2024-10-27 01:49:46,637 - INFO - Saved reviewer responses to 3SJE1WLB4M_responses.md
+2024-10-27 01:49:46,638 - INFO - Completed parsing for paper ID: 3SJE1WLB4M
+2024-10-27 01:49:46,697 - INFO - Saved Markdown to data/iclr_2024/Markdown/AOSsLRKQrX_metadata.md
+2024-10-27 01:49:46,697 - INFO - Saved metadata to AOSsLRKQrX_metadata.md
+2024-10-27 01:49:46,697 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/AOSsLRKQrX.pdf
+2024-10-27 01:49:49,925 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/AOSsLRKQrX.pdf
+2024-10-27 01:49:49,927 - INFO - Saved Markdown to data/iclr_2024/Markdown/AOSsLRKQrX_sections.md
+2024-10-27 01:49:50,081 - INFO - Saved Markdown to data/iclr_2024/Markdown/AOSsLRKQrX_responses.md
+2024-10-27 01:49:50,082 - INFO - Saved reviewer responses to AOSsLRKQrX_responses.md
+2024-10-27 01:49:50,082 - INFO - Completed parsing for paper ID: AOSsLRKQrX
+2024-10-27 01:49:50,163 - INFO - Saved Markdown to data/iclr_2024/Markdown/My7lkRNnL9_metadata.md
+2024-10-27 01:49:50,164 - INFO - Saved metadata to My7lkRNnL9_metadata.md
+2024-10-27 01:49:50,164 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/My7lkRNnL9.pdf
+2024-10-27 01:49:58,923 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/My7lkRNnL9.pdf
+2024-10-27 01:49:58,925 - INFO - Saved Markdown to data/iclr_2024/Markdown/My7lkRNnL9_sections.md
+2024-10-27 01:49:59,092 - INFO - Saved Markdown to data/iclr_2024/Markdown/My7lkRNnL9_responses.md
+2024-10-27 01:49:59,093 - INFO - Saved reviewer responses to My7lkRNnL9_responses.md
+2024-10-27 01:49:59,093 - INFO - Completed parsing for paper ID: My7lkRNnL9
+2024-10-27 01:49:59,161 - INFO - Saved Markdown to data/iclr_2024/Markdown/Re5KnZcXhf_metadata.md
+2024-10-27 01:49:59,161 - INFO - Saved metadata to Re5KnZcXhf_metadata.md
+2024-10-27 01:49:59,162 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/Re5KnZcXhf.pdf
+2024-10-27 01:50:02,342 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/Re5KnZcXhf.pdf
+2024-10-27 01:50:02,344 - INFO - Saved Markdown to data/iclr_2024/Markdown/Re5KnZcXhf_sections.md
+2024-10-27 01:50:02,734 - INFO - Saved Markdown to data/iclr_2024/Markdown/Re5KnZcXhf_responses.md
+2024-10-27 01:50:02,735 - INFO - Saved reviewer responses to Re5KnZcXhf_responses.md
+2024-10-27 01:50:02,735 - INFO - Completed parsing for paper ID: Re5KnZcXhf
+2024-10-27 01:50:02,777 - INFO - Saved Markdown to data/iclr_2024/Markdown/WpMHBIYsUf_metadata.md
+2024-10-27 01:50:02,778 - INFO - Saved metadata to WpMHBIYsUf_metadata.md
+2024-10-27 01:50:02,778 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/WpMHBIYsUf.pdf
+2024-10-27 01:50:06,987 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/WpMHBIYsUf.pdf
+2024-10-27 01:50:06,988 - INFO - Saved Markdown to data/iclr_2024/Markdown/WpMHBIYsUf_sections.md
+2024-10-27 01:50:07,103 - INFO - Saved Markdown to data/iclr_2024/Markdown/WpMHBIYsUf_responses.md
+2024-10-27 01:50:07,103 - INFO - Saved reviewer responses to WpMHBIYsUf_responses.md
+2024-10-27 01:50:07,104 - INFO - Completed parsing for paper ID: WpMHBIYsUf
+2024-10-27 01:50:07,161 - INFO - Saved Markdown to data/iclr_2024/Markdown/9Ik05cycLq_metadata.md
+2024-10-27 01:50:07,162 - INFO - Saved metadata to 9Ik05cycLq_metadata.md
+2024-10-27 01:50:07,162 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/9Ik05cycLq.pdf
+2024-10-27 01:50:11,148 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/9Ik05cycLq.pdf
+2024-10-27 01:50:11,151 - INFO - Saved Markdown to data/iclr_2024/Markdown/9Ik05cycLq_sections.md
+2024-10-27 01:50:11,402 - INFO - Saved Markdown to data/iclr_2024/Markdown/9Ik05cycLq_responses.md
+2024-10-27 01:50:11,403 - INFO - Saved reviewer responses to 9Ik05cycLq_responses.md
+2024-10-27 01:50:11,403 - INFO - Completed parsing for paper ID: 9Ik05cycLq
+2024-10-27 01:50:11,478 - INFO - Saved Markdown to data/iclr_2024/Markdown/uNrFpDPMyo_metadata.md
+2024-10-27 01:50:11,478 - INFO - Saved metadata to uNrFpDPMyo_metadata.md
+2024-10-27 01:50:11,479 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/uNrFpDPMyo.pdf
+2024-10-27 01:50:15,130 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/uNrFpDPMyo.pdf
+2024-10-27 01:50:15,131 - INFO - Saved Markdown to data/iclr_2024/Markdown/uNrFpDPMyo_sections.md
+2024-10-27 01:50:15,397 - INFO - Saved Markdown to data/iclr_2024/Markdown/uNrFpDPMyo_responses.md
+2024-10-27 01:50:15,397 - INFO - Saved reviewer responses to uNrFpDPMyo_responses.md
+2024-10-27 01:50:15,398 - INFO - Completed parsing for paper ID: uNrFpDPMyo
+2024-10-27 01:50:15,505 - INFO - Saved Markdown to data/iclr_2024/Markdown/JzvIWvC9MG_metadata.md
+2024-10-27 01:50:15,506 - INFO - Saved metadata to JzvIWvC9MG_metadata.md
+2024-10-27 01:50:15,506 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/JzvIWvC9MG.pdf
+2024-10-27 01:50:25,760 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/JzvIWvC9MG.pdf
+2024-10-27 01:50:25,762 - INFO - Saved Markdown to data/iclr_2024/Markdown/JzvIWvC9MG_sections.md
+2024-10-27 01:50:26,092 - INFO - Saved Markdown to data/iclr_2024/Markdown/JzvIWvC9MG_responses.md
+2024-10-27 01:50:26,093 - INFO - Saved reviewer responses to JzvIWvC9MG_responses.md
+2024-10-27 01:50:26,093 - INFO - Completed parsing for paper ID: JzvIWvC9MG
+2024-10-27 01:50:26,167 - INFO - Saved Markdown to data/iclr_2024/Markdown/5t57omGVMw_metadata.md
+2024-10-27 01:50:26,168 - INFO - Saved metadata to 5t57omGVMw_metadata.md
+2024-10-27 01:50:26,168 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/5t57omGVMw.pdf
+2024-10-27 01:50:35,340 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/5t57omGVMw.pdf
+2024-10-27 01:50:35,342 - INFO - Saved Markdown to data/iclr_2024/Markdown/5t57omGVMw_sections.md
+2024-10-27 01:50:35,607 - INFO - Saved Markdown to data/iclr_2024/Markdown/5t57omGVMw_responses.md
+2024-10-27 01:50:35,607 - INFO - Saved reviewer responses to 5t57omGVMw_responses.md
+2024-10-27 01:50:35,608 - INFO - Completed parsing for paper ID: 5t57omGVMw
+2024-10-27 01:50:35,697 - INFO - Saved Markdown to data/iclr_2024/Markdown/kIZcruKmBg_metadata.md
+2024-10-27 01:50:35,697 - INFO - Saved metadata to kIZcruKmBg_metadata.md
+2024-10-27 01:50:35,698 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/kIZcruKmBg.pdf
+2024-10-27 01:50:36,864 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/kIZcruKmBg.pdf
+2024-10-27 01:50:36,865 - INFO - Saved Markdown to data/iclr_2024/Markdown/kIZcruKmBg_sections.md
+2024-10-27 01:50:37,150 - INFO - Saved Markdown to data/iclr_2024/Markdown/kIZcruKmBg_responses.md
+2024-10-27 01:50:37,150 - INFO - Saved reviewer responses to kIZcruKmBg_responses.md
+2024-10-27 01:50:37,151 - INFO - Completed parsing for paper ID: kIZcruKmBg
+2024-10-27 01:50:37,225 - INFO - Saved Markdown to data/iclr_2024/Markdown/GzNaCp6Vcg_metadata.md
+2024-10-27 01:50:37,225 - INFO - Saved metadata to GzNaCp6Vcg_metadata.md
+2024-10-27 01:50:37,226 - INFO - Extracting sections from PDF: data/iclr_2024/PDF/GzNaCp6Vcg.pdf
+2024-10-27 01:50:55,388 - INFO - Extracted Abstract and Introduction from data/iclr_2024/PDF/GzNaCp6Vcg.pdf
+2024-10-27 01:50:55,389 - INFO - Saved Markdown to data/iclr_2024/Markdown/GzNaCp6Vcg_sections.md
+2024-10-27 01:50:55,723 - INFO - Saved Markdown to data/iclr_2024/Markdown/GzNaCp6Vcg_responses.md
+2024-10-27 01:50:55,724 - INFO - Saved reviewer responses to GzNaCp6Vcg_responses.md
+2024-10-27 01:50:55,724 - INFO - Completed parsing for paper ID: GzNaCp6Vcg
+2024-10-27 01:50:55,747 - INFO - Aggregated CSV saved to data/iclr_2024/decisions_and_scores.csv
