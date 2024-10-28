@@ -56,25 +56,24 @@ def setup_selenium():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
-def get_paper_urls_from_page(driver, page_url):
-    """Extract all unique paper URLs from the given OpenReview page."""
+def get_paper_urls_from_page(driver):
+    """Extract all unique paper URLs from the current OpenReview page."""
     try:
-        driver.get(page_url)
-        time.sleep(3)  # Allow some time for the page to load
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        paper_links = soup.find_all("a", href=True)
-
-        # Filter out URLs with '&noteId=' and ensure they contain 'forum?id='
-        paper_urls = [
-            link["href"]
-            for link in paper_links
-            if "forum?id=" in link["href"] and "&noteId=" not in link["href"]
-        ]
-
-        logging.info(f"Found {len(paper_urls)} paper URLs on page: {page_url}")
-        return paper_urls
+        # Wait for the paper titles to appear (with a timeout of 20 seconds)
+        paper_elements = WebDriverWait(driver, 20).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.note h4 a'))
+        )
+        logging.info(f"Found {len(paper_elements)} papers on the current page.")
+        
+        # Collect all paper links on the page
+        paper_urls = [element.get_attribute("href") for element in paper_elements]
+        
+        # Filter only forum URLs (exclude PDF links)
+        forum_urls = [url for url in paper_urls if "forum?id=" in url]
+        
+        return forum_urls
     except Exception as e:
-        logging.error(f"Error extracting URLs from page {page_url}: {e}")
+        logging.error(f"Error extracting URLs from current page: {e}")
         return []
 
 def switch_to_tab_with_js(driver, tab_id):
@@ -100,7 +99,7 @@ def go_to_next_page(driver):
         logging.info("No more pages to navigate.")
         return False
 
-def scrape_all_pages(driver, year, base_url, tab_id):
+def scrape_all_pages(driver, year, tab_id):
     """Scrapes all pages from a single tab."""
     switch_to_tab_with_js(driver, tab_id)
     
@@ -109,7 +108,7 @@ def scrape_all_pages(driver, year, base_url, tab_id):
 
     while True:
         logging.info(f"Scraping page {page_count} of {tab_id} tab for year {year}...")
-        paper_urls = get_paper_urls_from_page(driver, base_url)
+        paper_urls = get_paper_urls_from_page(driver)
         all_paper_urls.update(paper_urls)
         
         if not go_to_next_page(driver):  # Stop if there are no more pages
@@ -129,13 +128,13 @@ def scrape_multiple_tabs(year, base_url, tabs):
     
     for tab_id in tabs:
         logging.info(f"Scraping {tab_id} tab for year {year}...")
-        paper_urls = scrape_all_pages(driver, year, base_url, tab_id)
+        paper_urls = scrape_all_pages(driver, year, tab_id)
         combined_paper_urls.update(paper_urls)
     
     driver.quit()
 
     # Return a list of (year, formatted_url)
-    formatted_urls = [f"https://openreview.net{url}" for url in combined_paper_urls]
+    formatted_urls = [f"https://openreview.net{url}" if not url.startswith("http") else url for url in combined_paper_urls]
     return [(year, url) for url in formatted_urls]
 
 def save_urls_to_file(filename, urls):
